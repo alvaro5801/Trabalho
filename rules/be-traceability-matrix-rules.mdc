@@ -1,0 +1,472 @@
+---
+globs: ["docs/migration/**/*.md", "docs/backend/**/*.md"]
+alwaysApply: false
+---
+# Regras de Rastreabilidade com Matriz
+
+## Princípio Fundamental
+
+**TODA** especificação, implementação ou referência a elemento legado **DEVE** incluir o ID correspondente da `MATRIZ_RASTREABILIDADE.csv`.
+
+## Estrutura da Matriz
+
+A matriz contém os seguintes campos obrigatórios:
+
+```csv
+Id,Tipo,Objeto_Pai,Tipo_Objeto_Pai,Descricao_Breve,Ref_Legado_Arquivo,Ref_Legado_Linhas,Desc_Abordagem,Ref_Doc_Abordagem,Ref_Doc_Linhas,Status_Documentacao,Status_Implementacao,Status_Teste_Unitario
+```
+
+### Tipos de ID
+
+| Prefixo | Tipo | Exemplo |
+|---------|------|---------|
+| TELA- | Tela/Mapa legado | TELA-0001 |
+| METOD- | Método/Função/Procedure | METOD-0001 |
+| ENT- | Entidade/Tabela/Record | ENT-0001 |
+| OBJ- | Objeto/Campo de tela | OBJ-0001 |
+| FTELA- | Função de apresentação tela | FTELA-0001 |
+| REGRA- | Regra de negócio | REGRA-0001 |
+| QUERY- | Query SQL/DB2 | QUERY-0001 |
+
+## Formato de Referência na Documentação
+
+### 1. Em Seções de Mapeamento
+
+```markdown
+## Mapeamento de Legado
+
+### Origem
+- **ID Matriz**: `ENT-0003`
+- **Programa legado**: CB2QR001
+- **Arquivo**: `_LEGADO/cb2qa.esf`
+- **Linhas**: 21
+- **Descrição**: Tabela registro debito automatico
+```
+
+### 2. Em Especificações de Código
+
+```markdown
+### CreateUserViewModel
+
+**Rastreabilidade**:
+- **ID Matriz**: `METOD-0011` (CB2QP003 - Inquiry consulta V1SISTEMA)
+- **Origem**: `_LEGADO/cb2qa.esf`, linhas 6274-6289
+- **Tipo**: METODO
+
+**Implementação**:
+```csharp
+public class CreateUserViewModel(IUserRepository repository) : ICreateUserViewModel
+{
+    // Migrado de METOD-0011
+    public async Task<User> Execute(CreateUserRequest request)
+    {
+        // ...
+    }
+}
+```
+```
+
+### 3. Em Definições de Entities
+
+```markdown
+### RegistroDebitoAuto (Entity)
+
+**Rastreabilidade**:
+- **ID Matriz**: `ENT-0003`
+- **Tabela Legado**: CB2QR001
+- **Arquivo**: `_LEGADO/cb2qa.esf`, linha 21
+
+```csharp
+public class RegistroDebitoAuto
+{
+    // Migrado de ENT-0003
+    public string Id { get; set; } = string.Empty;
+    // ...
+}
+```
+```
+
+### 4. Em Repositories
+
+```markdown
+### MovimentoContaRepository
+
+**Rastreabilidade**:
+- **ID Matriz**: `QUERY-0003`
+- **Query Origem**: SELECT GE_MOVTO_CONTA
+- **Arquivo**: `_LEGADO/cb2qa.esf`, linhas 6325-6350
+
+```csharp
+// Migrado de QUERY-0003
+public async Task<MovimentoConta> GetByChaveComposta(string apolice, string endosso)
+{
+    const string sql = "SELECT * FROM GE_MOVTO_CONTA WHERE NUM_APOLICE = @Apolice";
+    // ...
+}
+```
+```
+
+### 5. Em Controllers/Endpoints
+
+```markdown
+### UserController.CreateUser
+
+**Rastreabilidade**:
+- **ID Matriz Tela**: `TELA-0001` (CB2QM010 - Tela consulta)
+- **ID Matriz Método**: `METOD-0002` (CB2QP005 - Processo principal)
+- **Mapeamento**: Tela M010 → Endpoint POST /Usuario/criar
+
+```csharp
+/// <summary>
+/// Cria novo usuário
+/// Migrado de: TELA-0001 (CB2QM010) + METOD-0002 (CB2QP005)
+/// </summary>
+[HttpPost("criar")]
+public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
+{
+    // ...
+}
+```
+```
+
+### 6. Em DTOs e Campos
+
+```markdown
+### CreateUserRequest (DTO)
+
+**Rastreabilidade de Campos**:
+
+| Campo Moderno | ID Matriz | Campo Legado | Linha |
+|---------------|-----------|--------------|-------|
+| NumeroTitulo | OBJ-0007 | NUM_TITULO | 228 |
+| NumeroApolice | OBJ-0008 | NUM_APOLICE | 314 |
+| CodigoAgencia | OBJ-0010 | COD_AGENCIA_DEB | 407 |
+
+```csharp
+public class CreateUserRequest
+{
+    // ID Matriz: OBJ-0007
+    [Required]
+    public string NumeroTitulo { get; set; } = string.Empty;
+    
+    // ID Matriz: OBJ-0008
+    public string NumeroApolice { get; set; } = string.Empty;
+}
+```
+```
+
+### 7. Em Regras de Negócio
+
+```markdown
+### Validação de Email Duplicado
+
+**Rastreabilidade**:
+- **ID Matriz**: `REGRA-0007`
+- **Regra Legado**: IF NUM_TITULO<>0 - Verifica titulo informado
+- **Arquivo**: `_LEGADO/cb2qa.esf`, linha 3817
+
+```csharp
+// Migrado de REGRA-0007
+if (await userRepository.ExistsByEmail(request.Email))
+    throw new InvalidOperationException("Email já cadastrado");
+```
+```
+
+## Regras Obrigatórias
+
+### 1. Seção de Rastreabilidade
+
+**TODA** especificação técnica **DEVE** incluir seção dedicada:
+
+```markdown
+## Rastreabilidade
+
+### Elementos da Matriz
+- **ID**: `METOD-0001`
+- **Tipo**: METODO
+- **Descrição**: CB2QP000 - Processo inicial - inicializacao
+- **Arquivo Legado**: `_LEGADO/cb2qa.esf`
+- **Linhas**: 3655-3684
+- **Status Documentação**: COMPLETED
+- **Status Implementação**: IN_PROGRESS
+- **Status Teste**: NOT_STARTED
+
+### Dependências
+- Depende de: `ENT-0001`, `ENT-0002`
+- Usado por: `METOD-0002`, `FTELA-0001`
+```
+
+### 2. Comentários no Código
+
+```csharp
+// ✅ OBRIGATÓRIO: Comentário com ID da matriz
+// ID Matriz: METOD-0011
+// Origem: CB2QP003 - Inquiry consulta V1SISTEMA
+public async Task<Sistema> GetSistema(string id)
+{
+    // Implementação...
+}
+```
+
+### 3. Tabelas de Mapeamento
+
+**TODA** seção de mapeamento **DEVE** incluir coluna de ID:
+
+```markdown
+## Mapeamento de Campos
+
+| ID Matriz | Campo Legado | Campo Moderno | Tipo | Transformação |
+|-----------|--------------|---------------|------|---------------|
+| OBJ-0007 | NUM_TITULO | NumeroTitulo | string | TRIM |
+| OBJ-0008 | NUM_APOLICE | NumeroApolice | string | TRIM |
+| OBJ-0010 | COD_AGENCIA_DEB | CodigoAgencia | string | Zerofill(4) |
+```
+
+### 4. Documentação de Testes
+
+```csharp
+/// <summary>
+/// Testa criação de usuário válido
+/// ID Matriz: METOD-0011
+/// Valida: REGRA-0007, REGRA-0030
+/// </summary>
+[Fact]
+public async Task CreateUser_WithValidData_ReturnsSuccess()
+{
+    // Arrange - baseado em METOD-0011
+    // ...
+}
+```
+
+### 5. Commits Git
+
+**RECOMENDADO**: Incluir IDs nos commits:
+
+```
+feat: implementa CreateUserViewModel (METOD-0011)
+
+- Migra lógica de CB2QP003
+- IDs Matriz: METOD-0011, REGRA-0007, QUERY-0001
+- Status: implementação completa, testes pendentes
+```
+
+## Atualização da Matriz
+
+### Quando Criar Nova Entrada
+
+1. **Identificado novo elemento legado** não mapeado
+2. **Durante análise** de funcionalidade
+3. **Antes de documentar** a abordagem de migração
+
+### Formato de ID
+
+```
+[TIPO]-[SEQUENCIAL ZEROFILL 4]
+
+Exemplos:
+METOD-0001, METOD-0002, ..., METOD-9999
+ENT-0001, ENT-0002, ..., ENT-9999
+```
+
+### Campos Obrigatórios ao Criar
+
+```csv
+METOD-0099,METODO,CB2QP005,METODO,Valida entrada usuario,_LEGADO/cb2qa.esf,4500-4550,Criar ValidateUserViewModel,04_BUSINESS_LOGIC.md,150-200,IN_PROGRESS,NOT_STARTED,NOT_STARTED
+```
+
+| Campo | Valor | Obrigatório |
+|-------|-------|-------------|
+| Id | Único, formato correto | ✅ Sim |
+| Tipo | Um dos tipos válidos | ✅ Sim |
+| Objeto_Pai | Contexto hierárquico | Se aplicável |
+| Tipo_Objeto_Pai | Tipo do pai | Se aplicável |
+| Descricao_Breve | Clara e concisa | ✅ Sim |
+| Ref_Legado_Arquivo | Path do arquivo | ✅ Sim |
+| Ref_Legado_Linhas | Range ou linha | ✅ Sim |
+| Desc_Abordagem | Como migrar | ✅ Sim |
+| Ref_Doc_Abordagem | Documento destino | ✅ Sim |
+| Ref_Doc_Linhas | Seção no doc | Recomendado |
+| Status_Documentacao | NOT_STARTED/IN_PROGRESS/COMPLETED | ✅ Sim |
+| Status_Implementacao | NOT_STARTED/IN_PROGRESS/COMPLETED | ✅ Sim |
+| Status_Teste_Unitario | NOT_STARTED/IN_PROGRESS/COMPLETED/NA | ✅ Sim |
+
+## Validação de Documentação
+
+### Checklist por Documento
+
+Antes de marcar documento como COMPLETED:
+
+- [ ] **OBRIGATÓRIO**: Todos elementos têm ID da matriz referenciado
+- [ ] **OBRIGATÓRIO**: Seção "Rastreabilidade" presente em cada especificação
+- [ ] **OBRIGATÓRIO**: Tabelas de mapeamento incluem coluna "ID Matriz"
+- [ ] **OBRIGATÓRIO**: Código de exemplo inclui comentários com IDs
+- [ ] **OBRIGATÓRIO**: Status na matriz atualizado (Status_Documentacao = COMPLETED)
+- [ ] Todos IDs referenciados existem na matriz
+- [ ] Sem IDs duplicados
+- [ ] Formato de IDs correto
+
+### Script de Validação (Exemplo)
+
+```python
+import csv
+import re
+
+def validar_documento(doc_path, matriz_path):
+    # Ler IDs da matriz
+    matriz_ids = set()
+    with open(matriz_path, 'r') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            matriz_ids.add(row['Id'])
+    
+    # Ler documento e extrair IDs referenciados
+    with open(doc_path, 'r') as f:
+        content = f.read()
+        doc_ids = re.findall(r'\b(METOD|ENT|TELA|OBJ|QUERY|REGRA|FTELA)-\d{4}\b', content)
+    
+    # Validar
+    ids_invalidos = [id for id in doc_ids if id not in matriz_ids]
+    
+    if ids_invalidos:
+        print(f"ERRO: IDs não encontrados na matriz: {ids_invalidos}")
+        return False
+    
+    if not doc_ids:
+        print(f"AVISO: Nenhum ID da matriz referenciado em {doc_path}")
+        return False
+    
+    print(f"OK: {len(set(doc_ids))} IDs válidos referenciados")
+    return True
+```
+
+## Exemplos Práticos
+
+### Exemplo Completo: ViewModel
+
+```markdown
+## CreateUserViewModel
+
+### Rastreabilidade
+- **ID Matriz Principal**: `METOD-0011`
+- **IDs Relacionados**: 
+  - `REGRA-0007` - Validação título informado
+  - `REGRA-0030` - Busca apolice cobranca
+  - `QUERY-0001` - SELECT V1SISTEMA
+- **Origem**: CB2QP003 - Inquiry consulta V1SISTEMA
+- **Arquivo**: `_LEGADO/cb2qa.esf`, linhas 6274-6289
+- **Status**: Documentação COMPLETED, Implementação IN_PROGRESS
+
+### Dependências
+```mermaid
+graph LR
+    METOD-0011[METOD-0011<br/>CreateUserVM]
+    REGRA-0007[REGRA-0007<br/>Validação]
+    QUERY-0001[QUERY-0001<br/>SELECT]
+    ENT-0027[ENT-0027<br/>V1SISTEMA]
+    
+    METOD-0011 --> REGRA-0007
+    METOD-0011 --> QUERY-0001
+    QUERY-0001 --> ENT-0027
+```
+
+### Implementação
+
+**Namespace**: `<Cliente>.Web.<Projeto>.Application.ViewModels`
+
+```csharp
+/// <summary>
+/// ViewModel para criação de usuário
+/// Migrado de: METOD-0011 (CB2QP003)
+/// </summary>
+public class CreateUserViewModel(
+    IUserRepository userRepository,
+    IEventRepository eventRepository
+) : ICreateUserViewModel
+{
+    // ID Matriz: METOD-0011
+    // Origem: CB2QP003 (linhas 6274-6289)
+    public async Task<User> Execute(CreateUserRequest request)
+    {
+        // ID Matriz: REGRA-0007
+        // Validação: IF NUM_TITULO<>0
+        if (await userRepository.ExistsByEmail(request.Email))
+            throw new InvalidOperationException("Email já cadastrado");
+        
+        // ID Matriz: QUERY-0001
+        // Query: SELECT V1SISTEMA WHERE IDSISTEM='CB'
+        var sistema = await userRepository.GetSistema("CB");
+        
+        // Resto da implementação...
+    }
+}
+```
+```
+
+## Ferramentas de Suporte
+
+### 1. Buscar ID por Descrição
+
+```bash
+# Buscar na matriz
+grep -i "CB2QP003" MATRIZ_RASTREABILIDADE.csv
+# Resultado: METOD-0011,METODO,...
+```
+
+### 2. Listar IDs não Documentados
+
+```bash
+# IDs com Status_Documentacao = NOT_STARTED
+awk -F',' '$11=="NOT_STARTED" {print $1,$5}' MATRIZ_RASTREABILIDADE.csv
+```
+
+### 3. Validar Referências em Documento
+
+```bash
+# Extrair IDs do documento
+grep -oE '(METOD|ENT|TELA|OBJ|QUERY|REGRA|FTELA)-[0-9]{4}' docs/backend/04_BUSINESS_LOGIC.md | sort -u
+```
+
+## Penalidades por Não Conformidade
+
+### Em Code Review
+
+- ❌ **BLOQUEIA MERGE**: Documentação sem IDs da matriz
+- ❌ **BLOQUEIA MERGE**: IDs referenciados não existem na matriz
+- ⚠️ **SOLICITA CORREÇÃO**: IDs em comentários ausentes
+- ⚠️ **SOLICITA CORREÇÃO**: Status na matriz desatualizado
+
+### Em Validação de Documentação
+
+- Documento não pode ser marcado como COMPLETED sem rastreabilidade
+- LLM deve recusar gerar código sem IDs da matriz
+- Checklist de validação deve incluir verificação de IDs
+
+## Benefícios
+
+1. **Rastreabilidade completa**: Do legado ao código moderno
+2. **Gestão de progresso**: Status por elemento
+3. **Impacto de mudanças**: Identificar dependências
+4. **Auditoria**: Verificar completude da migração
+5. **Documentação viva**: Código auto-documentado
+6. **Testes direcionados**: Saber o que testar
+
+## Resumo de Regras
+
+✅ **SEMPRE** incluir ID da matriz em:
+- Seções de mapeamento de legado
+- Comentários de código
+- Especificações técnicas
+- Tabelas de mapeamento
+- Documentação de testes
+
+✅ **SEMPRE** atualizar matriz quando:
+- Criar nova documentação
+- Implementar código
+- Completar testes
+- Identificar novo elemento legado
+
+✅ **SEMPRE** validar que:
+- IDs referenciados existem na matriz
+- Status estão atualizados
+- Formato de IDs está correto
+- Sem duplicações

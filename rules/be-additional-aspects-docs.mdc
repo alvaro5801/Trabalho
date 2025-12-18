@@ -1,0 +1,513 @@
+---
+description: Padrões para documentação de aspectos adicionais críticos em migrações backend
+globs: ["docs/backend/11_SECURITY_AUTH.md", "docs/backend/12_OBSERVABILITY.md", "docs/backend/13_DATA_MIGRATION.md", "docs/backend/14_PERFORMANCE.md"]
+alwaysApply: false
+---
+
+# Aspectos Adicionais Críticos
+
+## Documento 11_SECURITY_AUTH.md
+
+### Seções Obrigatórias
+
+#### 1. Estratégia de Autenticação
+```markdown
+## Autenticação
+
+### Abordagem
+- **Tipo**: JWT / OAuth 2.0 / Windows Authentication
+- **Provider**: IdentityServer / Azure AD / Auth0
+- **Origem Legado**: [Sistema de segurança mainframe]
+
+### Implementação JWT
+```csharp
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });
+```
+```
+
+#### 2. Autorização
+```markdown
+## Autorização
+
+### Roles
+Mapeamento de perfis legado → roles modernas:
+
+| Perfil Legado | Role Moderna | Permissões |
+|---------------|--------------|------------|
+| ADMIN         | Administrator | Full access |
+| OPERADOR      | Operator     | Read/Update |
+| CONSULTA      | Reader       | Read only |
+
+### Implementação
+```csharp
+[Authorize(Roles = "Administrator")]
+[HttpPost("admin/criar")]
+public async Task<IActionResult> AdminCreate([FromBody] Request request)
+
+[Authorize(Policy = "RequireOperatorRole")]
+[HttpPut("atualizar")]
+public async Task<IActionResult> Update([FromBody] Request request)
+```
+```
+
+#### 3. Validação de Entrada
+```markdown
+## Validação
+
+### Data Annotations
+- Sempre validar entrada em DTOs
+- Usar ModelState.IsValid
+
+### Anti-CSRF
+```csharp
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+});
+```
+
+### SQL Injection Prevention
+- **SEMPRE** usar parâmetros em queries
+- **NUNCA** concatenar strings em SQL
+```
+
+#### 4. Secrets Management
+```markdown
+## Gestão de Secrets
+
+### Development
+```json
+// appsettings.Development.json
+{
+  "Jwt": {
+    "Key": "development-key-here",
+    "Issuer": "localhost"
+  }
+}
+```
+
+### Production
+- Azure Key Vault
+- AWS Secrets Manager
+- Environment Variables
+```
+
+## Documento 12_OBSERVABILITY.md
+
+### Seções Obrigatórias
+
+#### 1. Logging
+```markdown
+## Logging Estruturado
+
+### Framework
+- **Provider**: Serilog / NLog
+- **Sinks**: Console, File, Application Insights
+
+### Configuração
+```csharp
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .Enrich.FromLogContext()
+        .Enrich.WithProperty("Application", "NomeApp")
+        .WriteTo.Console()
+        .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
+        .WriteTo.ApplicationInsights(TelemetryConfiguration.CreateDefault(), TelemetryConverter.Traces);
+});
+```
+
+### Níveis de Log
+- **Trace**: Debugging detalhado
+- **Debug**: Informações de desenvolvimento
+- **Information**: Fluxo geral da aplicação
+- **Warning**: Situações anormais mas recuperáveis
+- **Error**: Erros que precisam atenção
+- **Critical**: Falhas críticas do sistema
+```
+
+#### 2. Health Checks
+```markdown
+## Health Checks
+
+```csharp
+builder.Services.AddHealthChecks()
+    .AddSqlServer(connectionString, name: "database")
+    .AddUrlGroup(new Uri(externalApiUrl), name: "external-api");
+
+app.MapHealthChecks("/health");
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("ready")
+});
+```
+```
+
+#### 3. Métricas e APM
+```markdown
+## Application Performance Monitoring
+
+### Tools
+- Application Insights (Azure)
+- New Relic
+- Datadog
+- Elastic APM
+
+### Métricas Importantes
+- Tempo de resposta de endpoints
+- Taxa de erro
+- Throughput (requests/segundo)
+- Uso de CPU/Memória
+- Tempo de query no banco
+```
+
+#### 4. Distributed Tracing
+```markdown
+## Rastreamento Distribuído
+
+```csharp
+builder.Services.AddOpenTelemetry()
+    .WithTracing(tracerProviderBuilder =>
+    {
+        tracerProviderBuilder
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddSqlClientInstrumentation();
+    });
+```
+```
+
+## Documento 13_DATA_MIGRATION.md
+
+### Seções Obrigatórias
+
+#### 1. Estratégia de Migração
+```markdown
+## Estratégia
+
+### Abordagem
+- **Tipo**: Big Bang / Phased / Parallel Run
+- **Timing**: Migração única / Sincronização contínua
+- **Rollback**: Plano de contingência
+
+### Fases
+1. Extração de dados do legado
+2. Transformação e validação
+3. Carga no novo sistema
+4. Validação de integridade
+5. Reconciliação
+```
+
+#### 2. Extração de Dados
+```markdown
+## Extração
+
+### Origem
+- **Sistema**: DB2 / VSAM / IMS
+- **Tabelas**: [lista]
+- **Volume**: [estimativa]
+
+### Ferramentas
+- IBM Data Movement Tool
+- Scripts SQL
+- ETL (SSIS / Talend / Pentaho)
+
+### Script Exemplo
+```sql
+-- DB2 Extract
+SELECT 
+    TRIM(ID_CAMPO),
+    TRIM(NOME_CAMPO),
+    DATA_CAMPO,
+    VALOR_CAMPO
+FROM SCHEMA.TABELA_LEGADO
+WHERE STATUS = 'A'
+```
+```
+
+#### 3. Transformação
+```markdown
+## Transformação
+
+### Regras
+| Campo Origem | Campo Destino | Transformação |
+|--------------|---------------|---------------|
+| ID_CAMPO (CHAR(10)) | Id (VARCHAR(50)) | TRIM + pad |
+| DT_NASC (8 digits) | BirthDate (DATE) | Parse YYYYMMDD |
+| VL_PREMIO (DECIMAL) | PremiumValue (DECIMAL) | / 100 |
+
+### Script ETL
+```csharp
+public class DataTransformer
+{
+    public UserEntity Transform(LegacyUserRecord legacy)
+    {
+        return new UserEntity
+        {
+            Id = legacy.IdCampo.Trim(),
+            BirthDate = DateTime.ParseExact(legacy.DtNasc, "yyyyMMdd", CultureInfo.InvariantCulture),
+            PremiumValue = legacy.VlPremio / 100m
+        };
+    }
+}
+```
+```
+
+#### 4. Validação
+```markdown
+## Validação de Integridade
+
+### Checks
+- [ ] Contagem de registros (origem vs destino)
+- [ ] Integridade referencial
+- [ ] Valores dentro de ranges esperados
+- [ ] Dados obrigatórios preenchidos
+- [ ] Checksums de campos críticos
+
+### Script Validação
+```sql
+-- Comparar contagens
+SELECT COUNT(*) FROM LegacyTable;  -- 10,000
+SELECT COUNT(*) FROM NewTable;     -- 10,000
+
+-- Validar integridade
+SELECT n.* 
+FROM NewTable n
+LEFT JOIN RelatedTable r ON n.RelatedId = r.Id
+WHERE r.Id IS NULL;  -- Deve retornar 0
+```
+```
+
+#### 5. Rollback Plan
+```markdown
+## Plano de Rollback
+
+### Pré-requisitos
+- Backup completo antes da migração
+- Scripts de rollback testados
+- Procedimento documentado
+
+### Procedimento
+1. Parar aplicação nova
+2. Restaurar backup do banco
+3. Reativar sistema legado
+4. Comunicar stakeholders
+```
+
+## Documento 14_PERFORMANCE.md
+
+### Seções Obrigatórias
+
+#### 1. Índices de Banco
+```markdown
+## Otimização de Database
+
+### Índices Críticos
+```sql
+-- Queries frequentes
+CREATE INDEX IX_User_Email ON dbo.Users (Email);
+CREATE INDEX IX_Policy_UserId_Status ON dbo.Policies (UserId, Status) INCLUDE (PremiumValue);
+
+-- Análise de plano de execução
+SET STATISTICS IO ON;
+SET STATISTICS TIME ON;
+```
+
+### Maintenance
+- Rebuild indexes semanalmente
+- Update statistics diariamente
+- Monitorar fragmentação
+```
+
+#### 2. Caching Strategy
+```markdown
+## Cache
+
+### Memory Cache (dados estáticos)
+```csharp
+builder.Services.AddMemoryCache();
+
+public class CachedLookupService(IMemoryCache cache, ILookupRepository repository)
+{
+    public async Task<List<LookupItem>> GetLookupData(string key)
+    {
+        return await cache.GetOrCreateAsync($"lookup_{key}", async entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+            return await repository.GetLookupData(key);
+        });
+    }
+}
+```
+
+### Distributed Cache (Redis)
+```csharp
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "AppName_";
+});
+```
+```
+
+#### 3. Async Patterns
+```markdown
+## Padrões Assíncronos
+
+### SEMPRE usar async/await
+```csharp
+// ✅ CORRETO
+public async Task<User> GetUser(string id)
+{
+    return await repository.GetById(id);
+}
+
+// ❌ ERRADO
+public User GetUser(string id)
+{
+    return repository.GetById(id).Result;  // BLOQUEIA THREAD
+}
+```
+
+### Paralelização
+```csharp
+// Executar múltiplas operações em paralelo
+var tasks = new[]
+{
+    GetUsersAsync(),
+    GetPoliciesAsync(),
+    GetClaimsAsync()
+};
+await Task.WhenAll(tasks);
+```
+```
+
+#### 4. Batch Processing
+```markdown
+## Processamento em Lote
+
+### Bulk Insert
+```csharp
+// Dapper
+await connection.ExecuteAsync(
+    "INSERT INTO Users (Id, Name) VALUES (@Id, @Name)",
+    users  // IEnumerable<User>
+);
+
+// EF Core
+context.BulkInsert(users);
+```
+
+### Paginação
+```csharp
+public async Task<PagedResult<User>> GetUsers(int page, int pageSize)
+{
+    const string sql = @"
+        SELECT * FROM Users
+        ORDER BY CreatedAt DESC
+        OFFSET @Offset ROWS
+        FETCH NEXT @PageSize ROWS ONLY";
+    
+    var items = await connection.QueryAsync<User>(sql, 
+        new { Offset = (page - 1) * pageSize, PageSize = pageSize });
+    
+    return new PagedResult<User> { Items = items, Page = page };
+}
+```
+```
+
+#### 5. Query Optimization
+```markdown
+## Otimização de Queries
+
+### SELECT apenas campos necessários
+```csharp
+// ✅ CORRETO
+const string sql = "SELECT Id, Name, Email FROM Users WHERE Status = @Status";
+
+// ❌ EVITAR
+const string sql = "SELECT * FROM Users WHERE Status = @Status";
+```
+
+### Evitar N+1 queries
+```csharp
+// ✅ CORRETO - 1 query
+const string sql = @"
+    SELECT u.*, p.*
+    FROM Users u
+    LEFT JOIN Policies p ON u.Id = p.UserId
+    WHERE u.Status = @Status";
+
+// ❌ EVITAR - N+1 queries
+var users = await GetUsers();
+foreach (var user in users)
+{
+    user.Policies = await GetPoliciesByUserId(user.Id);  // N queries
+}
+```
+```
+
+#### 6. SLAs e Benchmarks
+```markdown
+## Service Level Agreements
+
+### Targets
+- **API Response Time**: < 200ms (p95)
+- **Database Query**: < 100ms (p95)
+- **Availability**: 99.9%
+- **Error Rate**: < 0.1%
+
+### Benchmarking
+Comparar com sistema legado:
+| Operação | Legado | Novo | Objetivo |
+|----------|--------|------|----------|
+| Criar Usuário | 500ms | 150ms | < 200ms ✅ |
+| Buscar Apólice | 300ms | 80ms | < 100ms ✅ |
+| Relatório | 5s | 1.2s | < 2s ✅ |
+```
+
+## Checklist Geral
+
+### Security
+- [ ] Autenticação implementada
+- [ ] Autorização por roles
+- [ ] Validação de entrada
+- [ ] Secrets management
+- [ ] HTTPS obrigatório
+- [ ] SQL Injection prevention
+
+### Observability
+- [ ] Logging estruturado
+- [ ] Health checks
+- [ ] APM configurado
+- [ ] Alertas definidos
+
+### Data Migration
+- [ ] Estratégia definida
+- [ ] Scripts de extração
+- [ ] Transformações documentadas
+- [ ] Validações implementadas
+- [ ] Rollback plan
+
+### Performance
+- [ ] Índices otimizados
+- [ ] Cache implementado
+- [ ] Async/await utilizado
+- [ ] Batch processing
+- [ ] SLAs definidos
+- [ ] Benchmarks realizados

@@ -1,0 +1,453 @@
+---
+description: Padrões para documentação de DI, Configuration e Use Cases em migrações
+globs: ["docs/backend/07_DEPENDENCY_INJECTION.md", "docs/backend/08_CONFIGURATION.md", "docs/backend/09_USE_CASES_FLOWS.md"]
+alwaysApply: false
+---
+
+# DI, Configuration e Use Cases
+
+## Documento 07_DEPENDENCY_INJECTION.md
+
+### Seções Obrigatórias
+
+#### 1. IOC Layer
+```markdown
+## IOC/DependencyInjection.cs
+
+**Namespace**: `<Cliente>.Web.<Projeto>.Ioc`
+**Responsabilidade**: Registrar todas as dependências (Application + Infrastructure)
+
+```csharp
+public static class DependencyInjection
+{
+    public static IServiceCollection AddApplicationAndInfraStructure(
+        this IServiceCollection services, 
+        IConfiguration configuration)
+    {
+        // ORDEM IMPORTANTE: Infra antes de Application
+        services.AddInfrastructure(configuration);
+        services.AddApplication(configuration);
+        
+        return services;
+    }
+}
+```
+
+**Uso em Program.cs**:
+```csharp
+builder.Services.AddApplicationAndInfraStructure(builder.Configuration);
+```
+```
+
+#### 2. Application Layer DI
+```markdown
+## Application/Configuration/DependencyInjection.cs
+
+**Namespace**: `<Cliente>.Web.<Projeto>.Application.Configuration`
+**Responsabilidade**: Registrar Services e ViewModels
+
+```csharp
+public static class DependencyInjection
+{
+    public static IServiceCollection AddApplication(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        // Services
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IPolicyService, PolicyService>();
+        
+        // ViewModels
+        services.AddScoped<ICreateUserViewModel, CreateUserViewModel>();
+        services.AddScoped<IUpdateUserViewModel, UpdateUserViewModel>();
+        services.AddScoped<ICalculatePremiumViewModel, CalculatePremiumViewModel>();
+        
+        return services;
+    }
+}
+```
+```
+
+#### 3. Infrastructure Layer DI
+```markdown
+## Infra/Configuration/DependencyInjection.cs
+
+**Namespace**: `<Cliente>.Web.<Projeto>.Infra.Configuration`
+**Responsabilidade**: Registrar Repositories, Clients, DbConnection, Configurations
+
+```csharp
+public static class DependencyInjection
+{
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        // Repositories
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IPolicyRepository, PolicyRepository>();
+        services.AddScoped<IEventRepository, EventRepository>();
+        
+        // Proxy Clients
+        services.AddScoped<IExternalServiceClient, ExternalServiceClient>();
+        
+        // Configurações (Options Pattern)
+        services.Configure<ExternalServiceConfiguration>(
+            options => configuration.GetSection(ExternalServiceConfiguration.Section).Bind(options));
+        services.AddSingleton(resolver => 
+            resolver.GetRequiredService<IOptions<ExternalServiceConfiguration>>().Value);
+        
+        // Dapper - Database Connection
+        string? connectionString = configuration.GetConnectionString("DefaultConnection");
+        services.AddScoped<IDbConnection>(sp => new SqlConnection(connectionString));
+        
+        return services;
+    }
+}
+```
+```
+
+#### 4. Lifetimes
+```markdown
+## Service Lifetimes
+
+### Scoped (por request HTTP)
+- Services (UserService, PolicyService)
+- ViewModels (CreateUserViewModel, etc)
+- Repositories (UserRepository, etc)
+- Proxy Clients (ExternalServiceClient)
+- **IDbConnection** (SEMPRE Scoped)
+
+### Singleton (instância única)
+- Configurations (ExternalServiceConfiguration)
+- IMemoryCache
+- IHttpClientFactory
+
+### Transient (nova instância sempre)
+- Evitar para Services/Repositories
+- Usar apenas para objetos stateless leves
+```
+
+#### 5. Mapeamento de Dependências
+```markdown
+## Tabela de Dependências
+
+| Componente | Dependências | Lifetime |
+|------------|--------------|----------|
+| UserService | ICreateUserViewModel, IUpdateUserViewModel | Scoped |
+| CreateUserViewModel | IUserRepository, IEventRepository | Scoped |
+| UserRepository | IDbConnection, IEventRepository | Scoped |
+| ExternalServiceClient | IOptions<Configuration> | Scoped |
+| Configuration | - | Singleton |
+```
+
+## Documento 08_CONFIGURATION.md
+
+### Seções Obrigatórias
+
+#### 1. Configuration Classes
+```markdown
+## Classes de Configuração
+
+### Pattern
+```csharp
+public class ExternalServiceConfiguration
+{
+    public const string Section = "ExternalService";
+    
+    public string UrlBase { get; set; } = string.Empty;
+    public string EndpointOperation { get; set; } = string.Empty;
+    public string ApiKey { get; set; } = string.Empty;
+    public int TimeoutSeconds { get; set; } = 30;
+}
+```
+
+**Namespace**: `<Cliente>.Web.<Projeto>.Infra.Configuration.Infra`
+
+**Registrar em DI**:
+```csharp
+services.Configure<ExternalServiceConfiguration>(
+    options => configuration.GetSection(ExternalServiceConfiguration.Section).Bind(options));
+services.AddSingleton(resolver => 
+    resolver.GetRequiredService<IOptions<ExternalServiceConfiguration>>().Value);
+```
+
+**Usar via Injeção**:
+```csharp
+public class ExternalClient(IOptions<ExternalServiceConfiguration> options)
+{
+    private readonly ExternalServiceConfiguration _config = options.Value;
+}
+```
+```
+
+#### 2. appsettings.json
+```markdown
+## appsettings.json (Development)
+
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost;Database=AppDb;User Id=sa;Password=Dev@123;TrustServerCertificate=True;"
+  },
+  "ExternalService": {
+    "UrlBase": "https://dev-api.example.com",
+    "EndpointOperation": "/api/v1/operation",
+    "ApiKey": "dev-api-key-here",
+    "TimeoutSeconds": 30
+  },
+  "Jwt": {
+    "Key": "development-secret-key-min-32-chars",
+    "Issuer": "localhost",
+    "Audience": "localhost",
+    "ExpirationMinutes": 60
+  },
+  "Cache": {
+    "Enabled": true,
+    "ExpirationMinutes": 60
+  }
+}
+```
+```
+
+#### 3. appsettings.Production.json
+```markdown
+## appsettings.Production.json
+
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning",
+      "Microsoft.AspNetCore": "Error"
+    }
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=prod-server;Database=AppDb;Integrated Security=true;Encrypt=true;"
+  },
+  "ExternalService": {
+    "UrlBase": "https://api.example.com",
+    "EndpointOperation": "/api/v1/operation",
+    "ApiKey": "",  // Usar Azure Key Vault / Environment Variable
+    "TimeoutSeconds": 10
+  },
+  "Jwt": {
+    "Key": "",  // Usar Azure Key Vault / Environment Variable
+    "Issuer": "https://api.cliente.com",
+    "Audience": "https://app.cliente.com",
+    "ExpirationMinutes": 15
+  }
+}
+```
+
+**Secrets em Produção**: Usar Azure Key Vault, AWS Secrets Manager ou Environment Variables
+```
+
+#### 4. Feature Flags
+```markdown
+## Feature Flags (opcional)
+
+```json
+{
+  "FeatureFlags": {
+    "EnableNewCalculation": false,
+    "EnableExternalIntegration": true,
+    "EnableCaching": true
+  }
+}
+```
+
+```csharp
+public class FeatureFlags
+{
+    public const string Section = "FeatureFlags";
+    public bool EnableNewCalculation { get; set; }
+    public bool EnableExternalIntegration { get; set; }
+    public bool EnableCaching { get; set; }
+}
+```
+```
+
+## Documento 09_USE_CASES_FLOWS.md
+
+### Seções Obrigatórias
+
+#### 1. Mapeamento de Transações
+```markdown
+## Mapeamento de Transações Legado → Moderno
+
+| Transação CICS | Tela/Programa | Operação | Endpoint Moderno | Método |
+|----------------|---------------|----------|------------------|--------|
+| CB2Q | CB2QM010 | Criar Usuário | POST /Usuario/criar | CreateUser |
+| CB2Q | CB2QM020 | Alterar Usuário | PUT /Usuario/atualizar | UpdateUser |
+| CB2Q | CB2QM030 | Consultar | GET /Usuario/buscarPorId | GetUserById |
+| CB2Q | CB2QM040 | Listar | GET /Usuario/listar | GetUsers |
+```
+
+#### 2. Fluxos de Execução
+```markdown
+## Fluxo: Criar Usuário
+
+### Origem Legado
+- **Programa**: CB2QA
+- **Função**: CB2QP005
+- **Linhas**: 100-500
+
+### Fluxo Moderno
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Controller
+    participant Service
+    participant ViewModel
+    participant Repository
+    participant Database
+    
+    Client->>Controller: POST /Usuario/criar
+    Controller->>Controller: Validar Request (Data Annotations)
+    Controller->>Service: CreateUser(request)
+    Service->>ViewModel: Execute(request)
+    ViewModel->>Repository: ExistsByEmail(email)
+    Repository->>Database: SELECT COUNT(*) WHERE Email = @Email
+    Database-->>Repository: 0
+    Repository-->>ViewModel: false
+    ViewModel->>ViewModel: Validar Regras de Negócio
+    ViewModel->>Repository: Save(user)
+    Repository->>Database: INSERT INTO Users
+    Database-->>Repository: User
+    Repository-->>ViewModel: User
+    ViewModel->>Repository: SaveEvent(event)
+    ViewModel-->>Service: User
+    Service-->>Controller: AppResponse<User> (IsSuccess=true)
+    Controller-->>Client: 200 OK + AppResponse
+```
+
+### Passos Detalhados
+
+1. **Controller** (UserController.CreateUser)
+   - Valida ModelState
+   - Chama Service
+
+2. **Service** (UserService.CreateUser)
+   - Try-catch wrapper
+   - Chama ViewModel
+   - Retorna AppResponse<User>
+
+3. **ViewModel** (CreateUserViewModel.Execute)
+   - Valida se email já existe
+   - Aplica regras de negócio (idade >= 18)
+   - Cria entidade User
+   - Salva no repositório
+   - Registra evento de auditoria
+   - Retorna User
+
+4. **Repository** (UserRepository.Save)
+   - Executa INSERT via Dapper
+   - Retorna User com Id gerado
+```
+
+#### 3. Casos de Uso
+```markdown
+## Caso de Uso: Criar Usuário
+
+### Pré-condições
+- Email não deve existir no sistema
+- Usuário deve ser maior de 18 anos
+- Campos obrigatórios preenchidos
+
+### Fluxo Principal
+1. Usuário acessa tela de cadastro (frontend)
+2. Usuário preenche formulário (Nome, Email, Idade)
+3. Sistema valida campos obrigatórios
+4. Sistema verifica se email já existe
+5. Sistema verifica se idade >= 18
+6. Sistema salva usuário no banco
+7. Sistema registra evento de auditoria
+8. Sistema retorna sucesso
+
+### Fluxos Alternativos
+
+**FA1: Email já cadastrado**
+- 4a. Sistema detecta email duplicado
+- 4b. Sistema retorna erro "Email já cadastrado"
+- 4c. Fluxo encerra
+
+**FA2: Idade menor que 18**
+- 5a. Sistema detecta idade < 18
+- 5b. Sistema retorna erro "Usuário deve ser maior de idade"
+- 5c. Fluxo encerra
+
+### Pós-condições
+- Usuário criado no banco com Id único
+- Evento de auditoria registrado
+- Response com IsSuccess=true retornado
+```
+
+#### 4. Matriz de Funcionalidades
+```markdown
+## Matriz de Funcionalidades
+
+| Funcionalidade | Programa Legado | Endpoint Moderno | Status Doc | Status Impl | Status Teste |
+|----------------|-----------------|------------------|------------|-------------|--------------|
+| Criar Usuário | CB2QP005 | POST /Usuario/criar | ✅ | ✅ | ✅ |
+| Alterar Usuário | CB2QP010 | PUT /Usuario/atualizar | ✅ | 🟡 | ⏳ |
+| Consultar | CB2QP020 | GET /Usuario/buscarPorId | ✅ | ⏳ | ⏳ |
+| Listar | CB2QP030 | GET /Usuario/listar | 🟡 | ⏳ | ⏳ |
+| Excluir | CB2QP040 | DELETE /Usuario/remover | ⏳ | ⏳ | ⏳ |
+
+**Legenda**: ✅ Completo | 🟡 Em Progresso | ⏳ Não Iniciado
+```
+
+#### 5. Integração com Sistemas Externos
+```markdown
+## Integrações
+
+### Sistema Externo: Serviço de Validação
+
+**Origem**: CALL 'VALIDA' em COBOL
+**Destino**: POST https://api-validacao.com/validate
+
+**Fluxo**:
+1. ViewModel chama ExternalValidationClient
+2. Client monta request DTO
+3. Client envia POST para API externa
+4. API externa retorna validação
+5. Client retorna resultado para ViewModel
+
+**Tratamento de Erro**:
+- Timeout: 30s
+- Retry: 3 tentativas com backoff exponencial
+- Fallback: Validação local básica
+```
+
+## Checklist
+
+### DI
+- [ ] IOC configurado com Application + Infrastructure
+- [ ] Application DI com Services e ViewModels
+- [ ] Infrastructure DI com Repositories, Clients, DbConnection
+- [ ] Lifetimes corretos (Scoped/Singleton)
+- [ ] Todas dependências registradas
+
+### Configuration
+- [ ] Classes de Configuration criadas
+- [ ] Options Pattern implementado
+- [ ] appsettings.json (Development)
+- [ ] appsettings.Production.json
+- [ ] Secrets management definido
+- [ ] Feature flags (se aplicável)
+
+### Use Cases
+- [ ] Mapeamento de transações legado → moderno
+- [ ] Diagramas de sequência para fluxos críticos
+- [ ] Casos de uso documentados (pré/pós-condições)
+- [ ] Matriz de funcionalidades
+- [ ] Integrações externas documentadas
+- [ ] Fluxos alternativos identificados

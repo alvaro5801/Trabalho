@@ -1,0 +1,1714 @@
+---
+globs: ["docs/asis"]
+alwaysApply: false
+---
+## 1. Telas, Campos e Comportamentos
+
+### 1.1 Estrutura do Documento
+
+**IMPORTANTE**: Antes de iniciar, consultar `MATRIZ_RASTREABILIDADE.csv` para identificar os IDs já cadastrados.
+
+```markdown
+# 01 - Telas e Interface AS-IS
+
+## ⚠️ Referência à Matriz
+
+**Arquivo da Matriz**: `MATRIZ_RASTREABILIDADE.csv`
+
+Este documento referencia os seguintes tipos de ID:
+- **TELA-NNNN**: Mapas/Telas 3270
+- **OBJ-NNNN**: Campos de tela
+- **FTELA-NNNN**: Funções de apresentação de tela
+- **METOD-NNNN**: Funções que processam telas
+- **REGRA-NNNN**: Regras de validação e comportamento
+- **ENT-NNNN**: Estruturas de dados usadas
+
+## Inventário de Telas
+
+### Comando de Extração
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --map
+```
+
+### Lista de Mapas Identificados
+
+**Fonte da Matriz**: Consultar IDs em `MATRIZ_RASTREABILIDADE.csv` onde `Tipo='TELA'`
+
+| ID Matriz | Nome Mapa | Descrição | Função que Abre | ID Função | Arquivo Legado | Linha |
+|-----------|-----------|-----------|-----------------|-----------|----------------|-------|
+| TELA-0001 | CB2QM010 | Tela consulta movto debito automatico | CB2QP002 | METOD-0003 | _LEGADO/cb2qa.esf | 90 |
+| TELA-0002 | CB2QM020 | Tela listagem resultados consulta | CB2QP005 | METOD-0004 | _LEGADO/cb2qa.esf | 590 |
+| TELA-0003 | CB2QM030 | Tela detalhamento parcelas | CB2QP030 | METOD-0006 | _LEGADO/cb2qa.esf | 1452 |
+
+## Detalhamento por Tela
+
+### [TELA-0001] - CB2QM010 - Tela Consulta Movimento Débito Automático
+
+**Rastreabilidade** (da `MATRIZ_RASTREABILIDADE.csv`):
+- **ID Matriz**: `TELA-0001`
+- **Descrição**: CB2QM010 - Tela consulta movto debito automatico
+- **Arquivo Legado**: `_LEGADO/cb2qa.esf`
+- **Linha**: 90
+- **Função de Abertura**: CB2QP002 (ID: `METOD-0003`)
+
+**Comando de Visualização**:
+```bash
+.\vamap.exe _LEGADO/cb2qa.esf --map "CB2QM010"
+```
+
+**Layout Visual**:
+```
+[COLAR AQUI O OUTPUT COMPLETO DO COMANDO vamap --map]
+```
+
+**Mapeamento de Campos**:
+
+**Fonte**: Consultar IDs em `MATRIZ_RASTREABILIDADE.csv` onde `Objeto_Pai='CB2QM010'` e `Tipo_Objeto_Pai='TELA'`
+
+| ID Matriz | Campo Mapa | Label | Tipo | Tamanho | Editável | Foco Inicial | Linha Legado | Validações |
+|-----------|------------|-------|------|---------|----------|--------------|--------------|------------|
+| OBJ-0007 | NUM_TITULO | Numero titulo | String | - | Sim | Sim | 228 | Obrigatório (REGRA-0007) |
+| OBJ-0008 | NUM_APOLICE | Numero apolice | String | - | Sim | Não | 314 | - |
+| OBJ-0009 | NRENDOS | Numero endosso | String | - | Sim | Não | 343 | - |
+| OBJ-0010 | COD_AGENCIA_DEB | Codigo agencia debito | String | - | Sim | Não | 407 | - |
+| OBJ-0011 | OPER_CONTA_DEB | Operacao conta debito | String | - | Sim | Não | 429 | - |
+| OBJ-0012 | NUM_CONTA_DEB | Numero conta debito | String | - | Sim | Não | 451 | - |
+| OBJ-0013 | DIG_CONTA_DEB | Digito conta debito | String | - | Sim | Não | 473 | - |
+| OBJ-0014 | WK_CARTAO1 | Numero cartao credito | String | - | Sim | Não | 524 | - |
+| OBJ-0015 | DIG_NUM_CARTAO | Digito cartao | String | - | Sim | Não | 545 | - |
+| OBJ-0016 | EZEMSG | Mensagem sistema | String | - | Não | Não | 566 | - |
+
+**Teclas de Função Habilitadas**:
+
+**Fonte**: Consultar IDs em `MATRIZ_RASTREABILIDADE.csv` onde `Tipo='REGRA'` e função referencia teclas
+
+| Tecla | ID Matriz Regra | Ação | Função Chamada | ID Função |
+|-------|-----------------|------|----------------|-----------|
+| F3 | REGRA-0001 | Sair | ZZ01SGPS3 | METOD-0069 |
+| F5 | REGRA-0005 | Limpar | (inline) | METOD-0003 |
+| F12 | REGRA-0003 | Cancelar | ZZ01SGPS12 | METOD-0070 |
+
+**Comportamentos da Tela**:
+
+- **Inicialização** (ID: `REGRA-NNNN`):
+  - Descrição do que acontece ao abrir a tela
+  - Campos pré-preenchidos
+  - Validações iniciais
+
+- **Validações de Entrada** (ID: `REGRA-NNNN`):
+  - Regras de validação por campo
+  - Mensagens de erro
+  - Condições de habilitação
+
+- **Navegação** (ID: `FTELA-NNNN`):
+  - Fluxo entre telas
+  - Condições de transição
+
+**Fluxo de Navegação**:
+
+```mermaid
+graph TD
+    A[TELA-0001: CB2QM010<br/>Consulta] -->|F5 Consultar| B[TELA-0002: CB2QM020<br/>Resultado]
+    B -->|F3 Voltar| A
+    B -->|F12 Cancelar| C[Menu Principal]
+    A -->|F3 Sair| C
+```
+
+**Estruturas de Dados Relacionadas**:
+
+- `ENT-NNNN`: Nome da estrutura (input/output)
+- `ENT-NNNN`: Nome do workstorage
+
+**Regras de Negócio Aplicadas**:
+
+- `REGRA-NNNN`: Descrição da regra
+- `REGRA-NNNN`: Descrição da regra
+
+**Mensagens de Usuário**:
+
+| Código | Tipo | Mensagem | Quando Exibida |
+|--------|------|----------|----------------|
+| E001 | Erro | Certificado inválido | Campo vazio ou inexistente |
+| W001 | Aviso | Registro não encontrado | Consulta sem resultado |
+| S001 | Sucesso | Operação realizada | Após sucesso |
+```
+
+### 1.2 Comandos Obrigatórios
+
+Para **CADA** tela identificada, executar:
+
+```bash
+# 1. Listar todos os mapas
+.\vamap.exe _LEGADO/<programa>.esf --map
+
+# 2. Para cada mapa, obter visualização completa
+.\vamap.exe _LEGADO/<programa>.esf --map "<NOME_MAPA>"
+
+# 3. Identificar função que abre o mapa
+.\vamap.exe _LEGADO/<programa>.esf --code "|" | grep -i "<NOME_MAPA>"
+
+# 4. Ver código da função de abertura
+.\vamap.exe _LEGADO/<programa>.esf --code "<FUNCAO_ABERTURA>"
+
+# 5. Identificar interações com tela (CONVERSE)
+.\vamap.exe _LEGADO/<programa>.esf --code ":converse"
+```
+
+### 1.3 Checklist de Documentação de Telas
+
+- [ ] **OBRIGATÓRIO**: Listagem completa de mapas extraída
+- [ ] **OBRIGATÓRIO**: Cada tela tem ID na matriz (TELA-NNNN)
+- [ ] **OBRIGATÓRIO**: Layout visual incluído (output vamap)
+- [ ] **OBRIGATÓRIO**: Todos campos têm ID na matriz (OBJ-NNNN)
+- [ ] **OBRIGATÓRIO**: Teclas de função mapeadas (FTELA-NNNN)
+- [ ] **OBRIGATÓRIO**: Funções de abertura identificadas (METOD-NNNN)
+- [ ] Diagrama Mermaid de navegação criado
+- [ ] Comportamentos documentados
+- [ ] Validações identificadas (REGRA-NNNN)
+- [ ] Mensagens de usuário catalogadas
+- [ ] Estruturas de dados vinculadas (ENT-NNNN)
+
+---
+
+## 2. Modelo de Dados e Integração com Database
+
+### 2.1 Estrutura do Documento
+
+```markdown
+# 02 - Modelo de Dados AS-IS
+
+## Inventário de Estruturas de Dados
+
+### Comando de Extração
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --code "\"
+```
+
+### Estruturas Identificadas
+
+| ID Matriz | Nome Estrutura | Tipo | Organização | Uso |
+|-----------|----------------|------|-------------|-----|
+| ENT-0001 | V1SISTEMA | FUNCTION | DB2 Table | Tabela de sistemas |
+| ENT-0002 | CB2QW001 | RECORD | WORKSTOR | Área de trabalho |
+| ENT-0003 | GE_MOVTO_CONTA | FUNCTION | DB2 Table | Tabela de movimentos |
+
+## Tabelas DB2 (FUNCTION)
+
+### [ENT-NNNN] - Nome da Tabela
+
+**Rastreabilidade**:
+- **ID Matriz**: `ENT-NNNN`
+- **Nome Tabela**: `<NOME_TABELA>`
+- **Tipo**: FUNCTION (DB2)
+- **Arquivo**: `_LEGADO/<programa>.esf`
+
+**Comando de Detalhamento**:
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --code "<NOME_TABELA>\"
+```
+
+**Estrutura da Tabela**:
+
+| ID Matriz | Campo | Tipo | Tamanho | Decimais | Nulo | Descrição |
+|-----------|-------|------|---------|----------|------|-----------|
+| OBJ-NNNN | IDSISTEM | CHAR | 2 | 0 | Não | Identificador do sistema |
+| OBJ-NNNN | NOMSISTEM | CHAR | 30 | 0 | Não | Nome do sistema |
+| OBJ-NNNN | DATSISTEM | DATE | 10 | 0 | Sim | Data de cadastro |
+
+**Output vamap**:
+```
+[COLAR AQUI O OUTPUT COMPLETO DO COMANDO vamap <TABELA>\]
+```
+
+**Operações SQL Identificadas**:
+
+| ID Matriz | Tipo Operação | Função | Descrição |
+|-----------|---------------|--------|-----------|
+| QUERY-0001 | INQUIRY | CB2QP003 | SELECT único por IDSISTEM |
+| QUERY-0002 | SETINQ | CB2QP005 | SELECT múltiplo com filtros |
+| QUERY-0003 | INSERT | CB2QP010 | Inserir novo registro |
+| QUERY-0004 | UPDATE | CB2QP012 | Atualizar registro existente |
+
+**Relacionamentos**:
+
+```mermaid
+erDiagram
+    V1SISTEMA ||--o{ GE_MOVTO_CONTA : "possui"
+    V1SISTEMA {
+        string IDSISTEM PK
+        string NOMSISTEM
+        date DATSISTEM
+    }
+    GE_MOVTO_CONTA {
+        string NUM_APOLICE PK
+        string NUM_ENDOSSO PK
+        string IDSISTEM FK
+        decimal VALOR
+    }
+```
+
+**Índices e Chaves**:
+
+| Tipo | Campos | Descrição |
+|------|--------|-----------|
+| PK | IDSISTEM | Chave primária |
+| FK | IDSISTEM_REF | Chave estrangeira para tabela X |
+| IDX | NOMSISTEM | Índice para consulta por nome |
+
+**Uso nas Telas**:
+
+- `TELA-0001`: CB2QM010 (leitura)
+- `TELA-0002`: CB2QM020 (escrita)
+
+**Uso nas Funções**:
+
+- `METOD-0011`: CB2QP003 (INQUIRY)
+- `METOD-0015`: CB2QP005 (SETINQ/SCAN)
+
+## Estruturas Internas (RECORD)
+
+### [ENT-NNNN] - Nome do Record
+
+**Rastreabilidade**:
+- **ID Matriz**: `ENT-NNNN`
+- **Nome Record**: `<NOME_RECORD>`
+- **Tipo**: RECORD
+- **Organização**: WORKSTOR
+- **Uso**: SHARED/NONSHARED
+
+**Estrutura**:
+
+| ID Matriz | Campo | Tipo | Tamanho | Occurs | Descrição |
+|-----------|-------|------|---------|--------|-----------|
+| OBJ-NNNN | CAMPO1 | CHAR | 10 | - | Descrição |
+| OBJ-NNNN | CAMPO2 | ARRAY | 8 | 200 | Array de 200 elementos |
+
+**Output vamap**:
+```
+[COLAR AQUI O OUTPUT COMPLETO DO COMANDO vamap <RECORD>\]
+```
+
+**Funções que Utilizam**:
+
+- `METOD-0001`: CB2QP000 (leitura/escrita)
+- `METOD-0005`: CB2QP002 (leitura)
+
+## Mapeamento de Operações SQL
+
+### Operações INQUIRY (SELECT Único)
+
+**Comando de Identificação**:
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --code ":inquiry"
+```
+
+| ID Matriz | Função | Tabela | Descrição | Onde Usado |
+|-----------|--------|--------|-----------|------------|
+| QUERY-0001 | CB2QP003 | V1SISTEMA | SELECT por IDSISTEM | METOD-0011 |
+
+### Operações SETINQ/SCAN (SELECT Múltiplo)
+
+**Comando de Identificação**:
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --code ":setinq"
+.\vamap.exe _LEGADO/<programa>.esf --code ":scan"
+```
+
+| ID Matriz | Função SETINQ | Função SCAN | Tabela | Descrição |
+|-----------|---------------|-------------|--------|-----------|
+| QUERY-0002 | CB2QP005 | CB2QP006 | V1SISTEMA | Lista todos sistemas ativos |
+
+### Operações INSERT
+
+**Comando de Identificação**:
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --code ":insert"
+```
+
+### Operações UPDATE
+
+**Comando de Identificação**:
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --code ":update"
+```
+
+### Operações DELETE
+
+**Comando de Identificação**:
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --code ":delete"
+```
+
+## Diagrama Entidade-Relacionamento Completo
+
+```mermaid
+erDiagram
+    TABELA1 ||--o{ TABELA2 : "relacionamento"
+    TABELA2 ||--o{ TABELA3 : "relacionamento"
+    TABELA1 {
+        string ID PK
+        string CAMPO1
+    }
+    TABELA2 {
+        string ID PK
+        string TABELA1_ID FK
+    }
+```
+
+## Análise de Integridade
+
+**Constraints Identificadas**:
+- Chaves primárias
+- Chaves estrangeiras
+- Validações de campo
+- Regras de negócio em procedures
+
+**Transações Críticas**:
+- Operações que envolvem múltiplas tabelas
+- Pontos de commit/rollback
+```
+
+### 2.2 Comandos Obrigatórios
+
+Para **CADA** estrutura de dados:
+
+```bash
+# 1. Listar todas as estruturas
+.\vamap.exe _LEGADO/<programa>.esf --code "\"
+
+# 2. Listar apenas tabelas DB2 (FUNCTION)
+.\vamap.exe _LEGADO/<programa>.esf --code "\FUNCTION"
+
+# 3. Listar apenas RECORDs
+.\vamap.exe _LEGADO/<programa>.esf --code "\RECORD"
+
+# 4. Listar workstorage
+.\vamap.exe _LEGADO/<programa>.esf --code "\WORKSTOR"
+
+# 5. Detalhar estrutura específica
+.\vamap.exe _LEGADO/<programa>.esf --code "<NOME_ESTRUTURA>\"
+
+# 6. Identificar todas as operações SQL
+.\vamap.exe _LEGADO/<programa>.esf --code ":inquiry"
+.\vamap.exe _LEGADO/<programa>.esf --code ":setinq"
+.\vamap.exe _LEGADO/<programa>.esf --code ":scan"
+.\vamap.exe _LEGADO/<programa>.esf --code ":insert"
+.\vamap.exe _LEGADO/<programa>.esf --code ":update"
+.\vamap.exe _LEGADO/<programa>.esf --code ":delete"
+.\vamap.exe _LEGADO/<programa>.esf --code ":execute"
+```
+
+### 2.3 Checklist de Documentação de Dados
+
+- [ ] **OBRIGATÓRIO**: Inventário completo de estruturas extraído
+- [ ] **OBRIGATÓRIO**: Cada estrutura tem ID na matriz (ENT-NNNN)
+- [ ] **OBRIGATÓRIO**: Cada campo tem ID na matriz (OBJ-NNNN)
+- [ ] **OBRIGATÓRIO**: Cada operação SQL tem ID (QUERY-NNNN)
+- [ ] **OBRIGATÓRIO**: Output vamap incluído para cada estrutura
+- [ ] Diagrama ER em Mermaid criado
+- [ ] Tabelas DB2 identificadas (FUNCTION)
+- [ ] Records internos documentados
+- [ ] Workstorage mapeado
+- [ ] Relacionamentos entre tabelas identificados
+- [ ] Índices e chaves documentados
+- [ ] Operações INQUIRY mapeadas
+- [ ] Operações SETINQ/SCAN mapeadas
+- [ ] Operações INSERT/UPDATE/DELETE mapeadas
+- [ ] Uso nas telas vinculado
+- [ ] Uso nas funções vinculado
+
+---
+
+## 3. Fluxo de Execução
+
+### 3.1 Estrutura do Documento
+
+```markdown
+# 03 - Fluxo de Execução AS-IS
+
+## Visão Geral do Stack
+
+### Comando de Extração
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --code "|"
+```
+
+**Stack Completo**:
+```
+[COLAR AQUI O OUTPUT COMPLETO DO COMANDO vamap |]
+```
+
+**Hierarquia de Funções**:
+
+```mermaid
+graph TD
+    A[METOD-0001: CB2QP000<br/>Main Entry Point] --> B[METOD-0002: CB2QP001<br/>Loop Principal]
+    B --> C[METOD-0003: CB2QP002<br/>Abrir Tela]
+    B --> D[METOD-0004: CB2QP005<br/>Processar Consulta]
+    D --> E[METOD-0011: CB2QP003<br/>INQUIRY Sistema]
+    D --> F[METOD-0015: CB2QP010<br/>Validar Dados]
+```
+
+## Fluxo Principal de Execução
+
+### 1. Inicialização (METOD-0001)
+
+**Rastreabilidade**:
+- **ID Matriz**: `METOD-0001`
+- **Função**: `<PROGRAMA>P000`
+- **Tipo**: Main Entry Point
+- **Arquivo**: `_LEGADO/<programa>.esf`
+- **Linhas**: XXXX-YYYY
+
+**Comando de Visualização**:
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --code "<PROGRAMA>P000"
+```
+
+**Código Extraído**:
+```
+[COLAR AQUI O OUTPUT DO COMANDO]
+```
+
+**Descrição**:
+- Inicializa variáveis globais
+- Carrega parâmetros de execução
+- Estabelece conexão com DB2
+- Chama função principal (P001)
+
+**Fluxo**:
+
+```mermaid
+flowchart TD
+    Start([Início]) --> Init[Inicializar Variáveis]
+    Init --> Connect[Conectar DB2]
+    Connect --> Call[Chamar P001]
+    Call --> End([Fim])
+```
+
+**Chamado por**: Ninguém (entry point)
+
+**Chama**:
+- `METOD-0002`: CB2QP001 (loop principal)
+
+**Estruturas Usadas**:
+- `ENT-0001`: CB2QW001 (workstorage)
+
+**Regras de Negócio**:
+- `REGRA-0001`: Validação de conexão
+
+### 2. Loop Principal (METOD-0002)
+
+[Mesmo formato para cada função importante]
+
+## Fluxo por Caso de Uso
+
+### Caso de Uso 1: Consulta de Certificado
+
+**Rastreabilidade**:
+- **ID Matriz Principal**: `METOD-0002`
+- **Tela Inicial**: `TELA-0001` (CB2QM010)
+
+**Fluxo Completo**:
+
+```mermaid
+sequenceDiagram
+    participant U as Usuário
+    participant T1 as TELA-0001<br/>CB2QM010
+    participant P2 as METOD-0003<br/>CB2QP002
+    participant P3 as METOD-0011<br/>CB2QP003
+    participant DB as Database
+
+    U->>T1: Digita certificado
+    U->>T1: Pressiona F5
+    T1->>P2: CONVERSE
+    P2->>P2: Validar entrada (REGRA-0007)
+    P2->>P3: Consultar sistema
+    P3->>DB: INQUIRY V1SISTEMA
+    DB-->>P3: Retorna dados
+    P3-->>P2: Resultado
+    P2->>T1: Exibe na tela
+    T1-->>U: Mostra resultado
+```
+
+**Passos Detalhados**:
+
+1. **Exibir Tela de Consulta** (`METOD-0003`)
+   - Abre mapa CB2QM010 (`TELA-0001`)
+   - Aguarda entrada do usuário
+   
+2. **Validar Entrada** (`REGRA-0007`)
+   - Verifica campo NUM_CERTIFICADO (`OBJ-0007`)
+   - Se vazio, exibe erro E001
+   
+3. **Consultar Database** (`QUERY-0001`)
+   - Executa INQUIRY em V1SISTEMA (`ENT-0001`)
+   - WHERE IDSISTEM = valor informado
+   
+4. **Processar Resultado** (`METOD-0015`)
+   - Se encontrado, popula tela
+   - Se não encontrado, exibe mensagem W001
+
+**Funções Envolvidas**:
+
+| ID Matriz | Função | Tipo | Descrição |
+|-----------|--------|------|-----------|
+| METOD-0003 | CB2QP002 | CONVERSE | Abrir tela |
+| REGRA-0007 | IF NUM_TITULO<>0 | Validação | Validar entrada |
+| METOD-0011 | CB2QP003 | INQUIRY | Consultar DB |
+| METOD-0015 | CB2QP010 | Business Logic | Processar resultado |
+
+**Telas Envolvidas**:
+
+- `TELA-0001`: CB2QM010 (entrada)
+- `TELA-0002`: CB2QM020 (resultado)
+
+**Dados Envolvidos**:
+
+- `ENT-0001`: V1SISTEMA (tabela consultada)
+- `ENT-0002`: CB2QW001 (workstorage)
+
+### [Repetir para cada caso de uso identificado]
+
+## Análise de Tipos de Função
+
+### Funções CONVERSE (Interface)
+
+**Comando de Identificação**:
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --code ":converse"
+```
+
+| ID Matriz | Função | Mapa Associado | Descrição |
+|-----------|--------|----------------|-----------|
+| METOD-0003 | CB2QP002 | CB2QM010 | Tela de consulta |
+
+### Funções INQUIRY (Consultas Únicas)
+
+**Comando de Identificação**:
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --code ":inquiry"
+```
+
+### Funções EXECUTE (Lógica de Negócio)
+
+**Comando de Identificação**:
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --code ":execute"
+```
+
+## Matriz de Dependências
+
+| Função | Chamada Por | Chama | Usa Dados | Usa Telas |
+|--------|-------------|-------|-----------|-----------|
+| CB2QP000 | - | CB2QP001 | CB2QW001 | - |
+| CB2QP001 | CB2QP000 | CB2QP002 | CB2QW001 | - |
+| CB2QP002 | CB2QP001 | CB2QP003 | V1SISTEMA | CB2QM010 |
+
+## Diagramas de Contexto
+
+### Diagrama de Componentes
+
+```mermaid
+graph TB
+    subgraph "Camada de Apresentação"
+        T1[TELA-0001: CB2QM010]
+        T2[TELA-0002: CB2QM020]
+    end
+    
+    subgraph "Camada de Negócio"
+        M1[METOD-0002: CB2QP001]
+        M2[METOD-0003: CB2QP002]
+        M3[METOD-0011: CB2QP003]
+    end
+    
+    subgraph "Camada de Dados"
+        E1[(ENT-0001: V1SISTEMA)]
+        E2[(ENT-0003: GE_MOVTO_CONTA)]
+    end
+    
+    T1 --> M2
+    M2 --> M3
+    M3 --> E1
+    M3 --> E2
+```
+```
+
+### 3.2 Comandos Obrigatórios
+
+Para análise de fluxo completo:
+
+```bash
+# 1. Stack completo de execução
+.\vamap.exe _LEGADO/<programa>.esf --code "|"
+
+# 2. Para cada função no stack, ver código
+.\vamap.exe _LEGADO/<programa>.esf --code "<NOME_FUNCAO>"
+
+# 3. Para cada função, ver quem chama
+.\vamap.exe _LEGADO/<programa>.esf --code "@<NOME_FUNCAO>"
+
+# 4. Para cada função, ver posição no stack
+.\vamap.exe _LEGADO/<programa>.esf --code "!<NOME_FUNCAO>"
+
+# 5. Separar funções por tipo
+.\vamap.exe _LEGADO/<programa>.esf --code ":inquiry"
+.\vamap.exe _LEGADO/<programa>.esf --code ":converse"
+.\vamap.exe _LEGADO/<programa>.esf --code ":execute"
+.\vamap.exe _LEGADO/<programa>.esf --code ":insert"
+.\vamap.exe _LEGADO/<programa>.esf --code ":update"
+
+# 6. Usar comando de fluxo completo
+# Consultar: @commands/vamap-flow.md
+```
+
+### 3.3 Checklist de Documentação de Fluxo
+
+- [ ] **OBRIGATÓRIO**: Stack completo extraído e incluído
+- [ ] **OBRIGATÓRIO**: Cada função tem ID na matriz (METOD-NNNN)
+- [ ] **OBRIGATÓRIO**: Código extraído para funções principais
+- [ ] **OBRIGATÓRIO**: Diagrama de hierarquia em Mermaid
+- [ ] Diagrama de sequência por caso de uso
+- [ ] Diagrama de componentes/camadas
+- [ ] Funções separadas por tipo documentadas
+- [ ] Matriz de dependências criada
+- [ ] Relacionamento com telas documentado
+- [ ] Relacionamento com dados documentado
+- [ ] Chamadores identificados para cada função
+- [ ] Posição no stack documentada
+- [ ] Fluxos de navegação mapeados
+
+---
+
+## 4. Funções, Procedures, Calls e Regras de Negócio
+
+### 4.1 Estrutura do Documento
+
+```markdown
+# 04 - Funções e Regras de Negócio AS-IS
+
+## Inventário de Funções
+
+### Comando de Extração
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --code "|"
+```
+
+**Funções Identificadas**:
+
+| ID Matriz | Nome Função | Tipo | Linha Início | Linha Fim | Complexidade |
+|-----------|-------------|------|--------------|-----------|--------------|
+| METOD-0001 | CB2QP000 | Main | 3655 | 3684 | Baixa |
+| METOD-0002 | CB2QP001 | Loop | 3685 | 3750 | Média |
+| METOD-0011 | CB2QP003 | INQUIRY | 6274 | 6289 | Baixa |
+
+## Detalhamento por Função
+
+### [METOD-NNNN] - Nome da Função
+
+**Rastreabilidade**:
+- **ID Matriz**: `METOD-NNNN`
+- **Nome**: `<PROGRAMA>PNNN`
+- **Tipo**: INQUIRY / CONVERSE / EXECUTE / INSERT / UPDATE / DELETE
+- **Arquivo**: `_LEGADO/<programa>.esf`
+- **Linhas**: XXXX-YYYY
+
+**Comando de Visualização**:
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --code "<PROGRAMA>PNNN"
+```
+
+**Código Fonte Completo**:
+```
+[COLAR AQUI O OUTPUT COMPLETO DO COMANDO vamap <FUNCAO>]
+```
+
+**Propósito**:
+Descrição clara do que a função faz.
+
+**Entrada (Parâmetros)**:
+
+| ID Matriz | Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|-----------|------|-------------|-----------|
+| OBJ-NNNN | NUM_CERTIFICADO | String | Sim | Número do certificado |
+
+**Saída (Retorno)**:
+
+| ID Matriz | Campo | Tipo | Descrição |
+|-----------|-------|------|-----------|
+| OBJ-NNNN | NOME_CLIENTE | String | Nome retornado |
+
+**Chamado Por**:
+
+| ID Matriz | Função Chamadora | Contexto |
+|-----------|------------------|----------|
+| METOD-0002 | CB2QP001 | Loop principal |
+
+**Chama**:
+
+| ID Matriz | Função Chamada | Propósito |
+|-----------|----------------|-----------|
+| METOD-0015 | CB2QP010 | Validar dados |
+
+**Comando para Ver Chamadores**:
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --code "@<PROGRAMA>PNNN"
+```
+
+**Estruturas de Dados Utilizadas**:
+
+| ID Matriz | Estrutura | Tipo Uso | Descrição |
+|-----------|-----------|----------|-----------|
+| ENT-0001 | V1SISTEMA | Leitura | Consulta tabela |
+| ENT-0002 | CB2QW001 | Leitura/Escrita | Workstorage |
+
+**Operações SQL**:
+
+Se aplicável:
+
+| ID Matriz | Tipo | SQL | Descrição |
+|-----------|------|-----|-----------|
+| QUERY-0001 | SELECT | SELECT * FROM V1SISTEMA WHERE IDSISTEM = ? | Consulta sistema |
+
+**Regras de Negócio Implementadas**:
+
+#### [REGRA-NNNN] - Descrição da Regra
+
+**Rastreabilidade**:
+- **ID Matriz**: `REGRA-NNNN`
+- **Linha**: XXXX
+
+**Lógica**:
+```cobol
+IF NUM_TITULO <> 0 THEN
+    PERFORM CONSULTAR_TITULO
+ELSE
+    DISPLAY "Título não informado"
+END-IF
+```
+
+**Tradução para Lógica Moderna**:
+```csharp
+// REGRA-NNNN: Validação de título informado
+if (!string.IsNullOrEmpty(numeroTitulo))
+{
+    await ConsultarTitulo(numeroTitulo);
+}
+else
+{
+    throw new ValidationException("Título não informado");
+}
+```
+
+**Condições**:
+- Quando: Após entrada do usuário
+- Se: Campo NUM_TITULO for diferente de zero/vazio
+- Então: Executa consulta
+- Senão: Exibe mensagem de erro
+
+**Exceções/Erros Tratados**:
+
+| ID Matriz | Condição | Ação | Mensagem |
+|-----------|----------|------|----------|
+| REGRA-NNNN | Título vazio | Exibir erro | "Título obrigatório" |
+
+**Validações Realizadas**:
+
+- `REGRA-NNNN`: Validação de campo obrigatório
+- `REGRA-NNNN`: Validação de formato
+- `REGRA-NNNN`: Validação de integridade referencial
+
+**Fluxograma da Função**:
+
+```mermaid
+flowchart TD
+    Start([Início]) --> Input[Receber parâmetros]
+    Input --> Validate{REGRA-0007<br/>Validar entrada}
+    Validate -->|Válido| Query[QUERY-0001<br/>Consultar DB]
+    Validate -->|Inválido| Error[Exibir erro E001]
+    Query --> Check{Encontrou?}
+    Check -->|Sim| Process[METOD-0015<br/>Processar resultado]
+    Check -->|Não| Warning[Exibir aviso W001]
+    Process --> End([Fim])
+    Error --> End
+    Warning --> End
+```
+
+**Análise de Complexidade**:
+
+- **Complexidade Ciclomática**: N (baseado em IFs/WHILEs)
+- **Linhas de Código**: XXX
+- **Nível de Aninhamento**: N
+- **Dependências**: N funções chamadas
+
+**Comando para Analisar Comandos**:
+```bash
+# Contar IFs (complexidade)
+.\vamap.exe _LEGADO/<programa>.esf --code ";IF" | grep "<PROGRAMA>PNNN"
+
+# Contar WHILEs/LOOPs
+.\vamap.exe _LEGADO/<programa>.esf --code ";WHILE" | grep "<PROGRAMA>PNNN"
+
+# Ver atribuições (MOVE)
+.\vamap.exe _LEGADO/<programa>.esf --code ";MOVE" | grep "<PROGRAMA>PNNN"
+```
+
+## Análise de Regras de Negócio
+
+### Comando de Identificação
+```bash
+# Ver todas validações
+.\vamap.exe _LEGADO/<programa>.esf --code ";IF"
+
+# Ver loops/iterações
+.\vamap.exe _LEGADO/<programa>.esf --code ";WHILE"
+
+# Ver atribuições
+.\vamap.exe _LEGADO/<programa>.esf --code ";MOVE"
+```
+
+### Catálogo de Regras de Negócio
+
+| ID Matriz | Descrição | Função | Linha | Criticidade |
+|-----------|-----------|--------|-------|-------------|
+| REGRA-0001 | Validar conexão DB2 | CB2QP000 | 3665 | Alta |
+| REGRA-0007 | Validar título informado | CB2QP002 | 3817 | Alta |
+| REGRA-0030 | Buscar apólice cobrança | CB2QP005 | 4157 | Média |
+
+### Detalhamento de Regra
+
+#### [REGRA-NNNN] - Título da Regra
+
+**Rastreabilidade**:
+- **ID Matriz**: `REGRA-NNNN`
+- **Função**: `<PROGRAMA>PNNN`
+- **Linha**: XXXX
+- **Arquivo**: `_LEGADO/<programa>.esf`
+
+**Descrição**:
+Descrição detalhada da regra de negócio.
+
+**Contexto de Aplicação**:
+- Quando é aplicada
+- Em que funções
+- Em que telas
+
+**Código COBOL**:
+```cobol
+[Trecho do código COBOL]
+```
+
+**Tradução para Lógica Moderna**:
+```csharp
+// REGRA-NNNN
+public async Task<Result> ValidateRule(Input input)
+{
+    // Implementação moderna
+}
+```
+
+**Dependências**:
+- Dados: `ENT-NNNN`
+- Outras regras: `REGRA-NNNN`
+
+**Casos de Teste**:
+
+| Cenário | Entrada | Saída Esperada |
+|---------|---------|----------------|
+| Válido | Título = "123456" | Prosseguir |
+| Inválido | Título = "" | Erro E001 |
+
+## Análise de Tratamento de Erros
+
+### Comando de Identificação
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --code "#"
+```
+
+**Funções de Error Handling**:
+
+| ID Matriz | Função | Tipo Erro | Ação |
+|-----------|--------|-----------|------|
+| METOD-NNNN | CB2QE001 | SQL Error | Rollback e mensagem |
+| METOD-NNNN | CB2QE002 | Validação | Exibir na tela |
+
+## Calls Externos
+
+### Identificação de CALLs
+
+**Comando**:
+```bash
+.\vamap.exe _LEGADO/<programa>.esf --code ";CALL"
+```
+
+| ID Matriz | Função | Programa Chamado | Propósito |
+|-----------|--------|------------------|-----------|
+| METOD-NNNN | CB2QP020 | CB2QR001 | Validar CPF |
+
+## Matriz de Rastreabilidade de Regras
+
+| ID Matriz | Regra | Função | Tela | Dados | Tipo |
+|-----------|-------|--------|------|-------|------|
+| REGRA-0001 | Validar conexão | CB2QP000 | - | - | Sistema |
+| REGRA-0007 | Validar título | CB2QP002 | CB2QM010 | V1SISTEMA | Negócio |
+```
+
+### 4.2 Comandos Obrigatórios
+
+Para análise de funções e regras:
+
+```bash
+# 1. Inventário completo de funções
+.\vamap.exe _LEGADO/<programa>.esf --code "|"
+
+# 2. Para cada função, extrair código
+.\vamap.exe _LEGADO/<programa>.esf --code "<FUNCAO>"
+
+# 3. Identificar chamadores
+.\vamap.exe _LEGADO/<programa>.esf --code "@<FUNCAO>"
+
+# 4. Ver posição no contexto
+.\vamap.exe _LEGADO/<programa>.esf --code "!<FUNCAO>"
+
+# 5. Análise de complexidade
+.\vamap.exe _LEGADO/<programa>.esf --code ";IF"
+.\vamap.exe _LEGADO/<programa>.esf --code ";WHILE"
+.\vamap.exe _LEGADO/<programa>.esf --code ";MOVE"
+
+# 6. Identificar tratamento de erros
+.\vamap.exe _LEGADO/<programa>.esf --code "#"
+
+# 7. Identificar validações
+# Consultar: @commands/vamap-validation.md
+
+# 8. Identificar CALLs externos
+.\vamap.exe _LEGADO/<programa>.esf --code ";CALL"
+```
+
+### 4.3 Checklist de Documentação de Funções
+
+- [ ] **OBRIGATÓRIO**: Inventário completo de funções
+- [ ] **OBRIGATÓRIO**: Cada função tem ID na matriz (METOD-NNNN)
+- [ ] **OBRIGATÓRIO**: Cada regra tem ID na matriz (REGRA-NNNN)
+- [ ] **OBRIGATÓRIO**: Código fonte incluído para funções principais
+- [ ] **OBRIGATÓRIO**: Fluxograma Mermaid por função crítica
+- [ ] Chamadores identificados
+- [ ] Funções chamadas documentadas
+- [ ] Estruturas de dados vinculadas
+- [ ] Operações SQL identificadas
+- [ ] Regras de negócio extraídas e catalogadas
+- [ ] Validações documentadas
+- [ ] Tratamento de erros mapeado
+- [ ] CALLs externos identificados
+- [ ] Complexidade ciclomática calculada
+- [ ] Tradução para lógica moderna esboçada
+- [ ] Casos de teste sugeridos
+
+---
+
+## Processo de Atualização da Matriz
+
+### Fluxo Obrigatório
+
+Ao concluir a documentação de cada elemento no documento AS-IS, seguir este fluxo:
+
+#### 1. Durante a Documentação
+
+Para cada elemento documentado:
+- Anotar o **ID da Matriz** utilizado
+- Anotar o **número da linha inicial** onde foi documentado
+- Anotar o **número da linha final** onde termina a documentação
+
+**Exemplo**:
+```
+Documentado: TELA-0001
+Arquivo: 01_TELAS_INTERFACE.md
+Linhas: 45-198
+```
+
+#### 2. Ao Final do Documento
+
+Criar uma **lista completa de atualizações** a ser apresentada ao usuário:
+
+```markdown
+## Resumo de Atualizações para Matriz
+
+Os seguintes elementos foram documentados neste arquivo:
+
+| ID Matriz | Elemento | Arquivo AS-IS | Linhas | Status Doc |
+|-----------|----------|---------------|--------|------------|
+| TELA-0001 | CB2QM010 | 01_TELAS_INTERFACE.md | 45-198 | OK |
+| TELA-0002 | CB2QM020 | 01_TELAS_INTERFACE.md | 199-352 | OK |
+| OBJ-0007 | NUM_TITULO | 01_TELAS_INTERFACE.md | 78 | OK |
+| OBJ-0008 | NUM_APOLICE | 01_TELAS_INTERFACE.md | 79 | OK |
+| ...
+
+**Total**: XX elementos documentados
+
+### Atualização da Matriz
+
+Deseja atualizar a `MATRIZ_RASTREABILIDADE.csv` com essas referências?
+- [ ] Sim, atualizar campos `Ref_Doc_AsIs`, `Ref_Doc_AsIs_Linhas` e `Status_Documentacao`
+- [ ] Não, revisarei a documentação primeiro
+```
+
+#### 3. Aguardar Aprovação do Usuário
+
+**CRÍTICO**: **NUNCA** atualizar a matriz sem aprovação explícita do usuário.
+
+Aguardar uma das respostas:
+- ✅ **"Sim, pode atualizar"** → Prosseguir com atualização
+- ❌ **"Não"** ou **"Vou revisar"** → Não atualizar, usuário revisará primeiro
+- 🔄 **"Atualizar apenas X, Y, Z"** → Atualizar apenas IDs especificados
+
+#### 4. Executar Atualização (Após Aprovação)
+
+Para cada ID aprovado, atualizar na `MATRIZ_RASTREABILIDADE.csv`:
+
+| Campo | Valor |
+|-------|-------|
+| `Ref_Doc_AsIs` | Nome do arquivo (ex: `01_TELAS_INTERFACE.md`) |
+| `Ref_Doc_AsIs_Linhas` | Range de linhas (ex: `45-198`) ou linha única (ex: `78`) |
+| `Status_Documentacao` | `OK` (se estava `NOK`) |
+
+**Exemplo de Atualização no CSV**:
+
+Antes:
+```csv
+TELA-0001,TELA,,,CB2QM010 - Tela consulta,_LEGADO/cb2qa.esf,90,,,,,NOK,NOK,NA,,
+```
+
+Depois:
+```csv
+TELA-0001,TELA,,,CB2QM010 - Tela consulta,_LEGADO/cb2qa.esf,90,,,,,OK,NOK,NA,01_TELAS_INTERFACE.md,45-198
+```
+
+#### 5. Confirmar Atualização
+
+Apresentar resumo ao usuário:
+
+```markdown
+✅ Matriz Atualizada com Sucesso
+
+Atualizados XX registros:
+- TELA-0001: Ref_Doc_AsIs = 01_TELAS_INTERFACE.md, Linhas = 45-198
+- TELA-0002: Ref_Doc_AsIs = 01_TELAS_INTERFACE.md, Linhas = 199-352
+- ...
+
+Status_Documentacao alterado para OK: XX registros
+```
+
+### Exemplo Completo de Fluxo
+
+```
+1. Documentar TELA-0001 em 01_TELAS_INTERFACE.md (linhas 45-198)
+2. Documentar todos campos OBJ-0007 a OBJ-0016 (linhas 78-87)
+3. Documentar REGRA-0001 a REGRA-0005 (linhas 150-180)
+
+4. Ao final do arquivo, apresentar:
+   "Deseja atualizar matriz com 15 elementos documentados?"
+
+5. Usuário responde: "Sim, pode atualizar"
+
+6. Atualizar 15 linhas na MATRIZ_RASTREABILIDADE.csv
+
+7. Confirmar: "✅ 15 registros atualizados com sucesso"
+```
+
+### Comandos para Atualização
+
+**Verificar IDs antes de documentar**:
+```bash
+# Listar todos IDs de TELA
+grep "^TELA-" MATRIZ_RASTREABILIDADE.csv
+
+# Verificar status de documentação
+grep "NOK" MATRIZ_RASTREABILIDADE.csv | grep "TELA"
+```
+
+**Após aprovação, atualizar matriz**:
+```bash
+# Exemplo de atualização (usar ferramenta apropriada)
+# Atualizar TELA-0001 com referência ao documento
+```
+
+---
+
+## Workflow de Documentação AS-IS
+
+### Fase 1: Preparação (1 dia)
+
+1. **Setup do Ambiente**
+   - Instalar/validar vamap.exe
+   - Criar estrutura de diretórios docs/legado/asis/
+   - Inicializar MATRIZ_RASTREABILIDADE.csv
+   - Revisar @commands disponíveis
+
+2. **Análise Preliminar**
+   ```bash
+   # Executar comandos exploratórios
+   .\vamap.exe _LEGADO/<programa>.esf --code "|"
+   .\vamap.exe _LEGADO/<programa>.esf --code "\"
+   .\vamap.exe _LEGADO/<programa>.esf --map
+   ```
+
+3. **Planejamento**
+   - Identificar escopo (quais programas documentar)
+   - Definir prioridades (criticidade das funções)
+   - Atribuir IDs iniciais na matriz
+
+### Fase 2: Documentação de Telas (2-3 dias)
+
+1. **Consultar Matriz**: Verificar IDs existentes tipo TELA, OBJ, FTELA, REGRA
+2. Executar `/vamap-maps-list`
+3. Para cada mapa:
+   - Executar `/vamap-map`
+   - Usar ID existente da matriz (ex: `TELA-0001`)
+   - Documentar no `01_TELAS_INTERFACE.md`
+   - Anotar linhas onde foi documentado
+   - Criar diagrama de navegação
+4. Identificar funções de abertura (usar IDs METOD-NNNN)
+5. Mapear campos e comportamentos (usar IDs OBJ-NNNN)
+6. **Apresentar lista de atualizações ao usuário**
+7. **Aguardar aprovação**
+8. **Atualizar matriz** (campos `Ref_Doc_AsIs`, `Ref_Doc_AsIs_Linhas`, `Status_Documentacao`)
+
+### Fase 3: Documentação de Dados (2-3 dias)
+
+1. **Consultar Matriz**: Verificar IDs existentes tipo ENT, QUERY
+2. Executar `/vamap-data`
+3. Para cada estrutura:
+   - Usar ID existente da matriz (ex: `ENT-0001`)
+   - Executar `/vamap-data-detail`
+   - Documentar no `02_MODELO_DADOS.md`
+   - Anotar linhas onde foi documentado
+4. Identificar operações SQL
+   - `/vamap-inquiry`, `/vamap-setinq`, etc.
+   - Usar IDs QUERY-NNNN existentes
+   - Anotar linhas de documentação
+5. Criar diagrama ER
+6. **Apresentar lista de atualizações ao usuário**
+7. **Aguardar aprovação**
+8. **Atualizar matriz** (campos `Ref_Doc_AsIs`, `Ref_Doc_AsIs_Linhas`, `Status_Documentacao`)
+
+### Fase 4: Documentação de Fluxo (3-4 dias)
+
+1. **Consultar Matriz**: Verificar IDs existentes tipo METOD
+2. Analisar stack completo (`/vamap-stack`)
+3. Para cada função importante:
+   - Usar ID existente da matriz (ex: `METOD-0001`)
+   - Executar `/vamap-function`
+   - Identificar chamadores (`/vamap-callers`)
+   - Documentar no `03_FLUXO_EXECUCAO.md`
+   - Anotar linhas onde foi documentado
+4. Criar diagramas de sequência por caso de uso
+5. Criar diagrama de componentes
+6. **Apresentar lista de atualizações ao usuário**
+7. **Aguardar aprovação**
+8. **Atualizar matriz** (campos `Ref_Doc_AsIs`, `Ref_Doc_AsIs_Linhas`, `Status_Documentacao`)
+
+### Fase 5: Documentação de Funções e Regras (4-5 dias)
+
+1. **Consultar Matriz**: Verificar IDs existentes tipo METOD, REGRA
+2. Para cada função no stack:
+   - Usar ID existente da matriz (ex: `METOD-0001`)
+   - Extrair código completo
+   - Identificar regras de negócio (IFs, validações)
+   - Usar IDs REGRA-NNNN existentes
+   - Documentar no `04_FUNCOES_REGRAS_NEGOCIO.md`
+   - Anotar linhas onde foi documentado
+3. Analisar complexidade (`/vamap-commands ;IF`, etc.)
+4. Identificar tratamento de erros (`/vamap-errors`)
+5. Esboçar tradução para lógica moderna
+6. **Apresentar lista de atualizações ao usuário**
+7. **Aguardar aprovação**
+8. **Atualizar matriz** (campos `Ref_Doc_AsIs`, `Ref_Doc_AsIs_Linhas`, `Status_Documentacao`)
+
+### Fase 6: Revisão e Validação (2 dias)
+
+1. **Validação de Completude**
+   - [ ] Todos os 4 documentos criados em `docs/asis/`
+   - [ ] **CRÍTICO**: Matriz atualizada com `Ref_Doc_AsIs` e `Ref_Doc_AsIs_Linhas` para todos elementos documentados
+   - [ ] **CRÍTICO**: `Status_Documentacao=OK` para todos elementos documentados
+   - [ ] Todos IDs referenciados existem na matriz
+   - [ ] Outputs vamap incluídos
+
+2. **Validação de Qualidade**
+   - [ ] Diagramas Mermaid renderizam corretamente
+   - [ ] Descrições claras e precisas
+   - [ ] Rastreabilidade completa (todos elementos têm ID da matriz)
+   - [ ] Sem IDs duplicados
+
+3. **Validação da Matriz**
+   - [ ] Conferir campos `Ref_Doc_AsIs` preenchidos
+   - [ ] Conferir campos `Ref_Doc_AsIs_Linhas` com ranges corretos
+   - [ ] Conferir `Status_Documentacao=OK` onde aplicável
+   - [ ] Executar: `grep "01_TELAS_INTERFACE.md" MATRIZ_RASTREABILIDADE.csv`
+   - [ ] Executar: `grep "02_MODELO_DADOS.md" MATRIZ_RASTREABILIDADE.csv`
+   - [ ] Executar: `grep "03_FLUXO_EXECUCAO.md" MATRIZ_RASTREABILIDADE.csv`
+   - [ ] Executar: `grep "04_FUNCOES_REGRAS_NEGOCIO.md" MATRIZ_RASTREABILIDADE.csv`
+
+4. **Revisão por Stakeholders**
+   - Arquitetos validam fluxos
+   - Analistas de negócio validam regras
+   - DBAs validam modelo de dados
+   - UX valida telas
+
+---
+
+## Padrões de Qualidade
+
+### Diagramas Mermaid
+
+**SEMPRE** usar Mermaid para:
+- Fluxos de navegação (graph TD/LR)
+- Diagramas de sequência (sequenceDiagram)
+- Diagramas ER (erDiagram)
+- Fluxogramas de função (flowchart TD)
+- Diagramas de componentes (graph TB com subgraph)
+
+**Exemplo de Qualidade**:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as Usuário
+    participant T as TELA-0001<br/>CB2QM010
+    participant F as METOD-0003<br/>CB2QP002
+    participant Q as QUERY-0001<br/>INQUIRY
+    participant D as ENT-0001<br/>V1SISTEMA
+    
+    Note over U,D: Caso de Uso: Consulta de Sistema
+    
+    U->>T: Digita IDSISTEM
+    U->>T: Pressiona F5
+    activate T
+    T->>F: CONVERSE (dados)
+    activate F
+    
+    Note over F: REGRA-0007<br/>Validar entrada
+    
+    F->>Q: Consultar sistema
+    activate Q
+    Q->>D: SELECT * WHERE ID=?
+    activate D
+    D-->>Q: Registro encontrado
+    deactivate D
+    Q-->>F: Sistema retornado
+    deactivate Q
+    
+    F->>F: METOD-0015<br/>Processar resultado
+    F-->>T: Dados processados
+    deactivate F
+    T-->>U: Exibe resultado
+    deactivate T
+```
+
+### Tabelas de Mapeamento
+
+**SEMPRE** incluir:
+- Coluna ID Matriz
+- Descrição clara
+- Tipos de dados
+- Relacionamentos
+
+### Código Extraído
+
+**SEMPRE** incluir:
+- Comando vamap utilizado
+- Output completo (não resumir)
+- Contexto (função pai, linhas)
+
+### Descrições
+
+**SEMPRE** escrever:
+- Linguagem clara e objetiva
+- Termos técnicos explicados
+- Contexto de negócio incluído
+- Sem ambiguidades
+
+---
+
+## Integração com Outras Regras
+
+Este documento **DEVE** ser usado em conjunto com:
+
+- **legacy-matriz.mdc**: Regras de rastreabilidade
+- **legacy-vamap.mdc**: Uso avançado do vamap.exe
+- **legacy-mapping-patterns.mdc**: Padrões de mapeamento legado → moderno
+- **@commands**: Comandos vamap disponíveis
+- **be-migration-doc-structure.mdc**: Estrutura de documentação de migração
+
+### Sequência de Uso
+
+1. **Documentação AS-IS** (este documento)
+   - Documentar situação atual completa
+   - Criar matriz de rastreabilidade
+   - Identificar todos elementos legados
+
+2. **Mapeamento** (legacy-mapping-patterns.mdc)
+   - Mapear legado → moderno
+   - Definir estratégias de migração
+   - Criar correspondências arquiteturais
+
+3. **Documentação de Migração** (be-migration-doc-structure.mdc)
+   - Criar 14 documentos de migração
+   - Referenciar IDs da matriz
+   - Implementar arquitetura moderna
+
+---
+
+## Checklist Geral de Documentação AS-IS
+
+### Preparação
+- [ ] vamap.exe instalado e funcionando
+- [ ] Estrutura de diretórios criada: `docs/asis/`
+- [ ] **CRÍTICO**: `MATRIZ_RASTREABILIDADE.csv` disponível e atualizada
+- [ ] **CRÍTICO**: IDs da matriz identificados (TELA, METOD, ENT, OBJ, QUERY, REGRA, FTELA)
+- [ ] @commands revisados
+
+### Documento 01 - Telas e Interface
+- [ ] **OBRIGATÓRIO**: Consultar matriz antes de iniciar
+- [ ] **OBRIGATÓRIO**: Inventário completo de mapas
+- [ ] **OBRIGATÓRIO**: Todos mapas têm ID da matriz (TELA-NNNN)
+- [ ] **OBRIGATÓRIO**: Layout visual incluído (vamap output)
+- [ ] **OBRIGATÓRIO**: Campos mapeados com IDs da matriz (OBJ-NNNN)
+- [ ] **OBRIGATÓRIO**: Teclas de função com IDs da matriz (REGRA-NNNN)
+- [ ] **OBRIGATÓRIO**: Linhas anotadas para cada elemento documentado
+- [ ] **OBRIGATÓRIO**: Lista de atualizações apresentada ao usuário
+- [ ] **OBRIGATÓRIO**: Aprovação do usuário obtida
+- [ ] **OBRIGATÓRIO**: Matriz atualizada (Ref_Doc_AsIs, Ref_Doc_AsIs_Linhas, Status_Documentacao)
+- [ ] Diagramas de navegação criados
+- [ ] Comportamentos documentados
+- [ ] Validações identificadas
+
+### Documento 02 - Modelo de Dados
+- [ ] **OBRIGATÓRIO**: Consultar matriz antes de iniciar
+- [ ] **OBRIGATÓRIO**: Inventário completo de estruturas
+- [ ] **OBRIGATÓRIO**: Tabelas DB2 identificadas com IDs da matriz (ENT-NNNN)
+- [ ] **OBRIGATÓRIO**: Records documentados com IDs da matriz
+- [ ] **OBRIGATÓRIO**: Operações SQL mapeadas com IDs da matriz (QUERY-NNNN)
+- [ ] **OBRIGATÓRIO**: Linhas anotadas para cada elemento documentado
+- [ ] **OBRIGATÓRIO**: Lista de atualizações apresentada ao usuário
+- [ ] **OBRIGATÓRIO**: Aprovação do usuário obtida
+- [ ] **OBRIGATÓRIO**: Matriz atualizada (Ref_Doc_AsIs, Ref_Doc_AsIs_Linhas, Status_Documentacao)
+- [ ] Diagrama ER criado
+- [ ] Relacionamentos identificados
+- [ ] Índices documentados
+
+### Documento 03 - Fluxo de Execução
+- [ ] **OBRIGATÓRIO**: Consultar matriz antes de iniciar
+- [ ] **OBRIGATÓRIO**: Stack completo extraído
+- [ ] **OBRIGATÓRIO**: Funções principais identificadas com IDs da matriz (METOD-NNNN)
+- [ ] **OBRIGATÓRIO**: Diagrama de hierarquia criado
+- [ ] **OBRIGATÓRIO**: Linhas anotadas para cada elemento documentado
+- [ ] **OBRIGATÓRIO**: Lista de atualizações apresentada ao usuário
+- [ ] **OBRIGATÓRIO**: Aprovação do usuário obtida
+- [ ] **OBRIGATÓRIO**: Matriz atualizada (Ref_Doc_AsIs, Ref_Doc_AsIs_Linhas, Status_Documentacao)
+- [ ] Diagramas de sequência por caso de uso
+- [ ] Diagrama de componentes
+- [ ] Matriz de dependências
+
+### Documento 04 - Funções e Regras
+- [ ] **OBRIGATÓRIO**: Consultar matriz antes de iniciar
+- [ ] **OBRIGATÓRIO**: Todas funções documentadas com IDs da matriz (METOD-NNNN)
+- [ ] **OBRIGATÓRIO**: Regras de negócio extraídas com IDs da matriz (REGRA-NNNN)
+- [ ] **OBRIGATÓRIO**: Código fonte incluído
+- [ ] **OBRIGATÓRIO**: Linhas anotadas para cada elemento documentado
+- [ ] **OBRIGATÓRIO**: Lista de atualizações apresentada ao usuário
+- [ ] **OBRIGATÓRIO**: Aprovação do usuário obtida
+- [ ] **OBRIGATÓRIO**: Matriz atualizada (Ref_Doc_AsIs, Ref_Doc_AsIs_Linhas, Status_Documentacao)
+- [ ] Fluxogramas por função crítica
+- [ ] Chamadores identificados
+- [ ] Complexidade calculada
+- [ ] Tradução moderna esboçada
+
+### Qualidade
+- [ ] **OBRIGATÓRIO**: Todos IDs na matriz existem
+- [ ] **OBRIGATÓRIO**: Nenhum ID duplicado
+- [ ] **OBRIGATÓRIO**: Outputs vamap completos incluídos
+- [ ] **OBRIGATÓRIO**: Diagramas Mermaid renderizam
+- [ ] Descrições claras e precisas
+- [ ] Rastreabilidade 100% completa
+- [ ] Revisão por stakeholders aprovada
+
+### Matriz de Rastreabilidade
+- [ ] **OBRIGATÓRIO**: Todas TELAS cadastradas com IDs
+- [ ] **OBRIGATÓRIO**: Todos METODOS cadastrados com IDs
+- [ ] **OBRIGATÓRIO**: Todas ENTIDADES cadastradas com IDs
+- [ ] **OBRIGATÓRIO**: Todos OBJETOS/campos cadastrados com IDs
+- [ ] **OBRIGATÓRIO**: Todas REGRAS cadastradas com IDs
+- [ ] **OBRIGATÓRIO**: Todas QUERIES cadastradas com IDs
+- [ ] **OBRIGATÓRIO**: Todas FTELAS cadastradas com IDs
+- [ ] **OBRIGATÓRIO**: Campo `Ref_Doc_AsIs` preenchido para elementos documentados
+- [ ] **OBRIGATÓRIO**: Campo `Ref_Doc_AsIs_Linhas` preenchido para elementos documentados
+- [ ] **OBRIGATÓRIO**: `Status_Documentacao = OK` para elementos finalizados
+- [ ] Nenhum elemento documentado sem referência na matriz
+- [ ] Validar: `grep "OK.*01_TELAS" MATRIZ_RASTREABILIDADE.csv` retorna registros
+- [ ] Validar: `grep "OK.*02_MODELO" MATRIZ_RASTREABILIDADE.csv` retorna registros
+- [ ] Validar: `grep "OK.*03_FLUXO" MATRIZ_RASTREABILIDADE.csv` retorna registros
+- [ ] Validar: `grep "OK.*04_FUNCOES" MATRIZ_RASTREABILIDADE.csv` retorna registros
+
+---
+
+## Exemplo Prático Completo: Documentação com Atualização da Matriz
+
+### Cenário: Documentar Tela CB2QM010
+
+#### Passo 1: Consultar Matriz
+
+```bash
+# Verificar se tela já tem ID cadastrado
+grep "CB2QM010" MATRIZ_RASTREABILIDADE.csv
+```
+
+**Resultado**:
+```csv
+TELA-0001,TELA,,,CB2QM010 - Tela consulta movto debito automatico,_LEGADO/cb2qa.esf,90,,,,,NOK,NOK,NA,,
+```
+
+✅ ID encontrado: `TELA-0001`
+
+#### Passo 2: Verificar Campos Relacionados
+
+```bash
+# Buscar campos da tela
+grep "CB2QM010.*TELA" MATRIZ_RASTREABILIDADE.csv | grep "OBJ-"
+```
+
+**Resultado**: IDs de OBJ-0007 a OBJ-0016
+
+#### Passo 3: Executar vamap
+
+```bash
+.\vamap.exe _LEGADO/cb2qa.esf --map "CB2QM010"
+```
+
+#### Passo 4: Documentar em 01_TELAS_INTERFACE.md
+
+```markdown
+### [TELA-0001] - CB2QM010 - Tela Consulta Movimento Débito Automático
+
+**Rastreabilidade** (ID da MATRIZ_RASTREABILIDADE.csv):
+- **ID Matriz**: `TELA-0001`
+- **Descrição**: CB2QM010 - Tela consulta movto debito automatico
+- **Arquivo Legado**: `_LEGADO/cb2qa.esf`
+- **Linha**: 90
+
+[... conteúdo da documentação ...]
+
+| ID Matriz | Campo Mapa | Label | ...
+|-----------|------------|-------|---
+| OBJ-0007 | NUM_TITULO | Numero titulo | ...
+| OBJ-0008 | NUM_APOLICE | Numero apolice | ...
+```
+
+**Linhas**: 45-198 (anotar!)
+
+#### Passo 5: Ao Final do Documento
+
+Criar seção de resumo:
+
+```markdown
+---
+
+## Resumo de Atualizações para Matriz
+
+Os seguintes elementos foram documentados neste arquivo:
+
+| ID Matriz | Elemento | Descrição | Linhas |
+|-----------|----------|-----------|--------|
+| TELA-0001 | CB2QM010 | Tela consulta | 45-198 |
+| TELA-0002 | CB2QM020 | Tela listagem | 199-352 |
+| OBJ-0007 | NUM_TITULO | Campo titulo | 78 |
+| OBJ-0008 | NUM_APOLICE | Campo apolice | 79 |
+| OBJ-0009 | NRENDOS | Campo endosso | 80 |
+| REGRA-0001 | IF EZEAID=PF3 | Tecla F3 | 165 |
+| REGRA-0003 | IF EZEAID=PF12 | Tecla F12 | 167 |
+
+**Total**: 7 elementos documentados
+
+### ⚠️ Atualização da Matriz Necessária
+
+Deseja atualizar a `MATRIZ_RASTREABILIDADE.csv` com essas referências?
+
+**Campos a atualizar**:
+- `Ref_Doc_AsIs` = `01_TELAS_INTERFACE.md`
+- `Ref_Doc_AsIs_Linhas` = conforme tabela acima
+- `Status_Documentacao` = `OK`
+
+**Aguardando aprovação do usuário...**
+```
+
+#### Passo 6: Usuário Responde
+
+```
+Usuário: "Sim, pode atualizar a matriz"
+```
+
+#### Passo 7: Atualizar Matriz
+
+**Antes** (TELA-0001):
+```csv
+TELA-0001,TELA,,,CB2QM010 - Tela consulta movto debito automatico,_LEGADO/cb2qa.esf,90,,,,,NOK,NOK,NA,,
+```
+
+**Depois** (TELA-0001):
+```csv
+TELA-0001,TELA,,,CB2QM010 - Tela consulta movto debito automatico,_LEGADO/cb2qa.esf,90,,,,,OK,NOK,NA,01_TELAS_INTERFACE.md,45-198
+```
+
+**Antes** (OBJ-0007):
+```csv
+OBJ-0007,OBJETO,CB2QM010,TELA,NUM_TITULO - Numero titulo (foco inicial),_LEGADO/cb2qa.esf,228,,,,,NOK,NOK,NA,,
+```
+
+**Depois** (OBJ-0007):
+```csv
+OBJ-0007,OBJETO,CB2QM010,TELA,NUM_TITULO - Numero titulo (foco inicial),_LEGADO/cb2qa.esf,228,,,,,OK,NOK,NA,01_TELAS_INTERFACE.md,78
+```
+
+#### Passo 8: Confirmar ao Usuário
+
+```markdown
+✅ Matriz Atualizada com Sucesso
+
+Atualizados 7 registros em MATRIZ_RASTREABILIDADE.csv:
+
+- TELA-0001: Ref_Doc_AsIs = 01_TELAS_INTERFACE.md, Linhas = 45-198
+- TELA-0002: Ref_Doc_AsIs = 01_TELAS_INTERFACE.md, Linhas = 199-352
+- OBJ-0007: Ref_Doc_AsIs = 01_TELAS_INTERFACE.md, Linhas = 78
+- OBJ-0008: Ref_Doc_AsIs = 01_TELAS_INTERFACE.md, Linhas = 79
+- OBJ-0009: Ref_Doc_AsIs = 01_TELAS_INTERFACE.md, Linhas = 80
+- REGRA-0001: Ref_Doc_AsIs = 01_TELAS_INTERFACE.md, Linhas = 165
+- REGRA-0003: Ref_Doc_AsIs = 01_TELAS_INTERFACE.md, Linhas = 167
+
+Status_Documentacao alterado para OK: 7 registros
+
+✅ Documentação AS-IS concluída e rastreada na matriz!
+```
+
+---
+
+## Referências Rápidas
+
+### Comandos vamap.exe Essenciais
+
+```bash
+# Inventários
+.\vamap.exe <programa>.esf --code "|"          # Stack completo
+.\vamap.exe <programa>.esf --code "\"          # Todas estruturas
+.\vamap.exe <programa>.esf --map               # Todos mapas
+
+# Detalhamentos
+.\vamap.exe <programa>.esf --code "<FUNCAO>"   # Código da função
+.\vamap.exe <programa>.esf --code "<TABELA>\"  # Detalhes da estrutura
+.\vamap.exe <programa>.esf --map "<MAPA>"      # Layout da tela
+
+# Análises
+.\vamap.exe <programa>.esf --code "@<FUNCAO>"  # Quem chama
+.\vamap.exe <programa>.esf --code "!<FUNCAO>"  # Posição no stack
+.\vamap.exe <programa>.esf --code "#"          # Error handlers
+
+# Tipos
+.\vamap.exe <programa>.esf --code ":inquiry"   # SELECT único
+.\vamap.exe <programa>.esf --code ":setinq"    # SELECT múltiplo
+.\vamap.exe <programa>.esf --code ":converse"  # Interface
+.\vamap.exe <programa>.esf --code ":execute"   # Lógica
+
+# Comandos
+.\vamap.exe <programa>.esf --code ";IF"        # Condicionais
+.\vamap.exe <programa>.esf --code ";MOVE"      # Atribuições
+.\vamap.exe <programa>.esf --code ";CALL"      # Chamadas externas
+```
+
+### Consulta Rápida a @commands
+
+- `/vamap-stack` - Pilha de execução
+- `/vamap-function` - Código de função
+- `/vamap-map` - Layout de tela
+- `/vamap-data` - Estruturas de dados
+- `/vamap-flow` - Fluxo completo
+- `/vamap-migration-plan` - Plano de migração
+
+Consultar: `@commands/README.md` para lista completa.
+
+---
+
+## ⚠️ Pontos Críticos - LEIA ANTES DE DOCUMENTAR
+
+### 1. Estrutura de Pastas
+
+✅ **CORRETO**: `docs/asis/01_TELAS_INTERFACE.md`  
+❌ **ERRADO**: `docs/legado/asis/01_TELAS_INTERFACE.md`
+
+### 2. Uso da Matriz
+
+✅ **SEMPRE**:
+- Consultar `MATRIZ_RASTREABILIDADE.csv` **ANTES** de iniciar documentação
+- Usar IDs **EXISTENTES** na matriz (TELA-0001, METOD-0011, etc.)
+- Anotar **linhas** onde cada elemento foi documentado
+- Referenciar IDs em **TODA** documentação
+
+❌ **NUNCA**:
+- Criar novos IDs sem verificar a matriz
+- Documentar sem anotar linhas
+- Omitir IDs da matriz na documentação
+
+### 3. Atualização da Matriz
+
+✅ **OBRIGATÓRIO**:
+1. Ao final de cada documento, criar **lista de atualizações**
+2. **APRESENTAR** lista ao usuário
+3. **AGUARDAR** aprovação explícita
+4. **ATUALIZAR** campos: `Ref_Doc_AsIs`, `Ref_Doc_AsIs_Linhas`, `Status_Documentacao`
+5. **CONFIRMAR** ao usuário que matriz foi atualizada
+
+❌ **PROIBIDO**:
+- Atualizar matriz sem aprovação do usuário
+- Pular etapa de apresentação de lista
+- Atualizar campos incorretos
+
+### 4. Campos da Matriz
+
+| Campo | Quando Atualizar | Valor | Exemplo |
+|-------|------------------|-------|---------|
+| `Ref_Doc_AsIs` | Após aprovação | Nome do arquivo AS-IS | `01_TELAS_INTERFACE.md` |
+| `Ref_Doc_AsIs_Linhas` | Após aprovação | Range ou linha única | `45-198` ou `78` |
+| `Status_Documentacao` | Após documentar | `OK` (estava `NOK`) | `OK` |
+
+### 5. Validação Final
+
+Antes de considerar documentação AS-IS completa, executar:
+
+```bash
+# Verificar elementos documentados em cada arquivo
+grep "OK.*01_TELAS_INTERFACE" MATRIZ_RASTREABILIDADE.csv | wc -l
+grep "OK.*02_MODELO_DADOS" MATRIZ_RASTREABILIDADE.csv | wc -l
+grep "OK.*03_FLUXO_EXECUCAO" MATRIZ_RASTREABILIDADE.csv | wc -l
+grep "OK.*04_FUNCOES_REGRAS_NEGOCIO" MATRIZ_RASTREABILIDADE.csv | wc -l
+
+# Verificar elementos sem documentação AS-IS
+grep "NOK.*NOK.*NA,," MATRIZ_RASTREABILIDADE.csv
+```
+
+### 6. Fluxo Resumido
+
+```
+1. Consultar MATRIZ → Identificar IDs
+2. Documentar → Anotar linhas
+3. Criar lista → Apresentar ao usuário
+4. Aguardar → Obter aprovação
+5. Atualizar → Ref_Doc_AsIs + Ref_Doc_AsIs_Linhas + Status_Documentacao
+6. Confirmar → Informar usuário
+```
+
+---
+
+**Versão**: 2.0  
+**Última atualização**: Dezembro 2024  
+**Status**: ATIVO  
+**Mudanças**: 
+- v2.0: Adicionado processo de atualização da matriz com aprovação do usuário
+- v2.0: Alterada pasta de `docs/legado/asis` para `docs/asis`
+- v2.0: Adicionados campos `Ref_Doc_AsIs` e `Ref_Doc_AsIs_Linhas`

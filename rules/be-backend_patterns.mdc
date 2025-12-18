@@ -1,0 +1,499 @@
+---
+globs: ["docs/backend/*",  "backend/Application/**/*.cs"]
+alwaysApply: false
+---
+# Backend Patterns - .NET Core Projects
+
+> **IMPORTANTE**: Quando o nome do projeto não for informado, use o **nome da pasta atual do workspace**.
+
+## 📐 Arquitetura em Camadas
+
+```
+API → IOC → Application + Infra → Domain
+```
+
+**Dependências:**
+- API → IOC apenas
+- Application → Domain apenas
+- Infra → Domain apenas
+- IOC → Application + Infra
+- Domain → nenhuma
+
+**Responsabilidades:**
+- **API**: Controllers, validação de entrada, HTTP
+- **Application**: Services (orquestração), ViewModels (lógica negócio)
+- **Domain**: Interfaces, DTOs
+- **Infra**: Repositories, Proxy Clients, Dapper
+- **IOC**: Configuração DI
+
+## 📁 Estrutura de Pastas
+
+```
+src/
+├── [Projeto].Api/
+│   ├── Controllers/[Entidade]Controller.cs
+│   ├── Program.cs
+│   └── appsettings.json
+├── [Projeto].Application/
+│   ├── Services/[Entidade]Service.cs
+│   ├── ViewModels/[Operacao]ViewModel.cs
+│   └── Configuration/DependencyInjection.cs
+├── [Projeto].Domain/
+│   ├── Interfaces/
+│   │   ├── Repositories/
+│   │   ├── Services/
+│   │   └── ViewModels/
+│   └── Dto/
+├── [Projeto].Infra/
+│   ├── Repositories/
+│   ├── Proxy/[Servico]/Client/
+│   └── Configuration/DependencyInjection.cs
+└── [Projeto].Ioc/
+    └── DependencyInjection.cs
+```
+
+## 🏷️ Nomenclatura
+
+**Projetos**: `<Cliente>.Web.[Projeto].[Camada]`  
+**Namespaces**: `<Cliente>.Web.[Projeto].[Camada].[SubPasta]`
+
+**Classes:**
+
+| Tipo | Interface | Implementação |
+|------|-----------|---------------|
+| Controller | - | `[Entidade]Controller` |
+| Service | `I[Entidade]Service` | `[Entidade]Service` |
+| ViewModel | `I[Operacao]ViewModel` | `[Operacao]ViewModel` |
+| Repository | `I[Entidade]Repository` | `[Entidade]Repository` |
+| Client | `I[Servico]Client` | `[Servico]Client` |
+
+**Rotas**: Controller PascalCase, endpoints camelCase, português
+
+## 🔧 Padrões Arquiteturais
+
+### 1. Repository (Infra)
+
+```csharp
+// Domain/Interfaces/Repositories/IUserRepository.cs
+public interface IUserRepository
+{
+    Task<User?> GetById(string id);
+    Task<User> Save(User entity);
+}
+
+// Infra/Repositories/UserRepository.cs
+public class UserRepository(
+    IDbConnection dbConnection,
+    IEventRepository eventRepository
+) : IUserRepository
+{
+    public async Task<User?> GetById(string id)
+    {
+        const string sql = "SELECT * FROM Users WHERE Id = @Id";
+        return await dbConnection.QueryFirstOrDefaultAsync<User>(sql, new { Id = id });
+    }
+}
+```
+
+### 2. Service (Application)
+
+```csharp
+// Application/Services/UserService.cs
+public class UserService(ICreateUserViewModel viewModel) : IUserService
+{
+    public async Task<AppResponse<User>> CreateUser(CreateUserRequest request)
+    {
+        var response = new AppResponse<User>();
+        try
+        {
+            response.Data = await viewModel.CreateUser(request);
+            response.IsSuccess = true;
+            response.Message = "Sucesso";
+        }
+        catch (Exception e)
+        {
+            response.IsSuccess = false;
+            response.Message = "Erro";
+            response.StackTrace = e.Message;
+        }
+        return response;
+    }
+}
+```
+
+### 3. ViewModel (Application)
+
+```csharp
+// Application/ViewModels/CreateUserViewModel.cs
+public class CreateUserViewModel(
+    IUserRepository userRepository,
+    IEventRepository eventRepository
+) : ICreateUserViewModel
+{
+    public async Task<User> CreateUser(CreateUserRequest request)
+    {
+        // Validação
+        if (await userRepository.Exists(request.Email))
+            throw new InvalidOperationException("Email já existe");
+        
+        // Persistência
+        var user = new User { Name = request.Name, Email = request.Email };
+        var result = await userRepository.Save(user);
+        
+        // Event
+        await eventRepository.SaveEvent(new Event
+        {
+            Id = Guid.NewGuid().ToString(),
+            Type = EventType.SUCCESS,
+            Action = "CreateUser",
+            Description = JsonConvert.SerializeObject(result)
+        });
+        
+        return result;
+    }
+}
+```
+
+### 4. Proxy (Infra)
+
+```csharp
+// Infra/Proxy/[Servico]/Client/IExternalClient.cs
+public interface IExternalClient
+{
+    Task<ResponseDto> SendRequest(RequestDto request);
+}
+
+// Infra/Proxy/[Servico]/ExternalClient.cs
+public class ExternalClient(IOptions<ConfigurationExternal> options) : IExternalClient
+{
+    private readonly ConfigurationExternal _config = options.Value;
+    private readonly Uri _baseUri = new Uri(options.Value.UrlBase);
+    
+    public async Task<ResponseDto> SendRequest(RequestDto request)
+    {
+        using var client = new HttpClient { BaseAddress = _baseUri };
+        
+        var content = new StringContent(
+            JsonConvert.SerializeObject(request),
+            Encoding.UTF8,
+            "application/json");
+        
+        var response = await client.PostAsync(_config.EndpointOperation, content);
+        
+        if (!response.IsSuccessStatusCode)
+            throw new InvalidOperationException($"Erro: {await response.Content.ReadAsStringAsync()}");
+        
+        var jsonString = await response.Content.ReadAsStringAsync();
+        return JsonConvert.DeserializeObject<ResponseDto>(jsonString) 
+            ?? throw new InvalidOperationException("Resposta inválida");
+    }
+}
+```
+
+### 5. Controller (API)
+
+```csharp
+[ApiController]
+[Route("Usuario")]
+[Produces("application/json")]
+public class UserController(IUserService service) : ControllerBase
+{
+    /// <summary>
+    /// Cria um novo usuário
+    /// </summary>
+    [HttpPost("criar")]
+    [ProducesResponseType(typeof(AppResponse<User>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
+    {
+        var response = await service.CreateUser(request);
+        return response.IsSuccess ? Ok(response) : UnprocessableEntity(response);
+    }
+}
+```
+
+## ⚠️ Response Pattern
+
+```csharp
+// Domain/Dto/AppResponse.cs
+public class AppResponse<T>
+{
+    public T? Data { get; set; }
+    public string Message { get; set; } = string.Empty;
+    public bool IsSuccess { get; set; }
+    public string? StackTrace { get; set; }
+}
+```
+
+## 💉 Dependency Injection
+
+### IOC/DependencyInjection.cs
+
+```csharp
+public static class DependencyInjection
+{
+    public static IServiceCollection AddApplicationAndInfraStructure(
+        this IServiceCollection services, 
+        IConfiguration configuration)
+    {
+        services.AddInfrastructure(configuration);
+        services.AddApplication(configuration);
+        return services;
+    }
+}
+```
+
+### Application/Configuration/DependencyInjection.cs
+
+```csharp
+public static class DependencyInjection
+{
+    public static IServiceCollection AddApplication(
+        this IServiceCollection services, 
+        IConfiguration configuration)
+    {
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ICreateUserViewModel, CreateUserViewModel>();
+        return services;
+    }
+}
+```
+
+### Infra/Configuration/DependencyInjection.cs
+
+```csharp
+public static class DependencyInjection
+{
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        // Repositories
+        services.AddScoped<IUserRepository, UserRepository>();
+        
+        // Proxy Clients
+        services.AddScoped<IExternalClient, ExternalClient>();
+        
+        // Configurações
+        services.Configure<ConfigurationExternal>(
+            options => configuration.GetSection(ConfigurationExternal.Section).Bind(options));
+        services.AddSingleton(resolver => 
+            resolver.GetRequiredService<IOptions<ConfigurationExternal>>().Value);
+        
+        // Dapper
+        string? connectionString = configuration.GetConnectionString("DefaultConnection");
+        services.AddScoped<IDbConnection>(sp => new SqlConnection(connectionString));
+        
+        return services;
+    }
+}
+```
+
+**Lifetimes:**
+- **Scoped**: Services, ViewModels, Repositories, Clients, IDbConnection
+- **Singleton**: Configurations
+
+## 🔨 Convenções C#
+
+### Primary Constructors (SEMPRE usar)
+
+```csharp
+// ✅ Correto
+public class UserService(IUserViewModel viewModel) : IUserService
+{
+    public async Task<Result> Execute() => await viewModel.GetData();
+}
+
+// ❌ Evitar
+public class UserService : IUserService
+{
+    private readonly IUserViewModel _viewModel;
+    public UserService(IUserViewModel viewModel) => _viewModel = viewModel;
+}
+```
+
+### Async/Await
+
+```csharp
+// ✅ Sempre async/await
+public async Task<Result> GetData() => await repository.GetAsync();
+
+// ❌ NUNCA .Result ou .Wait()
+public Result GetData() => repository.GetAsync().Result; // NÃO!
+```
+
+**Sufixo Async**: NÃO usar
+
+### Nullable Reference Types
+
+```csharp
+public string? OptionalProperty { get; set; }
+public string RequiredProperty { get; set; } = string.Empty;
+```
+
+### String Interpolation
+
+```csharp
+// ✅ Interpolation
+var message = $"Usuário {userName} criado";
+
+// ❌ Concatenação
+var message = "Usuário " + userName + " criado";
+```
+
+### Dapper Queries
+
+```csharp
+// ✅ Com parâmetros (SEMPRE)
+const string sql = "SELECT * FROM Users WHERE Email = @Email";
+var users = await dbConnection.QueryAsync<User>(sql, new { Email = email });
+
+// ❌ NUNCA concatenar
+var badSql = $"SELECT * FROM Users WHERE Email = '{email}'"; // PERIGOSO!
+```
+
+## 🔧 Configurações
+
+### Configuration Class
+
+```csharp
+// Infra/Configuration/Infra/ConfigurationExternal.cs
+public class ConfigurationExternal
+{
+    public const string Section = "ExternalService";
+    public string UrlBase { get; set; } = string.Empty;
+    public string EndpointOperation { get; set; } = string.Empty;
+    public string ApiKey { get; set; } = string.Empty;
+}
+```
+
+### appsettings.json
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost;Database=DB;User Id=SA;Password=pwd;"
+  },
+  "ExternalService": {
+    "UrlBase": "https://api.example.com",
+    "EndpointOperation": "/api/operation",
+    "ApiKey": "api-key-here"
+  }
+}
+```
+
+## 🧪 Testes
+
+**Estrutura**: Tests/Unit/, Tests/Integration/
+
+**Nomenclatura**: `[Metodo]_[Cenario]_[Resultado]`
+
+```csharp
+public class CreateUserViewModelTests
+{
+    [Fact]
+    public async Task CreateUser_WithValidData_ReturnsSuccess()
+    {
+        // Arrange
+        var mockRepository = new Mock<IUserRepository>();
+        mockRepository.Setup(x => x.Save(It.IsAny<User>()))
+            .ReturnsAsync(new User { Id = "123" });
+        
+        var viewModel = new CreateUserViewModel(mockRepository.Object);
+        
+        // Act
+        var result = await viewModel.CreateUser(new CreateUserRequest { Name = "Test" });
+        
+        // Assert
+        result.Should().NotBeNull();
+        result.Id.Should().Be("123");
+    }
+}
+```
+
+## 🔐 Segurança
+
+### CORS
+
+```csharp
+// Program.cs
+builder.Services.AddCors(options =>
+    options.AddPolicy("DefaultCorsPolicy",
+        policy => policy.SetIsOriginAllowed(origin => true)
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()
+    )
+);
+app.UseCors("DefaultCorsPolicy");
+```
+
+### Validação de Entrada
+
+```csharp
+public class CreateUserRequest
+{
+    [Required(ErrorMessage = "Nome é obrigatório")]
+    [StringLength(100, MinimumLength = 2)]
+    public string Name { get; set; } = string.Empty;
+    
+    [Required, EmailAddress]
+    public string Email { get; set; } = string.Empty;
+}
+```
+
+### SQL Injection Prevention
+
+```csharp
+// ✅ SEMPRE usar parâmetros
+const string sql = "SELECT * FROM Users WHERE Email = @Email";
+var users = await dbConnection.QueryAsync<User>(sql, new { Email = email });
+```
+
+## 📚 Swagger
+
+```csharp
+// Program.cs
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "<Cliente> [Projeto] API",
+        Version = "v1",
+        Description = "Descrição da API"
+    });
+    
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
+});
+```
+
+## ✅ Checklist
+
+### Nova Funcionalidade
+
+1. [ ] Inferir nome do projeto da pasta
+2. [ ] Domain: Criar interfaces e DTOs
+3. [ ] Infra: Implementar Repositories/Clients
+4. [ ] Application: ViewModels e Services
+5. [ ] API: Controllers
+6. [ ] DI: Registrar dependências
+7. [ ] appsettings.json
+8. [ ] Testes unitários
+9. [ ] Swagger
+
+### Validação
+
+- [ ] Primary constructors
+- [ ] Async/await sem .Result/.Wait()
+- [ ] Nullable types tratados
+- [ ] AppResponse<T> em Services
+- [ ] Event logging
+- [ ] Validações de entrada
+- [ ] Cobertura > 70%
+
+---
+
+**Versão**: 2.1  
+**Framework**: .NET 8  
+**Stack**: Dapper + SQL Server

@@ -1,0 +1,320 @@
+---
+description: Padrões para documentação da camada API em migrações
+globs: ["docs/backend/06_API_LAYER.md", "**/Api/Controllers/**/*.cs", "**/Api/Program.cs"]
+alwaysApply: false
+---
+
+# Documentação da Camada API
+
+## Estrutura do Documento 06_API_LAYER.md
+
+### Objetivo
+Documentar Controllers, endpoints HTTP, validações de entrada e configurações da API.
+
+### Seções Obrigatórias
+
+#### 1. Controllers
+```markdown
+## Controllers
+
+### [Entidade]Controller
+**Route**: `/[Entidade]`
+**Namespace**: `<Cliente>.Web.<Projeto>.Api.Controllers`
+**Service**: `I[Entidade]Service`
+**Origem**: [Tela/Transação legado]
+
+**Endpoints**:
+
+#### POST /[entidade]/[operacao]
+**Descrição**: [Descrição da operação]
+**Request**: `[Operacao]Request`
+**Response**: `AppResponse<[Entity]>`
+**Status Codes**: 200 (sucesso), 422 (erro de negócio), 400 (validação), 500 (erro interno)
+
+```csharp
+[ApiController]
+[Route("Usuario")]
+[Produces("application/json")]
+public class UserController(IUserService service) : ControllerBase
+{
+    /// <summary>
+    /// Cria um novo usuário
+    /// </summary>
+    /// <param name="request">Dados do usuário</param>
+    /// <returns>Usuário criado</returns>
+    [HttpPost("criar")]
+    [ProducesResponseType(typeof(AppResponse<User>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(AppResponse<User>), StatusCodes.Status422UnprocessableEntity)]
+    public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
+    {
+        var response = await service.CreateUser(request);
+        return response.IsSuccess ? Ok(response) : UnprocessableEntity(response);
+    }
+}
+```
+
+**Mapeamento Legado**:
+| Campo Tela | Campo Request | Validação |
+|------------|---------------|-----------|
+| NOME       | Name          | Required, MaxLength(100) |
+| EMAIL      | Email         | Required, EmailAddress |
+```
+
+#### 2. Request/Response DTOs
+```markdown
+## DTOs de API
+
+### [Operacao]Request
+**Namespace**: `<Cliente>.Web.<Projeto>.Domain.Dto`
+
+```csharp
+public class CreateUserRequest
+{
+    [Required(ErrorMessage = "Nome é obrigatório")]
+    [StringLength(100, MinimumLength = 2)]
+    public string Name { get; set; } = string.Empty;
+    
+    [Required]
+    [EmailAddress(ErrorMessage = "Email inválido")]
+    public string Email { get; set; } = string.Empty;
+    
+    [Range(18, 120, ErrorMessage = "Idade deve estar entre 18 e 120")]
+    public int Age { get; set; }
+}
+```
+
+**Validações**:
+- Data Annotations para validação estrutural
+- FluentValidation para regras complexas (se necessário)
+```
+
+#### 3. Program.cs
+```markdown
+## Configuração da API
+
+**Arquivo**: `Api/Program.cs`
+
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+
+// Controllers
+builder.Services.AddControllers();
+
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "<Cliente> [Projeto] API",
+        Version = "v1",
+        Description = "API de migração de [Sistema Legado]"
+    });
+    
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
+});
+
+// CORS
+builder.Services.AddCors(options =>
+    options.AddPolicy("DefaultCorsPolicy",
+        policy => policy.SetIsOriginAllowed(origin => true)
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()
+    )
+);
+
+// DI - IOC
+builder.Services.AddApplicationAndInfraStructure(builder.Configuration);
+
+var app = builder.Build();
+
+// Middleware
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+app.UseCors("DefaultCorsPolicy");
+app.UseAuthorization();
+app.MapControllers();
+
+app.Run();
+```
+```
+
+#### 4. Middlewares
+```markdown
+## Middlewares
+
+### Error Handling Middleware
+```csharp
+public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger)
+{
+    public async Task InvokeAsync(HttpContext context)
+    {
+        try
+        {
+            await next(context);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Erro não tratado");
+            await HandleExceptionAsync(context, ex);
+        }
+    }
+    
+    private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/json";
+        
+        var response = new AppResponse<object>
+        {
+            IsSuccess = false,
+            Message = "Erro interno do servidor",
+            StackTrace = exception.Message
+        };
+        
+        return context.Response.WriteAsJsonAsync(response);
+    }
+}
+```
+```
+
+## Convenções
+
+### Rotas
+- **Controller**: PascalCase português (`Usuario`, `Apolice`)
+- **Endpoints**: camelCase português (`criar`, `atualizar`, `buscarPorId`)
+- **Pattern**: `/[Entidade]/[operacao]`
+
+```csharp
+[Route("Usuario")]          // ✅ PascalCase
+[HttpPost("criar")]         // ✅ camelCase
+[HttpGet("buscarPorId")]    // ✅ camelCase
+```
+
+### HTTP Methods
+- **POST**: Criar (Create)
+- **PUT**: Atualizar (Update)
+- **GET**: Buscar (Read)
+- **DELETE**: Remover (Delete)
+- **PATCH**: Atualização parcial
+
+### Status Codes
+```csharp
+// Sucesso
+return Ok(response);                           // 200
+
+// Erro de validação
+if (!ModelState.IsValid)
+    return BadRequest(ModelState);             // 400
+
+// Erro de negócio
+return UnprocessableEntity(response);          // 422
+
+// Não encontrado
+return NotFound();                             // 404
+
+// Erro interno
+return StatusCode(500, response);              // 500
+```
+
+### Response Pattern
+**SEMPRE** retornar `AppResponse<T>`:
+
+```csharp
+public async Task<IActionResult> Method([FromBody] Request request)
+{
+    var response = await service.Method(request);
+    return response.IsSuccess ? Ok(response) : UnprocessableEntity(response);
+}
+```
+
+### Validação
+- **Data Annotations**: Validações simples (Required, StringLength, Range)
+- **ModelState**: Verificar antes de processar
+- **FluentValidation**: Regras complexas (se necessário)
+
+```csharp
+if (!ModelState.IsValid)
+    return BadRequest(ModelState);
+```
+
+### Documentação Swagger
+**SEMPRE** documentar com XML comments:
+
+```csharp
+/// <summary>
+/// Cria um novo usuário no sistema
+/// </summary>
+/// <param name="request">Dados do usuário a ser criado</param>
+/// <returns>Usuário criado com ID gerado</returns>
+/// <response code="200">Usuário criado com sucesso</response>
+/// <response code="422">Erro de validação de negócio</response>
+[HttpPost("criar")]
+[ProducesResponseType(typeof(AppResponse<User>), StatusCodes.Status200OK)]
+[ProducesResponseType(typeof(AppResponse<User>), StatusCodes.Status422UnprocessableEntity)]
+public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
+```
+
+### Primary Constructors
+**SEMPRE** usar:
+
+```csharp
+public class UserController(IUserService service) : ControllerBase
+{
+    // 'service' disponível em todos os métodos
+}
+```
+
+## Mapeamento de Legado
+
+### Telas CICS → Endpoints
+```
+Tela CICS          Operação       →    Endpoint
+────────────────────────────────────────────────────
+CB2QM010          CREATE          →    POST /Usuario/criar
+CB2QM020          UPDATE          →    PUT /Usuario/atualizar
+CB2QM030          INQUIRY         →    GET /Usuario/buscarPorId
+CB2QM040          DELETE          →    DELETE /Usuario/remover
+```
+
+### Campos de Tela → Request DTO
+```
+:vfield (legado)                →    Property (Request DTO)
+────────────────────────────────────────────────────
+name=NOME, type=CHA, bytes=50   →    string Name { get; set; }
+name=EMAIL, type=CHA, bytes=100 →    string Email { get; set; }
+name=IDADE, type=NUM, bytes=3   →    int Age { get; set; }
+name=DATA, type=NUM, bytes=8    →    DateTime Date { get; set; }
+```
+
+### PF Keys → Endpoints
+```
+PF1 = Help                      →    GET /Help
+PF3 = Exit                      →    (frontend navigation)
+PF5 = Refresh                   →    GET /[Entidade]/listar
+PF12 = Cancel                   →    (frontend navigation)
+Enter = Submit                  →    POST /[Entidade]/[operacao]
+```
+
+## Checklist
+
+- [ ] Controller para cada entidade/contexto
+- [ ] Rotas em português (PascalCase/camelCase)
+- [ ] Request DTOs com validações
+- [ ] AppResponse<T> em todos os endpoints
+- [ ] Status codes apropriados
+- [ ] XML comments para Swagger
+- [ ] ProducesResponseType declarados
+- [ ] Primary constructors utilizados
+- [ ] CORS configurado
+- [ ] Error handling middleware
+- [ ] Program.cs documentado
+- [ ] Mapeamento de telas legadas documentado

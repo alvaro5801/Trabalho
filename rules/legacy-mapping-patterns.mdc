@@ -1,0 +1,107 @@
+---
+description: Padrões para mapeamento de sistemas legados para arquitetura moderna
+globs: ["docs/**/*.md", "docs/backend/**/*.md", "tools/**/*.py"]
+alwaysApply: false
+---
+
+# Padrões de Mapeamento de Legado
+
+## Identificação de Componentes Legados
+
+### Programas Mainframe
+- **Arquivo**: `.esf`, `.cbl`, `.jcl`, `.copybook`
+- **Identificadores**: Nome do programa, funções, procedures
+- **Mapeamento**: Programa → Feature/Epic → Services
+
+### Tabelas e Registros
+- **Padrão legado**: `:tabrec`, `WORKING-STORAGE`, estruturas COBOL
+- **Mapeamento**: Registro → Entity/DTO
+- **Nomenclatura**: Preservar semântica, modernizar sintaxe
+
+### Telas e Mapas
+- **Padrão legado**: `:map`, `:vfield`, `:cfield`
+- **Mapeamento**: Mapa → Endpoints (GET/POST/PUT/DELETE)
+- **Campos**: field → DTO property
+
+### Lógica de Negócio
+- **Padrão legado**: `:function`, procedures, rotinas
+- **Mapeamento**: Function → ViewModel method
+- **Regras**: IF/WHEN/EVALUATE → validations/business rules
+
+## Convenções de Tradução
+
+### Nomenclatura
+```
+Legado (COBOL/Mainframe)    →    Moderno (.NET)
+─────────────────────────────────────────────────
+WS-CAMPO-NOME               →    CampoNome (property)
+PROGRAMA-FUNCAO             →    ProgramaService
+ARQUIVO-TABELA              →    ArquivoRepository
+CB2QT01                     →    CB2Q_T01 ou Entidade (se mapeável)
+PERFORM SUB-ROTINA          →    private method
+CALL 'SUBPROGRAMA'          →    ISubprogramaService
+```
+
+### Tipos de Dados
+```
+Legado              →    .NET
+─────────────────────────────────
+PIC 9(n)            →    int, long, decimal
+PIC X(n)            →    string
+PIC S9(n)V99        →    decimal
+COMP-3              →    decimal
+DATE                →    DateTime/DateOnly
+TIME                →    TimeSpan/TimeOnly
+```
+
+### Estruturas de Controle
+```
+Legado              →    .NET
+─────────────────────────────────
+PERFORM UNTIL       →    while / foreach
+IF ... ELSE         →    if / switch
+EVALUATE WHEN       →    switch expression
+GO TO               →    evitar (refatorar para structured programming)
+```
+
+## Análise de Dependências
+
+### Identificar
+1. **Programas chamados**: `CALL`, `XCTL`, `LINK`
+2. **Tabelas acessadas**: `SELECT`, `UPDATE`, `DELETE`
+3. **Arquivos lidos**: `READ`, `WRITE`, `REWRITE`
+4. **Copybooks**: `COPY`, `INCLUDE`
+
+### Mapear para
+1. Programas → Services/Clients
+2. Tabelas → Repositories
+3. Arquivos → Repositories/FileHandlers
+4. Copybooks → DTOs/Entities
+
+## Rastreabilidade Obrigatória
+
+Para cada mapeamento, registrar na matriz:
+- **Id**: Identificador único
+- **Tipo**: PROGRAM/TABLE/FUNCTION/FIELD/RULE
+- **Objeto_Pai**: Contexto hierárquico
+- **Ref_Legado_Arquivo**: Nome do arquivo fonte
+- **Ref_Legado_Linhas**: Range de linhas (ex: 100-250)
+- **Desc_Abordagem**: Como será migrado
+- **Status_Documentacao**: NOT_STARTED/IN_PROGRESS/COMPLETED
+- **Status_Implementacao**: NOT_STARTED/IN_PROGRESS/COMPLETED
+- **Status_Teste_Unitario**: NOT_STARTED/IN_PROGRESS/COMPLETED
+
+## Extração de Metadados
+
+### Scripts Python
+Use scripts para extrair automaticamente:
+- Lista de tabelas/registros
+- Lista de campos e tipos
+- Dependências entre programas
+- Fluxo de execução
+
+### Ferramentas Sugeridas
+- Parser de COBOL/EZEE
+- Analisador de fluxo
+- Extrator de DDL
+- Gerador de matriz de rastreabilidade

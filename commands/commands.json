@@ -1,0 +1,234 @@
+{
+  "commands": [
+    {
+      "name": "vamap-stack",
+      "description": "Visualiza pilha de execução completa do programa ESF",
+      "category": "Arquitetura",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf --code \"|\"",
+      "doc": ".cursor/commands/vamap-stack.md"
+    },
+    {
+      "name": "vamap-function",
+      "description": "Exibe código completo de uma função específica",
+      "category": "Código",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf --code \"<FUNCAO>\"",
+      "doc": ".cursor/commands/vamap-function.md"
+    },
+    {
+      "name": "vamap-map",
+      "description": "Renderiza visualmente um mapa de tela 3270",
+      "category": "Interface",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf --map \"<MAPA>\"",
+      "doc": ".cursor/commands/vamap-map.md"
+    },
+    {
+      "name": "vamap-data",
+      "description": "Lista estruturas de dados (RECORD, tabelas SQL, WORKSTOR)",
+      "category": "Dados",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf --code \"\\\"",
+      "doc": ".cursor/commands/vamap-data.md"
+    },
+    {
+      "name": "vamap-data-detail",
+      "description": "Exibe detalhes completos de uma estrutura (campos, tipos, metadados)",
+      "category": "Dados",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf --code \"<ESTRUTURA>\\\"",
+      "doc": ".cursor/commands/vamap-data-detail.md"
+    },
+    {
+      "name": "vamap-callers",
+      "description": "Identifica quem chama uma função (análise de impacto)",
+      "category": "Código",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf --code \"@<FUNCAO>\"",
+      "doc": ".cursor/commands/vamap-callers.md"
+    },
+    {
+      "name": "vamap-position",
+      "description": "Mostra posição da função no stack de execução",
+      "category": "Código",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf --code \"!<FUNCAO>\"",
+      "doc": ".cursor/commands/vamap-position.md"
+    },
+    {
+      "name": "vamap-errors",
+      "description": "Lista funções de tratamento de erros",
+      "category": "Qualidade",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf --code \"#\"",
+      "doc": ".cursor/commands/vamap-errors.md"
+    },
+    {
+      "name": "vamap-commands",
+      "description": "Rastreia comandos específicos (MOVE, IF, WHILE, etc.)",
+      "category": "Código",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf --code \";<COMANDO>\"",
+      "doc": ".cursor/commands/vamap-commands.md"
+    },
+    {
+      "name": "vamap-types",
+      "description": "Lista funções por tipo (inquiry, execute, converse, etc.)",
+      "category": "Arquitetura",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf --code \":<TIPO>\"",
+      "doc": ".cursor/commands/vamap-types.md"
+    },
+    {
+      "name": "vamap-maps-list",
+      "description": "Lista todos os mapas de tela disponíveis",
+      "category": "Interface",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf --map",
+      "doc": ".cursor/commands/vamap-maps-list.md"
+    },
+    {
+      "name": "vamap-inquiry",
+      "description": "Analisa funções de INQUIRY (SQL SELECT único)",
+      "category": "Banco de Dados",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf :inquiry",
+      "doc": ".cursor/commands/vamap-inquiry.md"
+    },
+    {
+      "name": "vamap-update",
+      "description": "Analisa funções de UPDATE (SQL UPDATE)",
+      "category": "Banco de Dados",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf :update",
+      "doc": ".cursor/commands/vamap-update.md"
+    },
+    {
+      "name": "vamap-delete",
+      "description": "Analisa funções de DELETE (SQL DELETE)",
+      "category": "Banco de Dados",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf :delete",
+      "doc": ".cursor/commands/vamap-delete.md"
+    },
+    {
+      "name": "vamap-insert",
+      "description": "Analisa funções de INSERT (SQL INSERT)",
+      "category": "Banco de Dados",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf :insert",
+      "doc": ".cursor/commands/vamap-insert.md"
+    },
+    {
+      "name": "vamap-scan",
+      "description": "Analisa funções de SCAN (iteração em cursores)",
+      "category": "Banco de Dados",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf :scan",
+      "doc": ".cursor/commands/vamap-scan.md"
+    },
+    {
+      "name": "vamap-setinq",
+      "description": "Analisa funções de SETINQ (preparação de cursores)",
+      "category": "Banco de Dados",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf :setinq",
+      "doc": ".cursor/commands/vamap-setinq.md"
+    },
+    {
+      "name": "vamap-converse",
+      "description": "Analisa funções de CONVERSE (interação com terminal)",
+      "category": "Interface",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf :converse",
+      "doc": ".cursor/commands/vamap-converse.md"
+    },
+    {
+      "name": "vamap-execute",
+      "description": "Analisa funções de EXECUTE (SQL dinâmico)",
+      "category": "Banco de Dados",
+      "usage": ".\\vamap.exe _LEGADO\\<arquivo>.esf :execute",
+      "doc": ".cursor/commands/vamap-execute.md"
+    },
+    {
+      "name": "vamap-validation",
+      "description": "Analisa lógica de validação e regras de negócio",
+      "category": "Qualidade",
+      "usage": "Veja documentação completa",
+      "doc": ".cursor/commands/vamap-validation.md"
+    },
+    {
+      "name": "vamap-flow",
+      "description": "Analisa fluxo completo de execução do programa",
+      "category": "Arquitetura",
+      "usage": "Veja estratégias de análise na documentação",
+      "doc": ".cursor/commands/vamap-flow.md"
+    },
+    {
+      "name": "vamap-migration-plan",
+      "description": "Cria plano completo de migração para arquitetura moderna",
+      "category": "Migração",
+      "usage": "Veja fases e templates na documentação",
+      "doc": ".cursor/commands/vamap-migration-plan.md"
+    }
+  ],
+  "guides": [
+    {
+      "name": "Resumo Executivo",
+      "description": "Visão geral do sistema completo (COMECE AQUI!)",
+      "file": ".cursor/commands/RESUMO-EXECUTIVO.md"
+    },
+    {
+      "name": "Início",
+      "description": "Guia de início rápido - primeiros passos",
+      "file": ".cursor/commands/INICIO.md"
+    },
+    {
+      "name": "Guia Rápido",
+      "description": "Menu visual e receitas prontas",
+      "file": ".cursor/commands/GUIA-RAPIDO.md"
+    },
+    {
+      "name": "Índice de Comandos",
+      "description": "Índice completo de todos os 21 comandos",
+      "file": ".cursor/commands/INDICE-COMANDOS.md"
+    },
+    {
+      "name": "Exemplos do Projeto",
+      "description": "Exemplos práticos com arquivos reais",
+      "file": ".cursor/commands/EXEMPLOS-PROJETO.md"
+    },
+    {
+      "name": "README Completo",
+      "description": "Documentação técnica completa",
+      "file": ".cursor/commands/README.md"
+    }
+  ],
+  "quickStart": {
+    "step1": {
+      "description": "Ver estrutura completa do programa",
+      "command": ".\\vamap.exe _LEGADO\\va2va.esf --code \"|\"",
+      "time": "1 minuto"
+    },
+    "step2": {
+      "description": "Listar todas as telas",
+      "command": ".\\vamap.exe _LEGADO\\va2va.esf --map",
+      "time": "30 segundos"
+    },
+    "step3": {
+      "description": "Ver layout de uma tela",
+      "command": ".\\vamap.exe _LEGADO\\va2va.esf --map \"VA2VM010\"",
+      "time": "30 segundos"
+    },
+    "step4": {
+      "description": "Ver estruturas de dados",
+      "command": ".\\vamap.exe _LEGADO\\va2va.esf --code \"\\\"",
+      "time": "1 minuto"
+    }
+  },
+  "files": {
+    "available": [
+      "_LEGADO/va2va.esf",
+      "_LEGADO/vgfna.esf"
+    ],
+    "tool": ".\\vamap.exe"
+  },
+  "version": "2.0.0",
+  "created": "2025-11-16",
+  "updated": "2025-11-17",
+  "language": "pt-BR",
+  "totalCommands": 21,
+  "categories": [
+    "Arquitetura",
+    "Código",
+    "Dados",
+    "Banco de Dados",
+    "Interface",
+    "Qualidade",
+    "Migração"
+  ]
+}
+

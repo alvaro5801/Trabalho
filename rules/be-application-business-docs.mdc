@@ -1,0 +1,281 @@
+---
+description: Padrões para documentação de Application Services e Business Logic em migrações
+globs: ["docs/backend/04_BUSINESS_LOGIC.md", "docs/backend/05_APPLICATION_SERVICES.md", "**/Application/**/*.cs"]
+alwaysApply: false
+---
+
+# Documentação de Application e Business Logic
+
+## Estrutura do Documento 04_BUSINESS_LOGIC.md
+
+### Objetivo
+Documentar ViewModels que contêm regras de negócio e orquestração de Repositories.
+
+### Seções Obrigatórias
+
+#### 1. ViewModels
+```markdown
+## ViewModels
+
+### [Operacao]ViewModel
+**Interface**: `I[Operacao]ViewModel`
+**Namespace**: `<Cliente>.Web.<Projeto>.Application.ViewModels`
+**Origem Legado**: [Função/Procedure do programa legado]
+**Linhas**: [range]
+
+**Responsabilidade**: [Descrição clara da regra de negócio]
+
+**Dependências**:
+- `I[Entidade]Repository` - Acesso a dados
+- `IEventRepository` - Logging
+
+**Fluxo de Execução**:
+1. Validação de entrada
+2. Verificação de regras de negócio
+3. Persistência
+4. Event logging
+5. Retorno
+
+**Implementação**:
+```csharp
+public class CreateUserViewModel(
+    IUserRepository userRepository,
+    IEventRepository eventRepository
+) : ICreateUserViewModel
+{
+    public async Task<User> Execute(CreateUserRequest request)
+    {
+        // 1. Validação
+        if (await userRepository.ExistsByEmail(request.Email))
+            throw new InvalidOperationException("Email já cadastrado");
+        
+        // 2. Regra de negócio
+        if (request.Age < 18)
+            throw new InvalidOperationException("Usuário deve ser maior de idade");
+        
+        // 3. Persistência
+        var user = new User 
+        { 
+            Name = request.Name, 
+            Email = request.Email,
+            CreatedAt = DateTime.UtcNow
+        };
+        var result = await userRepository.Save(user);
+        
+        // 4. Event
+        await eventRepository.SaveEvent(new Event
+        {
+            Type = EventType.SUCCESS,
+            Action = "CreateUser",
+            Description = JsonConvert.SerializeObject(result)
+        });
+        
+        return result;
+    }
+}
+```
+
+**Regras de Negócio Mapeadas**:
+| # | Regra Legado | Implementação Moderna |
+|---|--------------|----------------------|
+| 1 | IF WS-AGE < 18 | if (age < 18) throw ... |
+| 2 | PERFORM VALIDATE-EMAIL | await ValidateEmail() |
+```
+
+#### 2. Validações Complexas
+```markdown
+## Validações de Negócio
+
+### [NomeValidacao]
+**Contexto**: [Quando aplicar]
+**Origem**: [Referência legado]
+
+**Lógica**:
+```csharp
+private async Task<bool> ValidateX(Entity entity)
+{
+    // Validação complexa envolvendo múltiplas entidades/regras
+    return true;
+}
+```
+```
+
+#### 3. Cálculos de Negócio
+```markdown
+## Cálculos
+
+### Calculate[X]
+**Origem**: [Procedure legado]
+**Fórmula**: [Descrição matemática]
+
+```csharp
+private decimal CalculatePremium(Policy policy)
+{
+    // Lógica de cálculo migrada do legado
+    return baseValue * factor;
+}
+```
+```
+
+## Estrutura do Documento 05_APPLICATION_SERVICES.md
+
+### Objetivo
+Documentar Services que orquestram ViewModels e tratam exceções.
+
+### Seções Obrigatórias
+
+#### 1. Services
+```markdown
+## Services
+
+### [Entidade]Service
+**Interface**: `I[Entidade]Service`
+**Namespace**: `<Cliente>.Web.<Projeto>.Application.Services`
+**Responsabilidade**: Orquestração e tratamento de exceções
+
+**Dependências**:
+- ViewModels (1 ou mais)
+
+**Métodos**:
+
+#### [Operacao]
+**Endpoint relacionado**: `POST /[Entidade]/[operacao]`
+
+```csharp
+public class UserService(
+    ICreateUserViewModel createUserViewModel,
+    IUpdateUserViewModel updateUserViewModel
+) : IUserService
+{
+    public async Task<AppResponse<User>> CreateUser(CreateUserRequest request)
+    {
+        var response = new AppResponse<User>();
+        try
+        {
+            response.Data = await createUserViewModel.Execute(request);
+            response.IsSuccess = true;
+            response.Message = "Usuário criado com sucesso";
+        }
+        catch (InvalidOperationException ex)
+        {
+            response.IsSuccess = false;
+            response.Message = ex.Message;
+            response.StackTrace = ex.StackTrace;
+        }
+        catch (Exception ex)
+        {
+            response.IsSuccess = false;
+            response.Message = "Erro interno ao criar usuário";
+            response.StackTrace = ex.Message;
+            // Log exception
+        }
+        return response;
+    }
+}
+```
+```
+
+#### 2. Dependency Injection
+```markdown
+## Dependency Injection
+
+**Arquivo**: `Application/Configuration/DependencyInjection.cs`
+
+```csharp
+public static class DependencyInjection
+{
+    public static IServiceCollection AddApplication(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        // Services
+        services.AddScoped<IUserService, UserService>();
+        
+        // ViewModels
+        services.AddScoped<ICreateUserViewModel, CreateUserViewModel>();
+        services.AddScoped<IUpdateUserViewModel, UpdateUserViewModel>();
+        
+        return services;
+    }
+}
+```
+```
+
+## Convenções
+
+### ViewModels
+- **Nome**: `[Operacao][Entidade]ViewModel`
+- **Método principal**: `Execute()` ou nome específico da operação
+- **Responsabilidade**: UMA operação de negócio
+- **Retorno**: Entidade ou tipo específico (não AppResponse)
+- **Exceções**: Lançar exceções de negócio, não capturar
+
+### Services
+- **Nome**: `[Entidade]Service`
+- **Responsabilidade**: Orquestrar ViewModels, tratar exceções
+- **Retorno**: SEMPRE `AppResponse<T>`
+- **Try-Catch**: SEMPRE envolver ViewModels em try-catch
+- **Logging**: Capturar exceções e logar
+
+### AppResponse Pattern
+```csharp
+// Service retorna AppResponse
+public async Task<AppResponse<User>> CreateUser(CreateUserRequest request)
+{
+    var response = new AppResponse<User>();
+    try
+    {
+        response.Data = await viewModel.Execute(request);
+        response.IsSuccess = true;
+        response.Message = "Sucesso";
+    }
+    catch (Exception e)
+    {
+        response.IsSuccess = false;
+        response.Message = "Erro";
+        response.StackTrace = e.Message;
+    }
+    return response;
+}
+```
+
+### Separação de Responsabilidades
+- **ViewModel**: Lógica de negócio pura, lança exceções
+- **Service**: Tratamento de exceções, resposta padronizada
+- **Controller**: Validação de entrada HTTP, status codes
+
+## Mapeamento de Legado
+
+### COBOL Procedures → ViewModels
+```
+PERFORM VALIDATE-USER       →    ValidateUserViewModel.Execute()
+PERFORM CALCULATE-PREMIUM   →    CalculatePremiumViewModel.Execute()
+PERFORM UPDATE-POLICY       →    UpdatePolicyViewModel.Execute()
+```
+
+### Regras de Negócio
+```
+IF condição                 →    if (condição) throw new InvalidOperationException()
+EVALUATE campo              →    switch (campo)
+PERFORM UNTIL condição      →    while (condição) / foreach
+SET campo TO valor          →    campo = valor
+MOVE campo1 TO campo2       →    campo2 = campo1
+```
+
+## Checklist
+
+### 04_BUSINESS_LOGIC.md
+- [ ] ViewModel para cada operação de negócio
+- [ ] Todas as regras de negócio mapeadas do legado
+- [ ] Validações complexas documentadas
+- [ ] Cálculos com fórmulas explicadas
+- [ ] Event logging em todas operações
+- [ ] Exceções de negócio bem definidas
+
+### 05_APPLICATION_SERVICES.md
+- [ ] Service para cada entidade/contexto
+- [ ] Try-catch em todos os métodos
+- [ ] AppResponse<T> em todos os retornos
+- [ ] Mensagens de erro claras
+- [ ] DependencyInjection configurado
+- [ ] Primary constructors utilizados

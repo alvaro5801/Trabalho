@@ -1,0 +1,601 @@
+---
+alwaysApply: false
+---
+# Matriz de Rastreabilidade - Migração de Sistemas Legados
+
+## 📋 Objetivo
+
+Estabelecer regras para criação e manutenção de uma matriz de rastreabilidade que acompanha a migração de programas legados para uma solução moderna composta por backend (.NET Core) e frontend (React + TypeScript).
+
+## 📊 Estrutura da Matriz
+
+### Arquivo
+- **Nome**: `MATRIZ_RASTREABILIDADE.csv`
+- **Localização**: Raiz do workspace
+- **Formato**: CSV com separador `;` (ponto e vírgula)
+- **Encoding**: UTF-8 com BOM
+
+### Campos (Colunas)
+
+```csv
+Id;Tipo;Objeto_Pai;Tipo_Objeto_Pai;Descricao_Breve;Ref_Legado_Arquivo;Ref_Legado_Linhas;Desc_Abordagem;Ref_Doc_Abordagem;Ref_Doc_Linhas;Status_Documentacao;Status_Implementacao;Status_Teste_Unitario;Ref_Doc_AsIs;Ref_Doc_AsIs_Linhas
+```
+
+#### Descrição dos Campos
+
+| Campo | Tipo | Descrição | Exemplo |
+|-------|------|-----------|---------|
+| `Id` | String | Identificador único (formato: `TIPO-NNNN`) | `TELA-0001`, `FUNC-0042` |
+| `Tipo` | Enum | Tipo do objeto rastreado | `TELA`, `OBJETO`, `FUNCAO_TELA`, `METODO`, `REGRA`, `ENTIDADE`, `CAMPO`, `QUERY` |
+| `Objeto_Pai` | String | Nome do objeto pai (tela, função, entidade...) | `VGFNA`, `fnCalculaTotal`, `TB_USUARIO` |
+| `Tipo_Objeto_Pai` | Enum | Tipo do objeto pai | `TELA`, `METODO`, `ENTIDADE`, etc. |
+| `Descricao_Breve` | String | Descrição do elemento (máx. 200 caracteres) | `Valida CPF antes de salvar` |
+| `Ref_Legado_Arquivo` | String | Caminho do arquivo legado | `_LEGADO/vgfna.esf` |
+| `Ref_Legado_Linhas` | String | Linhas no código legado | `125-150`, `342` |
+| `Desc_Abordagem` | String | Resumo da abordagem de migração | `Migrar para UsuarioService.ValidarCPF()` |
+| `Ref_Doc_Abordagem` | String | Documento com a abordagem detalhada (To-Be) | `VA2VA_TELAS_DOCUMENTACAO.md` |
+| `Ref_Doc_Linhas` | String | Linhas no documento To-Be | `45-67` |
+| `Status_Documentacao` | Enum | Status da documentação (`NA`, `OK`, `NOK`) | `OK` |
+| `Status_Implementacao` | Enum | Status da implementação (`NA`, `OK`, `NOK`) | `NOK` |
+| `Status_Teste_Unitario` | Enum | Status dos testes (`NA`, `OK`, `NOK`) | `NA` |
+| `Ref_Doc_AsIs` | String | Documento com análise As-Is (situação atual do legado) | `va2va_funcoes_regras_negocio.md` |
+| `Ref_Doc_AsIs_Linhas` | String | Linhas no documento As-Is | `100-150` |
+
+## 🏷️ Tipos de Objetos
+
+### TELA
+- Representa uma tela/formulário completo do sistema legado
+- **ID**: `TELA-NNNN`
+- **Objeto_Pai**: vazio (não tem pai)
+- **Tipo_Objeto_Pai**: vazio
+- **Campos preenchidos**: `Descricao_Breve`, `Ref_Legado_*`, todos os status
+
+### OBJETO
+- Representa um componente visual (botão, grid, campo, label)
+- **ID**: `OBJ-NNNN`
+- **Objeto_Pai**: nome da tela onde está
+- **Tipo_Objeto_Pai**: `TELA`
+- **Campos preenchidos**: `Objeto_Pai`, `Tipo_Objeto_Pai`, `Descricao_Breve`, `Ref_Legado_*`, status
+
+### FUNCAO_TELA
+- Representa uma função/evento associado a uma tela
+- **ID**: `FTELA-NNNN`
+- **Objeto_Pai**: nome da tela ou objeto que dispara
+- **Tipo_Objeto_Pai**: `TELA` ou `OBJETO`
+- **Campos preenchidos**: `Objeto_Pai`, `Tipo_Objeto_Pai`, `Descricao_Breve`, `Ref_Legado_*`, todos os status
+
+### METODO
+- Representa uma função/procedure/método do código legado
+- **ID**: `METOD-NNNN`
+- **Objeto_Pai**: vazio (se global) ou nome da classe/módulo
+- **Tipo_Objeto_Pai**: vazio ou tipo do container
+- **Campos preenchidos**: `Descricao_Breve`, `Ref_Legado_*`, todos os status
+
+### REGRA
+- Representa uma regra de negócio (condicional, laço, transformação, etc.)
+- **ID**: `REGRA-NNNN`
+- **Objeto_Pai**: nome do método onde está
+- **Tipo_Objeto_Pai**: `METODO` ou `FUNCAO_TELA`
+- **Campos preenchidos**: `Objeto_Pai`, `Tipo_Objeto_Pai`, `Descricao_Breve`, `Ref_Legado_*`, todos os status
+- **Formato Descrição**: `[SUBTIPO]: [Detalhes]`
+- **Subtipos**:
+  - `CALL`: Chamada a outra função/procedure
+  - `CONDICIONAL`: IF, CASE, SWITCH
+  - `LACO`: FOR, WHILE, LOOP
+  - `TRANSFORMACAO`: Cálculos, conversões, formatações
+  - `ATRIBUICAO`: Passagem de valores, atribuições
+
+### QUERY
+- Representa uma operação SQL no código legado
+- **ID**: `QUERY-NNNN`
+- **Objeto_Pai**: nome do método onde está
+- **Tipo_Objeto_Pai**: `METODO` ou `FUNCAO_TELA`
+- **Campos preenchidos**: `Objeto_Pai`, `Tipo_Objeto_Pai`, `Descricao_Breve`, `Ref_Legado_*`, todos os status
+- **Formato Descrição**: `[TIPO_SQL]: [Tabela] - [Detalhes]`
+- **Tipos SQL**:
+  - `SELECT`: Consulta de dados
+  - `INSERT`: Inserção de dados
+  - `UPDATE`: Atualização de dados
+  - `DELETE`: Exclusão de dados
+  - `EXEC`: Execução de stored procedure
+  - `MERGE`: Operação de merge/upsert
+
+### ENTIDADE
+- Representa uma tabela, view ou entidade de dados
+- **ID**: `ENT-NNNN`
+- **Objeto_Pai**: vazio (ou schema/database)
+- **Tipo_Objeto_Pai**: vazio (ou `SCHEMA`)
+- **Campos preenchidos**: `Descricao_Breve`, `Ref_Legado_*`, todos os status
+
+### CAMPO
+- Representa um campo/coluna de uma entidade
+- **ID**: `CAMPO-NNNN`
+- **Objeto_Pai**: nome da entidade/tabela
+- **Tipo_Objeto_Pai**: `ENTIDADE`
+- **Campos preenchidos**: `Objeto_Pai`, `Tipo_Objeto_Pai`, `Descricao_Breve`, `Ref_Legado_*`
+
+## 🔢 Sistema de IDs
+
+### Formato
+- Padrão: `[PREFIXO]-[NÚMERO]`
+- Número: 4 dígitos com zero à esquerda (0001-9999)
+- Exemplos: `TELA-0001`, `REGRA-0123`, `ENT-0042`, `QUERY-0056`
+
+### Prefixos
+
+| Tipo | Prefixo | Faixa |
+|------|---------|-------|
+| TELA | `TELA-` | 0001-0999 |
+| OBJETO | `OBJ-` | 0001-4999 |
+| FUNCAO_TELA | `FTELA-` | 0001-4999 |
+| METODO | `METOD-` | 0001-2999 |
+| REGRA | `REGRA-` | 0001-9999 |
+| QUERY | `QUERY-` | 0001-9999 |
+| ENTIDADE | `ENT-` | 0001-0999 |
+| CAMPO | `CAMPO-` | 0001-9999 |
+
+### Regras de Unicidade
+- **NUNCA** duplicar IDs
+- **SEMPRE** verificar o último ID usado antes de criar um novo
+- IDs são sequenciais dentro de cada tipo
+- IDs deletados **NÃO** são reutilizados
+
+## 📝 Status
+
+### Valores Permitidos
+
+| Status | Significado | Quando Usar |
+|--------|-------------|-------------|
+| `NA` | Não Aplicável | Quando o campo não faz sentido para aquele tipo de objeto |
+| `OK` | Concluído/Aprovado | Quando a fase está completa e validada |
+| `NOK` | Pendente/Não Concluído | Quando a fase não foi iniciada ou está incompleta |
+
+### Status por Tipo
+
+#### Status_Documentacao
+- `OK`: Elemento está documentado com descrição e abordagem clara
+- `NOK`: Elemento identificado mas sem documentação completa
+- `NA`: Elementos de baixo nível que não requerem documentação (ex: campos simples)
+
+#### Status_Implementacao
+- `OK`: Código moderno implementado e funcionando
+- `NOK`: Ainda não implementado ou implementação incompleta
+- `NA`: Elementos que não requerem implementação (ex: documentação de contexto)
+
+#### Status_Teste_Unitario
+- `OK`: Testes unitários escritos e passando
+- `NOK`: Sem testes ou testes falhando
+- `NA`: Elementos que não são testáveis unitariamente (ex: telas, objetos visuais)
+
+## 🔄 Processo de Rastreamento
+
+### 1. Análise do Código Legado
+
+Quando analisar um arquivo legado, identificar e registrar:
+
+#### Telas/Formulários
+```csv
+TELA-0001;TELA;;;Tela principal de gestão financeira;_LEGADO/vgfna.esf;1-50;;;NOK;NOK;NA;;
+```
+
+#### Objetos de Tela
+```csv
+OBJ-0001;OBJETO;VGFNA;TELA;Botão para incluir novo registro;_LEGADO/vgfna.esf;125;;;NOK;NOK;NA;;
+OBJ-0002;OBJETO;VGFNA;TELA;Grid principal de listagem;_LEGADO/vgfna.esf;150-200;;;NOK;NOK;NA;;
+```
+
+#### Funções de Tela
+```csv
+FTELA-0001;FUNCAO_TELA;BTN_Incluir;OBJETO;Evento de clique do botão incluir;_LEGADO/vgfna.esf;126-145;;;NOK;NOK;NOK;;
+```
+
+#### Métodos/Procedures
+```csv
+METOD-0001;METODO;;;Calcula o total dos valores;_LEGADO/vgfna.esf;500-550;;;NOK;NOK;NOK;va2va_funcoes_regras_negocio.md;120-145
+```
+
+#### Regras de Negócio
+```csv
+REGRA-0001;REGRA;fnCalculaTotal;METODO;CALL: fnValidaValor - Valida valor antes de calcular;_LEGADO/vgfna.esf;505;;;NOK;NOK;NOK;va2va_funcoes_regras_negocio.md;200-205
+REGRA-0002;REGRA;fnCalculaTotal;METODO;CONDICIONAL: valor>0 - Valida se valor é positivo;_LEGADO/vgfna.esf;510;;;NOK;NOK;NOK;va2va_funcoes_regras_negocio.md;206-210
+REGRA-0003;REGRA;fnCalculaTotal;METODO;LACO: FOR - Itera sobre itens para somar;_LEGADO/vgfna.esf;515-530;;;NOK;NOK;NOK;va2va_funcoes_regras_negocio.md;211-220
+REGRA-0004;REGRA;fnCalculaTotal;METODO;TRANSFORMACAO: SUM - Soma valores dos itens;_LEGADO/vgfna.esf;520;;;NOK;NOK;NOK;va2va_funcoes_regras_negocio.md;221-225
+```
+
+#### Queries SQL
+```csv
+QUERY-0001;QUERY;fnListaUsuarios;METODO;SELECT: TB_USUARIO - Busca usuários ativos ordenados por nome;_LEGADO/vgfna.esf;1200-1205;;;NOK;NOK;NOK;va2va_funcoes_regras_negocio.md;300-310
+QUERY-0002;QUERY;fnInsereUsuario;METODO;INSERT: TB_USUARIO (NOME, EMAIL, CPF) - Insere novo usuário;_LEGADO/vgfna.esf;1500-1505;;;NOK;NOK;NOK;va2va_funcoes_regras_negocio.md;350-360
+QUERY-0003;QUERY;fnAtualizaUsuario;METODO;UPDATE: TB_USUARIO SET NOME, EMAIL - Atualiza dados do usuário;_LEGADO/vgfna.esf;1600-1605;;;NOK;NOK;NOK;va2va_funcoes_regras_negocio.md;370-380
+```
+
+#### Entidades e Campos
+```csv
+ENT-0001;ENTIDADE;;;Tabela principal financeira;_LEGADO/vgfna.esf;600;;;OK;OK;NA;;
+CAMPO-0001;CAMPO;TB_FINANCEIRO;ENTIDADE;ID do registro financeiro;_LEGADO/vgfna.esf;600;;;OK;OK;NA;;
+CAMPO-0002;CAMPO;TB_FINANCEIRO;ENTIDADE;Valor do registro;_LEGADO/vgfna.esf;601;;;OK;OK;NA;;
+```
+
+### 2. Documentação da Abordagem
+
+Quando documentar a abordagem de migração:
+- Atualizar `Ref_Doc_AsIs` com arquivo de documentação As-Is (análise do legado)
+- Atualizar `Ref_Doc_AsIs_Linhas` com linhas relevantes no documento As-Is
+- Atualizar `Desc_Abordagem` com resumo da estratégia
+- Atualizar `Ref_Doc_Abordagem` com o arquivo de documentação To-Be (solução)
+- Atualizar `Ref_Doc_Linhas` com as linhas relevantes no documento To-Be
+- Atualizar `Status_Documentacao` para `OK`
+
+```csv
+FTELA-0001;FUNCAO_TELA;BTN_Incluir;OBJETO;Evento de clique do botão incluir;_LEGADO/vgfna.esf;126-145;Migrar para Controller POST /Financeiro/incluir;VA2VA_TELAS_DOCUMENTACAO.md;45-67;OK;NOK;NOK;va2va_funcoes_regras_negocio.md;100-120
+```
+
+### 3. Implementação
+
+Quando implementar a solução moderna:
+- Atualizar `Status_Implementacao` para `OK`
+- Adicionar referência ao código implementado em `Desc_Abordagem`
+
+```csv
+FTELA-0001;FUNCAO_TELA;BTN_Incluir;OBJETO;Evento de clique do botão incluir;_LEGADO/vgfna.esf;126-145;Implementado em FinanceiroController.Incluir() + useCreateFinanceiro hook;VA2VA_TELAS_DOCUMENTACAO.md;45-67;OK;OK;NOK;va2va_funcoes_regras_negocio.md;100-120
+```
+
+### 4. Testes Unitários
+
+Quando criar testes:
+- Atualizar `Status_Teste_Unitario` para `OK` (ou `NA` se não aplicável)
+
+```csv
+METOD-0001;METODO;;;Calcula o total dos valores;_LEGADO/vgfna.esf;500-550;FinanceiroViewModel.CalcularTotal() com testes em FinanceiroViewModelTests.cs;va2va_funcoes_regras_negocio.md;120-145;OK;OK;OK;va2va_funcoes_regras_negocio.md;80-119
+```
+
+## 📚 Documentação As-Is vs To-Be
+
+A matriz rastreia **dois tipos** de documentação:
+
+### Documento As-Is (Situação Atual)
+- **Campos**: `Ref_Doc_AsIs`, `Ref_Doc_AsIs_Linhas`
+- **Propósito**: Documentação da análise do sistema legado (como está)
+- **Conteúdo**: 
+  - Análise detalhada do código legado
+  - Fluxos e comportamentos atuais
+  - Regras de negócio identificadas
+  - Dependências e relacionamentos
+- **Exemplo**: `va2va_funcoes_regras_negocio.md`
+
+### Documento To-Be (Solução Futura)
+- **Campos**: `Ref_Doc_Abordagem`, `Ref_Doc_Linhas`
+- **Propósito**: Documentação da solução moderna (como será)
+- **Conteúdo**:
+  - Especificação da arquitetura moderna
+  - Mapeamento legado → moderno
+  - Decisões de design
+  - Implementação proposta
+- **Exemplo**: `VA2VA_TELAS_DOCUMENTACAO.md`, `migration/backend/04_BUSINESS_LOGIC.md`
+
+### Relação entre As-Is e To-Be
+
+```
+Código Legado (vgfna.esf)
+    ↓
+Doc As-Is (análise) ──→ Ref_Doc_AsIs
+    ↓
+Mapeamento/Gap Analysis
+    ↓
+Doc To-Be (solução) ──→ Ref_Doc_Abordagem
+    ↓
+Implementação Moderna
+```
+
+## 🔗 Hierarquia e Relacionamentos
+
+### Estrutura Hierárquica
+
+A matriz representa uma estrutura hierárquica através dos campos `Objeto_Pai` e `Tipo_Objeto_Pai`:
+
+```
+TELA (sem pai)
+  ├── OBJETO (pai: TELA)
+  │   └── FUNCAO_TELA (pai: OBJETO)
+  │       ├── REGRA (pai: FUNCAO_TELA)
+  │       └── QUERY (pai: FUNCAO_TELA)
+  └── FUNCAO_TELA (pai: TELA)
+      ├── REGRA (pai: FUNCAO_TELA)
+      └── QUERY (pai: FUNCAO_TELA)
+
+METODO (sem pai ou pai: MÓDULO)
+  ├── REGRA (pai: METODO)
+  └── QUERY (pai: METODO)
+
+ENTIDADE (sem pai)
+  └── CAMPO (pai: ENTIDADE)
+```
+
+### Exemplo de Rastreamento Hierárquico
+
+```csv
+TELA-0001;TELA;;;Tela principal de gestão financeira;_LEGADO/vgfna.esf;1-50;;;OK;NOK;NA;VA2VA_TELAS_DOCUMENTACAO.md;10-40
+OBJ-0001;OBJETO;VGFNA;TELA;Botão incluir novo registro;_LEGADO/vgfna.esf;125;;;OK;NOK;NA;VA2VA_TELAS_DOCUMENTACAO.md;45-50
+FTELA-0001;FUNCAO_TELA;BTN_Incluir;OBJETO;Evento clique botão incluir;_LEGADO/vgfna.esf;126-145;;;OK;NOK;NOK;va2va_funcoes_regras_negocio.md;60-80
+REGRA-0001;REGRA;OnIncluir;FUNCAO_TELA;CALL: fnValidaUsuario - Valida usuário antes de incluir;_LEGADO/vgfna.esf;130;;;OK;NOK;NOK;va2va_funcoes_regras_negocio.md;85-90
+QUERY-0001;QUERY;OnIncluir;FUNCAO_TELA;INSERT: TB_USUARIO - Insere novo usuário no banco;_LEGADO/vgfna.esf;135;;;OK;NOK;NOK;va2va_funcoes_regras_negocio.md;95-105
+```
+
+Neste exemplo:
+- A tela `VGFNA` não tem pai
+- O botão `BTN_Incluir` pertence à tela `VGFNA`
+- A função `OnIncluir` pertence ao botão `BTN_Incluir`
+- Uma regra e uma query pertencem à função `OnIncluir`
+
+## 🚨 Regras Críticas
+
+### NUNCA:
+- ❌ Criar IDs duplicados
+- ❌ Pular elementos do código legado
+- ❌ Atualizar a matriz sem autorização do usuário
+- ❌ Usar vírgula como separador (usar `;`)
+- ❌ Deixar campos obrigatórios vazios
+- ❌ Misturar conceitos em uma única linha
+- ❌ Esquecer de preencher `Objeto_Pai` quando aplicável
+
+### SEMPRE:
+- ✅ Verificar o último ID antes de criar um novo
+- ✅ Preencher `Objeto_Pai` e `Tipo_Objeto_Pai` para manter hierarquia
+- ✅ Usar formato de referência consistente (arquivo:linhas)
+- ✅ Manter descrições concisas (máx. 200 caracteres)
+- ✅ Usar prefixo no início da descrição para REGRA e QUERY (CALL:, SELECT:, etc.)
+- ✅ Preencher `Ref_Doc_AsIs` quando houver documentação de análise do legado
+- ✅ Preencher `Ref_Doc_Abordagem` quando houver documentação da solução moderna
+- ✅ Verificar completude após análise de arquivo legado
+- ✅ Perguntar ao usuário antes de atualizar a matriz
+
+## 📊 Garantia de Completude
+
+### Checklist por Arquivo Legado
+
+Ao finalizar análise de um arquivo, verificar:
+
+- [ ] Todas as telas/formulários identificadas e registradas
+- [ ] Todos os objetos visuais relevantes registrados
+- [ ] Todas as funções/eventos de tela registrados
+- [ ] Todas as funções/procedures/métodos registrados
+- [ ] Todas as regras de negócio (calls, condicionais, laços, transformações) registradas
+- [ ] Todas as queries SQL (SELECT, INSERT, UPDATE, DELETE, EXEC) registradas
+- [ ] Todas as entidades de dados identificadas
+- [ ] Campos relevantes das entidades registrados
+- [ ] Hierarquia (Objeto_Pai) preenchida corretamente
+- [ ] Nenhum ID duplicado
+- [ ] Todos os status preenchidos corretamente
+- [ ] `Ref_Doc_AsIs` preenchido quando existe análise documentada do legado
+- [ ] `Ref_Doc_Abordagem` preenchido quando existe documentação da solução
+
+### Validação de Integridade
+
+Antes de considerar um arquivo completo:
+
+1. **Contagem de elementos**: Comparar com análise manual
+2. **Cobertura de linhas**: Verificar se todas as áreas do código foram cobertas
+3. **Relacionamentos**: Verificar se `Objeto_Pai` referencia objetos existentes
+4. **Hierarquia**: Validar se a hierarquia faz sentido lógico
+5. **Referências**: Validar se todas as referências de arquivo/linhas estão corretas
+
+## 🔧 Comandos e Operações
+
+### Criar Nova Matriz
+```bash
+# Criar arquivo com header atualizado
+echo "Id;Tipo;Objeto_Pai;Tipo_Objeto_Pai;Descricao_Breve;Ref_Legado_Arquivo;Ref_Legado_Linhas;Desc_Abordagem;Ref_Doc_Abordagem;Ref_Doc_Linhas;Status_Documentacao;Status_Implementacao;Status_Teste_Unitario;Ref_Doc_AsIs;Ref_Doc_AsIs_Linhas" > MATRIZ_RASTREABILIDADE.csv
+```
+
+### Obter Próximo ID
+```bash
+# Sempre ler a matriz inteira e identificar o maior ID para cada tipo
+# Incrementar +1 para o próximo
+```
+
+### Adicionar Entrada
+```csv
+# Sempre adicionar no final do arquivo
+# Sempre validar unicidade do ID antes
+# Sempre verificar se Objeto_Pai existe (quando aplicável)
+```
+
+## 📈 Relatórios e Métricas
+
+### Métricas de Progresso
+
+Calcular periodicamente:
+
+```
+% Documentação = (Count(Status_Documentacao='OK') / Count(Status_Documentacao!='NA')) * 100
+% Implementação = (Count(Status_Implementacao='OK') / Count(Status_Implementacao!='NA')) * 100
+% Testes = (Count(Status_Teste_Unitario='OK') / Count(Status_Teste_Unitario!='NA')) * 100
+% Geral = Média das três métricas acima
+```
+
+### Relatório de Pendências
+
+Itens NOK por tipo:
+```
+SELECT Tipo, COUNT(*) 
+FROM matriz 
+WHERE Status_Documentacao='NOK' OR Status_Implementacao='NOK' OR Status_Teste_Unitario='NOK'
+GROUP BY Tipo
+```
+
+### Análise de Hierarquia
+
+Verificar elementos órfãos (sem pai quando deveriam ter):
+```
+SELECT Id, Tipo, Descricao_Breve
+FROM matriz
+WHERE Tipo IN ('OBJETO', 'FUNCAO_TELA', 'REGRA', 'QUERY', 'CAMPO')
+  AND (Objeto_Pai IS NULL OR Objeto_Pai = '')
+```
+
+## 🤝 Interação com o Usuário
+
+### Antes de Atualizar a Matriz
+
+**SEMPRE** perguntar:
+```
+Deseja atualizar a MATRIZ_RASTREABILIDADE.csv com as seguintes entradas:
+- [ID]: [Descrição] (pai: [Objeto_Pai])
+- [ID]: [Descrição] (pai: [Objeto_Pai])
+...
+
+Total: N entradas
+  - Telas: N
+  - Objetos: N
+  - Funções: N
+  - Métodos: N
+  - Regras: N
+  - Queries: N
+  - Entidades: N
+  - Campos: N
+
+Confirma? (s/n)
+```
+
+### Ao Detectar Duplicatas
+
+**SEMPRE** alertar:
+```
+⚠️ AVISO: ID [ID] já existe na matriz!
+- Entrada existente: [Descrição da entrada existente]
+- Nova entrada: [Descrição da nova entrada]
+
+Ações possíveis:
+1. Gerar novo ID
+2. Atualizar entrada existente
+3. Cancelar operação
+
+Qual ação deseja realizar?
+```
+
+### Ao Detectar Pai Inexistente
+
+**SEMPRE** alertar:
+```
+⚠️ AVISO: Objeto_Pai [NOME] não encontrado na matriz!
+- Entrada: [ID] - [Descrição]
+- Tipo esperado do pai: [Tipo_Objeto_Pai]
+
+Ações possíveis:
+1. Criar objeto pai primeiro
+2. Corrigir nome do objeto pai
+3. Cancelar operação
+
+Qual ação deseja realizar?
+```
+
+### Ao Finalizar Análise de Arquivo
+
+**SEMPRE** apresentar resumo:
+```
+✅ Análise do arquivo [arquivo] concluída!
+
+Resumo:
+- Telas: N
+- Objetos: N
+- Funções de Tela: N
+- Métodos: N
+- Regras de Negócio: N
+- Queries SQL: N
+  - SELECT: N
+  - INSERT: N
+  - UPDATE: N
+  - DELETE: N
+- Entidades: N
+- Campos: N
+
+Total de entradas: N
+
+Hierarquia validada: [SIM/NÃO]
+Elementos órfãos detectados: N
+
+Deseja adicionar estas entradas à matriz? (s/n)
+```
+
+## 🎯 Exemplo Completo
+
+```csv
+Id;Tipo;Objeto_Pai;Tipo_Objeto_Pai;Descricao_Breve;Ref_Legado_Arquivo;Ref_Legado_Linhas;Desc_Abordagem;Ref_Doc_Abordagem;Ref_Doc_Linhas;Status_Documentacao;Status_Implementacao;Status_Teste_Unitario;Ref_Doc_AsIs;Ref_Doc_AsIs_Linhas
+TELA-0001;TELA;;;Tela principal de gestão financeira;_LEGADO/vgfna.esf;1-50;Migrar para módulo Financeiro com CRUD completo;VA2VA_TELAS_DOCUMENTACAO.md;1-45;OK;NOK;NA;VA2VA_TELAS_DOCUMENTACAO.md;1-30
+OBJ-0001;OBJETO;VGFNA;TELA;Botão incluir novo registro;_LEGADO/vgfna.esf;125;Botão React com shadcn/ui;VA2VA_TELAS_DOCUMENTACAO.md;50-55;OK;OK;NA;VA2VA_TELAS_DOCUMENTACAO.md;35-40
+FTELA-0001;FUNCAO_TELA;BTN_Incluir;OBJETO;Evento clique botão incluir;_LEGADO/vgfna.esf;126-145;POST /Financeiro/incluir + useCreateFinanceiro;VA2VA_TELAS_DOCUMENTACAO.md;56-78;OK;OK;OK;va2va_funcoes_regras_negocio.md;50-75
+METOD-0001;METODO;;;Calcula total dos valores;_LEGADO/vgfna.esf;500-550;FinanceiroViewModel.CalcularTotal();va2va_funcoes_regras_negocio.md;100-150;OK;OK;OK;va2va_funcoes_regras_negocio.md;50-99
+REGRA-0001;REGRA;fnCalculaTotal;METODO;CALL: fnValidaValor - Valida valor antes calcular;_LEGADO/vgfna.esf;505;ValidarValor() em CreateFinanceiroViewModel;va2va_funcoes_regras_negocio.md;105-110;OK;OK;OK;va2va_funcoes_regras_negocio.md;52-55
+REGRA-0002;REGRA;fnCalculaTotal;METODO;CONDICIONAL: valor>0 - Valida valor positivo;_LEGADO/vgfna.esf;510;if (valor <= 0) throw new InvalidOperationException;va2va_funcoes_regras_negocio.md;111-115;OK;OK;OK;va2va_funcoes_regras_negocio.md;56-60
+REGRA-0003;REGRA;fnCalculaTotal;METODO;LACO: FOR - Itera itens para somar;_LEGADO/vgfna.esf;515-530;LINQ Sum() ou loop foreach;va2va_funcoes_regras_negocio.md;116-125;OK;OK;OK;va2va_funcoes_regras_negocio.md;61-70
+QUERY-0001;QUERY;fnListaFinanceiros;METODO;SELECT: TB_FINANCEIRO WHERE ATIVO=1 - Busca registros ativos;_LEGADO/vgfna.esf;600-605;FinanceiroRepository.GetAllActive(dataInicio) usando Dapper;va2va_funcoes_regras_negocio.md;160-175;OK;OK;OK;va2va_funcoes_regras_negocio.md;130-140
+QUERY-0002;QUERY;fnInsereFinanceiro;METODO;INSERT: TB_FINANCEIRO (VALOR, DATA, DESCRICAO) - Insere registro;_LEGADO/vgfna.esf;700-705;FinanceiroRepository.Save() com OUTPUT INSERTED.ID;va2va_funcoes_regras_negocio.md;180-190;OK;OK;OK;va2va_funcoes_regras_negocio.md;145-155
+ENT-0001;ENTIDADE;;;Tabela financeira principal;_LEGADO/vgfna.esf;50;Entidade Financeiro no Domain;VA2VA_TELAS_DOCUMENTACAO.md;200-210;OK;OK;NA;VA2VA_TELAS_DOCUMENTACAO.md;180-190
+CAMPO-0001;CAMPO;TB_FINANCEIRO;ENTIDADE;ID registro financeiro;_LEGADO/vgfna.esf;51;Propriedade Id em Financeiro;VA2VA_TELAS_DOCUMENTACAO.md;205;OK;OK;NA;VA2VA_TELAS_DOCUMENTACAO.md;185
+CAMPO-0002;CAMPO;TB_FINANCEIRO;ENTIDADE;Valor do registro;_LEGADO/vgfna.esf;52;Propriedade Valor (decimal) em Financeiro;VA2VA_TELAS_DOCUMENTACAO.md;206;OK;OK;NA;VA2VA_TELAS_DOCUMENTACAO.md;186
+CAMPO-0003;CAMPO;TB_FINANCEIRO;ENTIDADE;Data do registro;_LEGADO/vgfna.esf;53;Propriedade Data (DateTime) em Financeiro;VA2VA_TELAS_DOCUMENTACAO.md;207;OK;OK;NA;VA2VA_TELAS_DOCUMENTACAO.md;187
+```
+
+## 📝 Guia de Preenchimento dos Campos de Documentação
+
+### Quando Preencher Ref_Doc_AsIs
+
+Preencher quando existir documentação de **análise do sistema legado**:
+
+**Documentos As-Is típicos:**
+- `va2va_funcoes_regras_negocio.md` - Análise de funções e regras
+- `VA2VA_TELAS_DOCUMENTACAO.md` - Análise de telas e objetos
+- Documentos de análise de fluxos legados
+- Documentação de reverse engineering
+
+**Exemplo:**
+```csv
+METOD-0001;METODO;;;CB2QP000 - Processo inicial;_LEGADO/cb2qa.esf;3655-3684;;;;;NOK;NOK;NOK;va2va_funcoes_regras_negocio.md;100-150
+```
+
+### Quando Preencher Ref_Doc_Abordagem
+
+Preencher quando existir documentação da **solução moderna proposta**:
+
+**Documentos To-Be típicos:**
+- `migration/backend/01_DOMAIN_MODEL.md` - Especificação do domínio
+- `migration/backend/04_BUSINESS_LOGIC.md` - ViewModels e regras
+- `migration/backend/06_API_LAYER.md` - Controllers e endpoints
+- Documentos de arquitetura da solução
+
+**Exemplo:**
+```csv
+METOD-0001;METODO;;;CB2QP000 - Processo inicial;_LEGADO/cb2qa.esf;3655-3684;Migrar para InitializeViewModel;migration/backend/04_BUSINESS_LOGIC.md;50-80;OK;NOK;NOK;va2va_funcoes_regras_negocio.md;100-150
+```
+
+### Fluxo de Documentação Completo
+
+```
+1. Análise Inicial (As-Is)
+   ↓
+   Preencher: Ref_Doc_AsIs, Ref_Doc_AsIs_Linhas
+   Status_Documentacao = NOK
+
+2. Documentação da Solução (To-Be)
+   ↓
+   Preencher: Desc_Abordagem, Ref_Doc_Abordagem, Ref_Doc_Linhas
+   Status_Documentacao = OK
+
+3. Implementação
+   ↓
+   Atualizar: Desc_Abordagem (adicionar detalhes da implementação)
+   Status_Implementacao = OK
+
+4. Testes
+   ↓
+   Status_Teste_Unitario = OK
+```
+
+---
+
+**Versão**: 2.2  
+**Última Atualização**: 2025-12-04  
+**Changelog**: 
+- v2.2: Alterado separador de vírgula (`,`) para ponto e vírgula (`;`) para facilitar uso de vírgulas em descrições
+- v2.1: Adicionados campos Ref_Doc_AsIs e Ref_Doc_AsIs_Linhas para rastreamento de documentação As-Is
+- v2.0: Estrutura simplificada com hierarquia através de Objeto_Pai e Tipo_Objeto_Pai

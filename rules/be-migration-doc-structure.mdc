@@ -1,0 +1,94 @@
+---
+description: Estrutura padrão para documentação de migração de sistemas legados
+globs: ["docs/backend/**/*.md"]
+alwaysApply: false
+---
+
+# Estrutura de Documentação de Migração
+
+## Particionamento Obrigatório
+
+A documentação de migração DEVE ser particionada em 14 documentos:
+
+### Core (Obrigatórios)
+1. **01_DOMAIN_MODEL.md** - Entidades, DTOs, interfaces de domínio
+2. **02_DATABASE_SCHEMA.md** - Estrutura física do banco de dados
+3. **03_INFRASTRUCTURE_LAYER.md** - Repositories e Proxy Clients
+4. **04_BUSINESS_LOGIC.md** - ViewModels e regras de negócio
+5. **05_APPLICATION_SERVICES.md** - Services de orquestração
+6. **06_API_LAYER.md** - Controllers e endpoints
+7. **07_DEPENDENCY_INJECTION.md** - Configuração de DI
+8. **08_CONFIGURATION.md** - appsettings e configurações
+9. **09_USE_CASES_FLOWS.md** - Fluxos end-to-end
+10. **10_TESTING_STRATEGY.md** - Estratégia de testes
+
+### Adicionais (Críticos)
+11. **11_SECURITY_AUTH.md** - Autenticação e autorização
+12. **12_OBSERVABILITY.md** - Logging e monitoramento
+13. **13_DATA_MIGRATION.md** - Migração de dados
+14. **14_PERFORMANCE.md** - Otimizações e cache
+
+## Ordem de Implementação
+
+Seguir estritamente esta ordem:
+1. Domain → 2. Database → 3. Infrastructure → 4. Business Logic → 5. Application → 6. API → 7. DI → 8. Config → 9. Security → 10. Testing → 11. Observability → 12. Data Migration → 13. Performance → 14. Use Cases
+
+## Template de Documento
+
+Cada documento DEVE conter:
+
+```markdown
+# [NN] - [TÍTULO]
+
+## Objetivo
+[Objetivo claro e específico deste documento]
+
+## Mapeamento de Legado
+### Origem
+- **ID Matriz**: `[TIPO]-[NUM]` (ex: METOD-0001, ENT-0003)
+- **Programa legado**: [identificador]
+- **Arquivos**: [lista]
+- **Linhas**: [ranges]
+- **Descrição**: [descrição breve do elemento legado]
+
+### Destino
+- **Camada**: [Domain/Infrastructure/Application/API]
+- **Namespace**: [namespace completo]
+- **Arquivos**: [lista de arquivos a criar]
+
+## Especificação Técnica
+[Detalhamento técnico específico com IDs da matriz referenciados]
+
+### [Nome do Componente]
+**Rastreabilidade**:
+- **ID Matriz**: `[TIPO]-[NUM]`
+- **IDs Relacionados**: `[TIPO]-[NUM]`, `[TIPO]-[NUM]`
+- **Status Documentação**: [NOT_STARTED/IN_PROGRESS/COMPLETED]
+- **Status Implementação**: [NOT_STARTED/IN_PROGRESS/COMPLETED]
+
+[Código e especificação...]
+
+## Dependências
+- Documentos anteriores: [lista]
+- Documentos relacionados: [lista]
+- IDs da Matriz dependentes: `[TIPO]-[NUM]`, `[TIPO]-[NUM]`
+
+## Checklist de Implementação
+- [ ] Item 1
+- [ ] Item 2
+- [ ] **OBRIGATÓRIO**: Todos elementos têm ID da matriz referenciado
+- [ ] **OBRIGATÓRIO**: Status na matriz atualizado
+
+## Rastreabilidade Completa
+### IDs da Matriz Abordados neste Documento
+| ID Matriz | Tipo | Descrição | Status Doc | Status Impl | Status Teste |
+|-----------|------|-----------|------------|-------------|--------------|
+| [ID] | [TIPO] | [Descrição] | [Status] | [Status] | [Status] |
+```
+
+## Convenções de Nomenclatura
+
+- Documentos: `NN_SCREAMING_SNAKE_CASE.md` (NN = 01-14)
+- Seções: `## Title Case`
+- Código inline: `` `PascalCase` `` ou `` `camelCase` ``
+- Referências cruzadas: `[Doc NN]` ou `@NN_NOME_DOC`

@@ -1,0 +1,304 @@
+---
+globs: [ "docs/backend/**/*"]
+alwaysApply: false
+---
+# Guia Mestre de Migração de Legado
+
+## Visão Geral
+
+Este guia define o processo completo de documentação para migração de sistemas legados (mainframe/COBOL) para arquitetura moderna .NET Core.
+
+## Arquivos de Regras
+
+1. **migration-doc-structure.mdc** - Estrutura dos 14 documentos obrigatórios
+2. **legacy-mapping-patterns.mdc** - Padrões de mapeamento legado → moderno
+3. **domain-layer-docs.mdc** - Documentação da camada Domain
+4. **infrastructure-layer-docs.mdc** - Documentação da camada Infrastructure
+5. **application-business-docs.mdc** - Documentação de Application e Business Logic
+6. **api-layer-docs.mdc** - Documentação da camada API
+7. **database-testing-docs.mdc** - Documentação de Database e Testing
+8. **additional-aspects-docs.mdc** - Security, Observability, Data Migration, Performance
+9. **di-config-flows-docs.mdc** - DI, Configuration e Use Cases
+
+## Estrutura de Documentação (14 Documentos)
+
+### Core Backend (10)
+1. **01_DOMAIN_MODEL.md** - Entities, DTOs, Interfaces
+2. **02_DATABASE_SCHEMA.md** - DDL, Migrations, Índices
+3. **03_INFRASTRUCTURE_LAYER.md** - Repositories, Proxy Clients
+4. **04_BUSINESS_LOGIC.md** - ViewModels, Regras de Negócio
+5. **05_APPLICATION_SERVICES.md** - Services, Orquestração
+6. **06_API_LAYER.md** - Controllers, Endpoints
+7. **07_DEPENDENCY_INJECTION.md** - DI Configuration
+8. **08_CONFIGURATION.md** - appsettings, Options Pattern
+9. **09_USE_CASES_FLOWS.md** - Fluxos end-to-end, Casos de Uso
+10. **10_TESTING_STRATEGY.md** - Testes Unitários e Integração
+
+### Aspectos Críticos (4)
+11. **11_SECURITY_AUTH.md** - Autenticação, Autorização, Validação
+12. **12_OBSERVABILITY.md** - Logging, Health Checks, APM
+13. **13_DATA_MIGRATION.md** - ETL, Validação, Rollback
+14. **14_PERFORMANCE.md** - Índices, Cache, Otimizações
+
+## Fluxo de Trabalho
+
+### Fase 1: Análise de Legado
+1. Identificar programa/sistema legado
+2. Extrair metadados (tabelas, campos, procedures)
+3. Mapear dependências (CALLs, tabelas, arquivos)
+4. Documentar regras de negócio
+5. Criar matriz de rastreabilidade
+
+### Fase 2: Documentação (Ordem de Criação)
+1. **Domain** (01) - Definir entidades e contratos
+2. **Database** (02) - Estrutura física
+3. **Infrastructure** (03) - Implementar acesso a dados
+4. **Business Logic** (04) - Migrar regras de negócio
+5. **Application** (05) - Criar orquestração
+6. **API** (06) - Expor endpoints
+7. **DI** (07) - Conectar dependências
+8. **Configuration** (08) - Parametrização
+9. **Security** (11) - Proteger aplicação
+10. **Testing** (10) - Validar funcionalidades
+11. **Observability** (12) - Monitorar aplicação
+12. **Data Migration** (13) - Migrar dados
+13. **Performance** (14) - Otimizar
+14. **Use Cases** (09) - Validar end-to-end
+
+### Fase 3: Implementação
+Para cada documento:
+1. Criar interfaces (Domain)
+2. Implementar classes concretas
+3. Registrar em DI
+4. Escrever testes unitários
+5. Atualizar matriz de rastreabilidade
+
+### Fase 4: Validação
+1. Executar testes unitários (cobertura >= 70%)
+2. Executar testes de integração
+3. Validar migração de dados
+4. Realizar testes de performance
+5. Validar casos de uso end-to-end
+
+## Princípios Fundamentais
+
+### Arquitetura em Camadas
+```
+API → IOC → Application + Infra → Domain
+```
+
+**Regras de Dependência**:
+- Domain: Sem dependências externas
+- Infrastructure: Depende apenas de Domain
+- Application: Depende apenas de Domain
+- IOC: Conecta Application + Infrastructure
+- API: Depende apenas de IOC
+
+### Padrões Obrigatórios
+
+#### 1. Primary Constructors (SEMPRE)
+```csharp
+public class UserService(ICreateUserViewModel viewModel) : IUserService
+```
+
+#### 2. AppResponse<T> (SEMPRE em Services)
+```csharp
+public async Task<AppResponse<T>> Method()
+```
+
+#### 3. Async/Await (SEMPRE)
+```csharp
+public async Task<T> Method() => await repository.Get();
+```
+
+#### 4. Dapper com Parâmetros (SEMPRE)
+```csharp
+const string sql = "SELECT * FROM Users WHERE Id = @Id";
+await connection.QueryAsync<User>(sql, new { Id = id });
+```
+
+#### 5. Event Logging (SEMPRE em ViewModels)
+```csharp
+await eventRepository.SaveEvent(new Event { ... });
+```
+
+### Nomenclatura
+
+#### Backend
+- **Projetos**: `<Cliente>.Web.<Projeto>.<Camada>`
+- **Namespaces**: `<Cliente>.Web.<Projeto>.<Camada>.<SubPasta>`
+- **Interfaces**: `I[Nome]`
+- **Implementação**: `[Nome]`
+
+#### Rotas API
+- **Controller**: PascalCase português (`Usuario`)
+- **Endpoint**: camelCase português (`criar`)
+- **Pattern**: `/[Entidade]/[operacao]`
+
+#### Arquivos
+- **C#**: `PascalCase.cs`
+- **Docs**: `NN_SCREAMING_SNAKE_CASE.md`
+
+## Matriz de Rastreabilidade ⚠️ **CRÍTICO**
+
+### Regra Fundamental
+
+**TODA** especificação, código ou documentação **DEVE** incluir o ID correspondente da `MATRIZ_RASTREABILIDADE.csv`.
+
+### Estrutura da Matriz
+
+Cada elemento mapeado deve ter entrada na matriz:
+
+| Campo | Descrição | Exemplo |
+|-------|-----------|---------|
+| Id | Identificador único | METOD-0001, ENT-0003, TELA-0001 |
+| Tipo | METODO/ENTIDADE/TELA/OBJETO/QUERY/REGRA | METODO |
+| Objeto_Pai | Contexto hierárquico | CB2QP005 |
+| Tipo_Objeto_Pai | Tipo do pai | PROGRAM |
+| Descricao_Breve | Resumo | Criar usuário |
+| Ref_Legado_Arquivo | Arquivo fonte | _LEGADO/cb2qa.esf |
+| Ref_Legado_Linhas | Range de linhas | 100-250 |
+| Desc_Abordagem | Como será migrado | ViewModel CreateUser |
+| Ref_Doc_Abordagem | Documento | 04_BUSINESS_LOGIC.md |
+| Ref_Doc_Linhas | Seção no doc | 50-100 |
+| Status_Documentacao | NOT_STARTED/IN_PROGRESS/COMPLETED | COMPLETED |
+| Status_Implementacao | NOT_STARTED/IN_PROGRESS/COMPLETED | IN_PROGRESS |
+| Status_Teste_Unitario | NOT_STARTED/IN_PROGRESS/COMPLETED | NOT_STARTED |
+
+### Tipos de ID Válidos
+
+- **TELA-NNNN**: Telas/Mapas legados
+- **METOD-NNNN**: Métodos/Funções/Procedures
+- **ENT-NNNN**: Entidades/Tabelas/Records
+- **OBJ-NNNN**: Objetos/Campos de tela
+- **FTELA-NNNN**: Funções de apresentação
+- **REGRA-NNNN**: Regras de negócio
+- **QUERY-NNNN**: Queries SQL/DB2
+
+### Exemplo de Referência Obrigatória
+
+```markdown
+### CreateUserViewModel
+
+**Rastreabilidade**:
+- **ID Matriz**: `METOD-0011`
+- **Origem**: CB2QP003 - Inquiry consulta V1SISTEMA
+- **Arquivo**: `_LEGADO/cb2qa.esf`, linhas 6274-6289
+
+```csharp
+// ID Matriz: METOD-0011
+public async Task<User> Execute(CreateUserRequest request)
+{
+    // Migrado de METOD-0011
+}
+```
+```
+
+**Consulte**: `traceability-matrix-rules.mdc` para regras completas de rastreabilidade.
+
+## Templates de Documento
+
+Cada documento deve seguir:
+
+```markdown
+# [NN] - [TÍTULO]
+
+## Objetivo
+[Propósito claro deste documento]
+
+## Mapeamento de Legado
+### Origem
+- Programa legado: [id]
+- Arquivos: [lista]
+- Linhas: [ranges]
+
+### Destino
+- Camada: [Domain/Infrastructure/Application/API]
+- Namespace: [namespace completo]
+- Arquivos: [lista]
+
+## Especificação Técnica
+[Detalhamento com código]
+
+## Dependências
+- Documentos anteriores: [lista]
+- Documentos relacionados: [lista]
+
+## Checklist de Implementação
+- [ ] Item 1
+- [ ] Item 2
+
+## Rastreabilidade
+- ID Matriz: [referência]
+```
+
+## Checklist Geral de Projeto
+
+### Documentação
+- [ ] 14 documentos criados
+- [ ] Todos documentos seguem template
+- [ ] **CRÍTICO**: Todos elementos têm ID da matriz referenciado
+- [ ] **CRÍTICO**: Matriz de rastreabilidade 100% completa
+- [ ] Todos IDs na documentação existem na matriz
+- [ ] Status na matriz atualizados (Documentacao/Implementacao/Teste)
+- [ ] Diagramas de fluxo criados
+- [ ] Mapeamento legado documentado
+
+### Implementação
+- [ ] Domain: Entities, DTOs, Interfaces
+- [ ] Infrastructure: Repositories, Clients
+- [ ] Application: ViewModels, Services
+- [ ] API: Controllers, Program.cs
+- [ ] DI: IOC configurado
+- [ ] Database: Schema criado
+- [ ] Security: Autenticação implementada
+- [ ] Observability: Logging configurado
+
+### Testes
+- [ ] Testes unitários ViewModels (70%+)
+- [ ] Testes unitários Services (70%+)
+- [ ] Testes integração API
+- [ ] Casos de regressão validados
+
+### Qualidade
+- [ ] Code review completo
+- [ ] Linter sem erros
+- [ ] Security scan aprovado
+- [ ] Performance benchmarks OK
+- [ ] Documentação atualizada
+
+## Ferramentas Recomendadas
+
+### Análise de Legado
+- Parser de COBOL/EZEE
+- Analisador de dependências
+- Extrator de metadados
+
+### Desenvolvimento
+- Visual Studio / VS Code
+- SQL Server Management Studio
+- Postman / Swagger
+- Git / Azure DevOps
+
+### Qualidade
+- xUnit / NUnit (testes)
+- Moq (mocking)
+- FluentAssertions
+- SonarQube (análise estática)
+- Coverlet (cobertura)
+
+### Observabilidade
+- Serilog / NLog (logging)
+- Application Insights (APM)
+- SQL Profiler (database)
+
+## Referências Rápidas
+
+- **Backend Patterns**: backend_patterns.mdc
+- **Frontend Patterns**: frontend_patterns.mdc
+- **Dependencies**: backend_dependencies.mdc, frontend_dependencies.mdc
+- **Matriz**: MATRIZ_RASTREABILIDADE.csv
+
+## Contato e Suporte
+
+Para dúvidas sobre este guia, consultar a equipe de arquitetura.

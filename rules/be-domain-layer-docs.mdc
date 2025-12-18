@@ -1,0 +1,148 @@
+---
+description: Padrões para documentação da camada Domain em migrações
+globs: ["docs/backend/01_DOMAIN_MODEL.md", "**/Domain/**/*.cs"]
+alwaysApply: false
+---
+
+# Documentação da Camada Domain
+
+## Objetivo
+
+Definir entidades, DTOs e contratos de domínio independentes de infraestrutura.
+
+## Estrutura do Documento 01_DOMAIN_MODEL.md
+
+### Seções Obrigatórias
+
+#### 1. Entities
+```markdown
+## Entities
+
+### [NomeEntidade]
+**Origem**: [Registro/Tabela legado]
+**Namespace**: `<Cliente>.Web.<Projeto>.Domain.Entities`
+
+**Propriedades**:
+| Legado | Moderno | Tipo | Nullable | Descrição |
+|--------|---------|------|----------|-----------|
+| WS-ID  | Id      | string | No     | Identificador único |
+
+**Métodos de Negócio**:
+- `IsValid()` - Validação interna
+- `CalculateX()` - Lógica de cálculo
+```
+
+#### 2. DTOs (Data Transfer Objects)
+```markdown
+## DTOs
+
+### [OperacaoRequest]
+**Uso**: Request para operação X
+**Namespace**: `<Cliente>.Web.<Projeto>.Domain.Dto`
+
+**Campos**:
+- `string Campo1` - Descrição
+- `int Campo2` - Descrição
+```
+
+#### 3. Interfaces de Repositories
+```markdown
+## Interfaces de Repositories
+
+### I[Entidade]Repository
+**Namespace**: `<Cliente>.Web.<Projeto>.Domain.Interfaces.Repositories`
+
+**Métodos**:
+- `Task<Entity?> GetById(string id)` - Buscar por ID
+- `Task<Entity> Save(Entity entity)` - Salvar/Atualizar
+- `Task<bool> Delete(string id)` - Remover
+```
+
+#### 4. Interfaces de Services
+```markdown
+## Interfaces de Services
+
+### I[Entidade]Service
+**Namespace**: `<Cliente>.Web.<Projeto>.Domain.Interfaces.Services`
+
+**Métodos**:
+- `Task<AppResponse<T>> OperacaoX(RequestDto dto)` - Descrição
+```
+
+#### 5. Interfaces de ViewModels
+```markdown
+## Interfaces de ViewModels
+
+### I[Operacao]ViewModel
+**Namespace**: `<Cliente>.Web.<Projeto>.Domain.Interfaces.ViewModels`
+
+**Métodos**:
+- `Task<T> Execute(RequestDto dto)` - Lógica de negócio
+```
+
+#### 6. Enums e Constantes
+```markdown
+## Enums
+
+### [NomeEnum]
+**Origem**: Valores fixos em legado (ex: 88-level COBOL)
+```csharp
+public enum TipoCobranca
+{
+    Boleto = 1,
+    CartaoCredito = 2,
+    DebitoAutomatico = 3
+}
+```
+```
+
+#### 7. AppResponse Pattern
+```markdown
+## AppResponse<T>
+
+**Obrigatório** para todos os Services:
+```csharp
+public class AppResponse<T>
+{
+    public T? Data { get; set; }
+    public string Message { get; set; } = string.Empty;
+    public bool IsSuccess { get; set; }
+    public string? StackTrace { get; set; }
+}
+```
+```
+
+## Convenções
+
+### Nomenclatura
+- **Entities**: `PascalCase`, singular (User, Invoice, Policy)
+- **DTOs**: `[Operacao][Entity][Request/Response/Dto]`
+  - `CreateUserRequest`, `UserResponseDto`
+- **Interfaces**: `I[Nome]`, sempre começar com 'I'
+
+### Validações
+- **Entities**: Validações de invariantes de domínio
+- **DTOs**: Data Annotations apenas para validação estrutural
+- **ViewModels**: Validações complexas de negócio
+
+### Nullable Reference Types
+- Usar `?` para campos opcionais
+- Usar `= string.Empty` para campos obrigatórios
+- Usar `required` para propriedades obrigatórias (.NET 7+)
+
+## Dependências
+
+- **Não deve referenciar**: Infrastructure, Application, API
+- **Pode referenciar**: Apenas bibliotecas base (.NET BCL)
+
+## Checklist
+
+- [ ] Todas as entidades mapeadas de registros legados
+- [ ] DTOs para todas as operações (Request/Response)
+- [ ] Interfaces de todos os Repositories
+- [ ] Interfaces de todos os Services
+- [ ] Interfaces de todos os ViewModels
+- [ ] Enums documentados com valores e significados
+- [ ] AppResponse<T> definido
+- [ ] Validações de domínio identificadas
+- [ ] Sem dependências de infraestrutura

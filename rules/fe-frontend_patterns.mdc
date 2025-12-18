@@ -1,0 +1,456 @@
+---
+globs: ['frontend/**/*.{ts,tsx}', 'frontend/**/*.config.{ts,js}', 'frontend/**/package.json']
+alwaysApply: false
+---
+# Frontend Patterns - React + TypeScript
+
+## 🎯 Regras Globais
+
+- **TypeScript only**: Código em camelCase, arquivos em kebab-case
+- **Named imports**: Sempre imports nomeados, nunca default
+- **Dark/Light mode**: Obrigatório com detecção de preferência do sistema
+- **i18n obrigatório**: FormatJS (react-intl)
+- **Accessibility**: WCAG 2.1 AA mínimo
+- **Error handling**: Todos os API calls com tratamento de erro
+
+## 📁 Estrutura de Projeto
+
+### Monorepo (pnpm)
+```
+project/
+├── apps/               # Aplicações
+├── packages/           # Features/Epics
+│   ├── feature-name/
+│   └── shared/        # Código reutilizável
+└── pnpm-workspace.yaml
+```
+
+### Feature Structure (Clean Architecture)
+```
+feature-name/
+├── domain/            # Lógica de negócio
+│   ├── entities/
+│   ├── repositories/  # Interfaces
+│   └── use-cases/
+├── infrastructure/    # Implementações
+│   ├── api/
+│   └── repositories/
+└── presentation/      # UI
+    ├── components/
+    ├── hooks/
+    ├── screens/
+    └── stores/
+```
+
+### Nomenclatura
+- Components: `PascalCase.tsx`
+- Hooks: `use-kebab-case.ts`
+- Utils: `kebab-case.ts`
+- Types: `kebab-case.types.ts`
+- Stores: `kebab-case.store.ts`
+- Constants: `kebab-case.constants.ts`
+
+## 🔧 Stack Obrigatória
+
+- **Build**: Vite
+- **Router**: TanStack Router (query params obrigatórios para estado compartilhável)
+- **State**: Zustand (client) + TanStack Query (server)
+- **Forms**: react-hook-form + zod
+- **UI**: shadcn/ui
+- **Styling**: Tailwind CSS
+- **i18n**: react-intl (FormatJS)
+- **Testing**: Vitest + React Testing Library
+
+## 💾 State Management
+
+### Zustand (Client State)
+```typescript
+// stores/auth.store.ts
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      token: null,
+      login: (user, token) => set({ user, token }),
+      logout: () => set({ user: null, token: null }),
+    }),
+    { name: 'auth-storage' }
+  )
+);
+```
+
+**Regras:**
+- Usar para estado de UI/cliente
+- Nunca expor `setState` diretamente
+- Sempre fornecer ações nomeadas
+- Usar `persist` para dados que sobrevivem reloads
+
+### TanStack Query (Server State)
+```typescript
+// hooks/use-users.ts
+const userKeys = {
+  all: ['users'] as const,
+  detail: (id: string) => ['users', id] as const,
+};
+
+export function useUsers() {
+  return useQuery({
+    queryKey: userKeys.all,
+    queryFn: fetchUsers,
+    staleTime: 5 * 60 * 1000,
+  });
+}
+```
+
+**Config padrão:**
+- `staleTime: 5min`
+- `retry: 1`
+- `refetchOnWindowFocus: false`
+
+## 🎨 Theming & i18n
+
+### Theme Provider
+```typescript
+// providers/ThemeProvider.tsx
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [theme, setTheme] = useState<'dark' | 'light' | 'system'>('system');
+  
+  useEffect(() => {
+    const root = document.documentElement;
+    const resolved = theme === 'system' 
+      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      : theme;
+    root.classList.toggle('dark', resolved === 'dark');
+  }, [theme]);
+
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+```
+
+### i18n (FormatJS)
+```typescript
+// providers/I18nProvider.tsx
+import { IntlProvider } from 'react-intl';
+
+export function I18nProvider({ children }: { children: React.ReactNode }) {
+  const [locale, setLocale] = useState('en');
+  const messages = useMessages(locale);
+
+  return (
+    <IntlProvider locale={locale} messages={messages}>
+      {children}
+    </IntlProvider>
+  );
+}
+
+// Uso
+const intl = useIntl();
+intl.formatMessage({ id: 'user.profile.name' });
+```
+
+## 🛣️ Routing (TanStack Router)
+
+```typescript
+// routes/__root.tsx
+export const Route = createRootRoute({
+  component: RootLayout,
+});
+
+// routes/users/$id.tsx
+export const Route = createFileRoute('/users/$id')({
+  loader: async ({ params }) => fetchUser(params.id),
+  component: UserDetail,
+});
+
+// Protected route
+export const Route = createFileRoute('/dashboard')({
+  beforeLoad: ({ context }) => {
+    if (!context.auth.isAuthenticated) {
+      throw redirect({ to: '/login' });
+    }
+  },
+});
+
+// Query params
+const searchSchema = z.object({
+  page: z.number().optional(),
+  search: z.string().optional(),
+});
+
+export const Route = createFileRoute('/users')({
+  validateSearch: searchSchema,
+  component: UserList,
+});
+```
+
+## 📝 Forms
+
+```typescript
+const schema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+type FormData = z.infer<typeof schema>;
+
+export function LoginForm() {
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = 
+    useForm<FormData>({
+      resolver: zodResolver(schema),
+    });
+
+  const onSubmit = async (data: FormData) => {
+    await login(data);
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input {...register('email')} />
+      {errors.email && <span>{errors.email.message}</span>}
+      
+      <button disabled={isSubmitting}>Submit</button>
+    </form>
+  );
+}
+```
+
+## 🏗️ Clean Architecture
+
+### Domain Layer (Entities & Use Cases)
+```typescript
+// domain/entities/user.entity.ts
+export class User {
+  constructor(
+    public readonly id: string,
+    public readonly name: string,
+    public readonly email: string
+  ) {}
+
+  isActive(): boolean {
+    // Business logic here
+    return true;
+  }
+}
+
+// domain/repositories/user.repository.ts
+export interface UserRepository {
+  findById(id: string): Promise<User>;
+  save(user: User): Promise<void>;
+}
+
+// domain/use-cases/get-user.use-case.ts
+export class GetUserUseCase {
+  constructor(private repository: UserRepository) {}
+
+  async execute(id: string): Promise<User> {
+    return this.repository.findById(id);
+  }
+}
+```
+
+### Infrastructure Layer
+```typescript
+// infrastructure/repositories/user.repository.impl.ts
+export class UserRepositoryImpl implements UserRepository {
+  async findById(id: string): Promise<User> {
+    const dto = await apiClient.get<UserDto>(`/users/${id}`);
+    return userMapper.toDomain(dto);
+  }
+}
+```
+
+### Presentation Layer
+```typescript
+// presentation/hooks/use-user.ts
+export function useUser(id: string) {
+  const useCase = useMemo(() => 
+    new GetUserUseCase(new UserRepositoryImpl()), []
+  );
+
+  return useQuery({
+    queryKey: ['user', id],
+    queryFn: () => useCase.execute(id),
+  });
+}
+
+// presentation/components/UserProfile.tsx
+export function UserProfile({ id }: { id: string }) {
+  const { data: user, isLoading, error } = useUser(id);
+
+  if (isLoading) return <Spinner />;
+  if (error) return <ErrorMessage error={error} />;
+  if (!user) return null;
+
+  return <div>{user.name}</div>;
+}
+```
+
+## 🎭 Component Patterns
+
+### Compound Components
+```typescript
+const Context = createContext<ContextValue | null>(null);
+
+export function Accordion({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = useState<string | null>(null);
+  return <Context.Provider value={{ open, setOpen }}>{children}</Context.Provider>;
+}
+
+Accordion.Item = ({ id, children }: ItemProps) => {
+  const context = useContext(Context);
+  if (!context) throw new Error('Item must be within Accordion');
+  // Implementation...
+};
+```
+
+## ⚠️ Error Handling
+
+```typescript
+// components/ErrorBoundary.tsx
+export class ErrorBoundary extends React.Component<Props, State> {
+  componentDidCatch(error: Error) {
+    console.error(error);
+    // Log to Sentry/error tracking
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <ErrorFallback />;
+    }
+    return this.props.children;
+  }
+}
+
+// utils/error-handler.ts
+export class AppError extends Error {
+  constructor(
+    message: string,
+    public code: string,
+    public statusCode: number
+  ) {
+    super(message);
+  }
+}
+```
+
+## 🎨 Styling (Tailwind)
+
+```typescript
+// Sempre usar dark: prefix
+<div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+  <h1 className="text-2xl font-bold">Title</h1>
+</div>
+
+// Mobile-first + responsive
+<div className="w-full md:w-1/2 lg:w-1/3 p-4 sm:p-6">
+  Content
+</div>
+
+// tailwind.config.ts
+export default {
+  darkMode: ['class'],
+  content: ['./src/**/*.{ts,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        primary: 'var(--primary)',
+      },
+    },
+  },
+};
+```
+
+## 🧪 Testing
+
+```typescript
+// test/utils/test-utils.tsx
+export function renderWithProviders(ui: React.ReactElement) {
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider><I18nProvider>{ui}</I18nProvider></ThemeProvider>
+    </QueryClientProvider>
+  );
+}
+
+// Teste básico
+it('should display user name', async () => {
+  renderWithProviders(<UserProfile id="1" />);
+  await waitFor(() => expect(screen.getByText('John Doe')).toBeInTheDocument());
+});
+```
+
+## 🚀 Performance
+
+- **Code splitting**: `React.lazy()` para rotas
+- **Memoization**: `React.memo()` apenas quando profiling mostra benefício
+- **Virtual scrolling**: Para listas com 100+ items (use `@tanstack/react-virtual`)
+- **Images**: WebP/AVIF, lazy loading, srcset
+- **Keys**: Use IDs únicos, nunca index de array para listas dinâmicas
+
+## ♿ Accessibility
+
+- Semantic HTML: `<nav>`, `<main>`, `<button>`
+- Labels: `<label htmlFor="id">` para todos inputs
+- ARIA: `aria-label`, `aria-hidden` quando necessário
+- Keyboard: Tab, Enter, Space, Esc
+- Contraste: WCAG AA (4.5:1 texto, 3:1 large text)
+- Test: eslint-plugin-jsx-a11y
+
+## 🔐 Security
+
+- Validar inputs com Zod
+- Sanitizar antes de renderizar
+- Usar HTTPS em produção
+- Nunca expor secrets no client
+- Implementar CSP headers
+- Validar no servidor também
+
+## 🌍 Environment Variables
+
+```typescript
+// env/schema.ts
+const envSchema = z.object({
+  VITE_API_BASE_URL: z.string().url(),
+  VITE_APP_NAME: z.string(),
+});
+
+export const env = envSchema.parse(import.meta.env);
+
+// env.d.ts
+interface ImportMetaEnv {
+  readonly VITE_API_BASE_URL: string;
+  readonly VITE_APP_NAME: string;
+}
+```
+
+## ✅ Checklist
+
+### Novo Component
+- [ ] TypeScript sem `any`
+- [ ] Props interface separada
+- [ ] Dark/light mode implementado
+- [ ] i18n implementado
+- [ ] Acessível (WCAG AA)
+- [ ] Testes escritos
+- [ ] Error states tratados
+
+### Nova Feature
+- [ ] Clean Architecture (se tiver lógica de negócio)
+- [ ] Query params para estado compartilhável
+- [ ] Loading states
+- [ ] Error boundaries
+- [ ] Tests > 70% coverage
+- [ ] Code splitting
+- [ ] Documentação
+
+---
+
+**Versão**: 1.0  
+**Framework**: React 18 + TypeScript 5  
+**Build**: Vite 5  
+**Router**: TanStack Router v1

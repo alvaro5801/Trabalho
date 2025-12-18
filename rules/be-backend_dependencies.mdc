@@ -1,0 +1,405 @@
+---
+globs: ["docs/backend/*",  "backend/Application/**/*.cs"]
+alwaysApply: false
+---
+# Dependencies & Versions - .NET Core Projects
+
+## 🎯 Framework
+
+- **.NET**: 8.0
+- **ASP.NET Core**: Web API
+- **C#**: 12 (nullable reference types habilitado)
+
+## 📦 NuGet Packages
+
+### Acesso a Dados
+
+```xml
+<PackageReference Include="Dapper" Version="2.1.35" />
+<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.5" />
+<PackageReference Include="Dapper.Contrib" Version="2.0.78" />
+```
+
+### Comunicação e Serialização
+
+```xml
+<PackageReference Include="SoapCore" Version="1.1.0.49" />
+<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+<PackageReference Include="System.ServiceModel.Http" Version="4.10.*" />
+<PackageReference Include="System.ServiceModel.NetTcp" Version="4.10.*" />
+```
+
+### Documentação
+
+```xml
+<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
+```
+
+### Logging
+
+```xml
+<PackageReference Include="Serilog" Version="3.1.1" />
+<PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
+<PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
+<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+```
+
+### Telemetria (Opcional)
+
+```xml
+<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
+```
+
+### Configuração
+
+```xml
+<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
+<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+```
+
+### Testes
+
+```xml
+<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+<PackageReference Include="xunit" Version="2.6.2" />
+<PackageReference Include="xunit.runner.visualstudio" Version="2.5.4" />
+<PackageReference Include="Moq" Version="4.20.69" />
+<PackageReference Include="FluentAssertions" Version="6.12.0" />
+<PackageReference Include="Bogus" Version="35.3.0" />
+<PackageReference Include="coverlet.collector" Version="6.0.0" />
+```
+
+## 🔧 Configurações .csproj
+
+```xml
+<PropertyGroup>
+  <TargetFramework>net8.0</TargetFramework>
+  <Nullable>enable</Nullable>
+  <ImplicitUsings>enable</ImplicitUsings>
+  <GenerateDocumentationFile>True</GenerateDocumentationFile>
+  <AnalysisLevel>6.0</AnalysisLevel>
+  <NoWarn>$(NoWarn);1591</NoWarn>
+</PropertyGroup>
+```
+
+## 📂 Dependências por Camada
+
+### API
+
+```xml
+<PackageReference Include="SoapCore" />
+<PackageReference Include="Swashbuckle.AspNetCore" />
+<PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
+
+<ProjectReference Include="..\[Projeto].Ioc\[Projeto].Ioc.csproj" />
+```
+
+### Application
+
+```xml
+<PackageReference Include="Serilog" />
+<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+
+<ProjectReference Include="..\[Projeto].Domain\[Projeto].Domain.csproj" />
+```
+
+### Domain
+
+```xml
+<PackageReference Include="Newtonsoft.Json" />
+<PackageReference Include="System.ServiceModel.Http" />
+```
+
+### Infra
+
+```xml
+<PackageReference Include="Serilog" />
+<PackageReference Include="Dapper" />
+<PackageReference Include="Microsoft.Data.SqlClient" />
+<PackageReference Include="Dapper.Contrib" />
+<PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+
+<ProjectReference Include="..\[Projeto].Domain\[Projeto].Domain.csproj" />
+```
+
+### IOC
+
+```xml
+<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+
+<ProjectReference Include="..\[Projeto].Application\[Projeto].Application.csproj" />
+<ProjectReference Include="..\[Projeto].Infra\[Projeto].Infra.csproj" />
+```
+
+### Tests
+
+```xml
+<PackageReference Include="Microsoft.NET.Test.Sdk" />
+<PackageReference Include="xunit" />
+<PackageReference Include="Moq" />
+<PackageReference Include="FluentAssertions" />
+<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+
+<ProjectReference Include="..\..\src\[Projeto].Api\[Projeto].Api.csproj" />
+```
+
+## 🔄 Dapper
+
+### Configuração
+
+```csharp
+// Infra/DependencyInjection.cs
+services.AddScoped<IDbConnection>(sp => 
+    new SqlConnection(configuration.GetConnectionString("DefaultConnection")));
+```
+
+### Repository Básico
+
+```csharp
+public class UserRepository(IDbConnection dbConnection) : IUserRepository
+{
+    public async Task<User?> GetById(string id)
+    {
+        const string sql = "SELECT * FROM Users WHERE Id = @Id";
+        return await dbConnection.QueryFirstOrDefaultAsync<User>(sql, new { Id = id });
+    }
+    
+    public async Task<IEnumerable<User>> GetAll()
+    {
+        return await dbConnection.QueryAsync<User>("SELECT * FROM Users");
+    }
+    
+    public async Task<User> Save(User user)
+    {
+        const string sql = @"
+            INSERT INTO Users (Id, Name, Email)
+            VALUES (@Id, @Name, @Email);
+            SELECT * FROM Users WHERE Id = @Id";
+        return await dbConnection.QuerySingleAsync<User>(sql, user);
+    }
+    
+    public async Task<bool> Update(User user)
+    {
+        const string sql = "UPDATE Users SET Name = @Name, Email = @Email WHERE Id = @Id";
+        var affected = await dbConnection.ExecuteAsync(sql, user);
+        return affected > 0;
+    }
+}
+```
+
+### Stored Procedures
+
+```csharp
+return await dbConnection.QueryAsync<User>(
+    "sp_GetActiveUsers",
+    commandType: CommandType.StoredProcedure);
+```
+
+### Transações
+
+```csharp
+using var transaction = dbConnection.BeginTransaction();
+try
+{
+    await dbConnection.ExecuteAsync(sql1, param1, transaction);
+    await dbConnection.ExecuteAsync(sql2, param2, transaction);
+    transaction.Commit();
+}
+catch
+{
+    transaction.Rollback();
+    throw;
+}
+```
+
+## 📊 Serilog
+
+### Configuração Program.cs
+
+```csharp
+using Serilog;
+
+builder.Host.UseSerilog((context, configuration) =>
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .Enrich.FromLogContext()
+        .WriteTo.Console()
+        .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day));
+```
+
+### appsettings.json
+
+```json
+{
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft.AspNetCore": "Warning"
+      }
+    },
+    "WriteTo": [
+      { "Name": "Console" },
+      {
+        "Name": "File",
+        "Args": {
+          "path": "logs/log-.txt",
+          "rollingInterval": "Day"
+        }
+      }
+    ]
+  }
+}
+```
+
+### Uso
+
+```csharp
+public class UserRepository(ILogger<UserRepository> logger) : IUserRepository
+{
+    public async Task<User?> GetById(string id)
+    {
+        logger.LogInformation("Buscando usuário {UserId}", id);
+        try
+        {
+            // código
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Erro ao buscar {UserId}", id);
+            throw;
+        }
+    }
+}
+```
+
+## 🔐 Application Insights (Opcional)
+
+### Configuração
+
+```csharp
+// Program.cs
+builder.Services.AddApplicationInsightsTelemetry(options =>
+{
+    options.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
+});
+```
+
+### appsettings.json
+
+```json
+{
+  "ApplicationInsights": {
+    "ConnectionString": "InstrumentationKey=__key__"
+  }
+}
+```
+
+## 🌐 Configuração de Ambiente
+
+### appsettings.Development.json
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost;Database=DB;User Id=SA;Password=Pass@word;TrustServerCertificate=True;"
+  }
+}
+```
+
+### appsettings.Production.json
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "__ConnectionString__"
+  }
+}
+```
+
+## 🔐 Secrets Management
+
+### User Secrets (Desenvolvimento)
+
+```bash
+dotnet user-secrets init
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=..."
+dotnet user-secrets set "ApiSettings:ApiKey" "SecretKey"
+```
+
+### Variáveis de Ambiente (Produção)
+
+```bash
+ConnectionStrings__DefaultConnection=Server=...
+ApiSettings__ApiKey=SecretKey
+```
+
+### Azure Key Vault (Opcional)
+
+```csharp
+builder.Configuration.AddAzureKeyVault(
+    new Uri($"https://{builder.Configuration["KeyVault:Name"]}.vault.azure.net/"),
+    new DefaultAzureCredential());
+```
+
+## 🔍 Comandos Úteis
+
+### Packages
+
+```bash
+# Listar packages
+dotnet list package
+
+# Packages desatualizados
+dotnet list package --outdated
+
+# Vulnerabilidades
+dotnet list package --vulnerable
+
+# Atualizar package
+dotnet add package [PackageName] --version [Version]
+
+# Restaurar
+dotnet restore
+```
+
+### Banco de Dados
+
+```bash
+# Executar scripts SQL
+sqlcmd -S localhost -d [Database] -U SA -P [Password] -i scripts/01-create-tables.sql
+
+# Ferramentas opcionais
+dotnet add package DbUp
+dotnet add package FluentMigrator.Runner
+```
+
+## 📋 Checklist de Atualização
+
+- [ ] Verificar compatibilidade .NET 8/9
+- [ ] Testar em desenvolvimento
+- [ ] Executar testes unitários
+- [ ] Atualizar dependencies.mdc
+- [ ] Documentar breaking changes
+- [ ] Validar build CI/CD
+- [ ] Verificar vulnerabilidades: `dotnet list package --vulnerable`
+
+## 📊 Matriz de Compatibilidade
+
+| Package | .NET 8.0 | .NET 9.0 |
+|---------|----------|----------|
+| Dapper 2.1.35 | ✅ | ✅ |
+| Microsoft.Data.SqlClient 5.1.5 | ✅ | ✅ |
+| SoapCore 1.1.0.49 | ✅ | ✅ |
+| Swashbuckle 6.5.0 | ✅ | ✅ |
+| xUnit 2.6.2 | ✅ | ✅ |
+| Moq 4.20.69 | ✅ | ✅ |
+
+---
+
+**Versão**: 2.1  
+**Framework**: .NET 8  
+**Stack**: Dapper + SQL Server

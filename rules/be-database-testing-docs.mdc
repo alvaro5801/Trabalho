@@ -1,0 +1,377 @@
+---
+description: Padrões para documentação de Database Schema e Testing Strategy em migrações
+globs: ["docs/backend/02_DATABASE_SCHEMA.md", "docs/backend/10_TESTING_STRATEGY.md"]
+alwaysApply: false
+---
+
+# Database Schema e Testing Strategy
+
+## Documento 02_DATABASE_SCHEMA.md
+
+### Seções Obrigatórias
+
+#### 1. Tabelas
+```markdown
+## Tabelas
+
+### [NomeTabela]
+**Origem**: [Tabela/Arquivo legado]
+**Schema**: `dbo`
+
+```sql
+CREATE TABLE dbo.[NomeTabela] (
+    Id VARCHAR(50) NOT NULL PRIMARY KEY,
+    Campo1 VARCHAR(100) NOT NULL,
+    Campo2 DECIMAL(18,2) NULL,
+    DataCriacao DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+    DataAtualizacao DATETIME2 NULL,
+    
+    -- Constraints
+    CONSTRAINT CHK_[NomeTabela]_Campo CHECK (Campo2 >= 0),
+    CONSTRAINT UK_[NomeTabela]_Campo1 UNIQUE (Campo1)
+);
+
+-- Índices
+CREATE INDEX IX_[NomeTabela]_Campo1 ON dbo.[NomeTabela] (Campo1);
+CREATE INDEX IX_[NomeTabela]_DataCriacao ON dbo.[NomeTabela] (DataCriacao);
+```
+
+**Mapeamento**:
+| Legado | Moderno | Tipo Legado | Tipo SQL Server |
+|--------|---------|-------------|-----------------|
+| ID-CAMPO | Id | PIC X(50) | VARCHAR(50) |
+| VALOR | Campo2 | PIC 9(16)V99 | DECIMAL(18,2) |
+```
+
+#### 2. Stored Procedures (se aplicável)
+```markdown
+## Stored Procedures
+
+### sp_[Nome]
+**Origem**: [Procedure legado]
+**Propósito**: [Descrição]
+
+```sql
+CREATE PROCEDURE dbo.sp_CalcularPremio
+    @PolicyId VARCHAR(50),
+    @PremiumValue DECIMAL(18,2) OUTPUT
+AS
+BEGIN
+    -- Lógica migrada do legado
+    SELECT @PremiumValue = BaseValue * Factor
+    FROM Policies
+    WHERE Id = @PolicyId;
+END;
+```
+```
+
+#### 3. Migrations
+```markdown
+## Estratégia de Migration
+
+### Ferramentas
+- EF Core Migrations OU
+- DbUp / FluentMigrator OU
+- Scripts SQL versionados
+
+### Nomenclatura
+```
+YYYYMMDD_HHMMSS_DescricaoMigracao.sql
+20240115_143000_CreateUserTable.sql
+20240115_144500_AddIndexUserEmail.sql
+```
+
+### Rollback
+Cada migration deve ter script de rollback correspondente.
+```
+
+#### 4. Connection Strings
+```markdown
+## Connection Strings
+
+### appsettings.json
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost;Database=DbName;User Id=sa;Password=pwd;TrustServerCertificate=True;"
+  }
+}
+```
+
+### appsettings.Production.json
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=prod-server;Database=DbName;Integrated Security=true;Encrypt=true;"
+  }
+}
+```
+```
+
+### Convenções Database
+
+- **Tabelas**: PascalCase singular (`User`, `Policy`)
+- **Colunas**: PascalCase (`FirstName`, `CreatedAt`)
+- **Primary Keys**: `Id` (sempre)
+- **Foreign Keys**: `FK_[TabelaOrigem]_[TabelaDestino]`
+- **Índices**: `IX_[Tabela]_[Coluna(s)]`
+- **Constraints**: `CHK_[Tabela]_[Campo]`, `UK_[Tabela]_[Campo]`
+- **Auditoria**: Sempre incluir `CreatedAt`, `UpdatedAt` (opcional: `CreatedBy`, `UpdatedBy`)
+
+### Tipos de Dados SQL Server
+
+```
+Legado COBOL           →    SQL Server
+────────────────────────────────────────
+PIC X(n)               →    VARCHAR(n)
+PIC 9(n)               →    INT/BIGINT
+PIC 9(n)V9(m)          →    DECIMAL(n+m, m)
+PIC S9(n)              →    INT (com sinal)
+DATE                   →    DATE/DATETIME2
+TIME                   →    TIME
+COMP-3                 →    DECIMAL
+```
+
+## Documento 10_TESTING_STRATEGY.md
+
+### Seções Obrigatórias
+
+#### 1. Framework e Ferramentas
+```markdown
+## Ferramentas de Teste
+
+- **Framework**: xUnit / NUnit / MSTest
+- **Mocking**: Moq
+- **Assertions**: FluentAssertions
+- **Coverage**: Coverlet
+- **Cobertura Mínima**: 70%
+```
+
+#### 2. Estrutura de Testes
+```markdown
+## Estrutura
+
+```
+tests/
+├── Unit/
+│   ├── Application/
+│   │   ├── Services/
+│   │   └── ViewModels/
+│   ├── Domain/
+│   │   └── Entities/
+│   └── Infra/
+│       └── Repositories/
+└── Integration/
+    ├── Api/
+    └── Database/
+```
+```
+
+#### 3. Nomenclatura
+```markdown
+## Nomenclatura de Testes
+
+### Pattern
+`[Metodo]_[Cenario]_[Resultado]`
+
+### Exemplos
+```csharp
+// ✅ CORRETO
+CreateUser_WithValidData_ReturnsSuccess()
+CreateUser_WithExistingEmail_ThrowsException()
+CalculatePremium_WithZeroAge_ReturnsBaseValue()
+
+// ❌ ERRADO
+TestCreateUser()
+Test1()
+CreateUserTest()
+```
+```
+
+#### 4. Testes Unitários - ViewModels
+```markdown
+## Testes de ViewModels
+
+### Exemplo
+```csharp
+public class CreateUserViewModelTests
+{
+    [Fact]
+    public async Task CreateUser_WithValidData_ReturnsSuccess()
+    {
+        // Arrange
+        var mockRepository = new Mock<IUserRepository>();
+        mockRepository
+            .Setup(x => x.ExistsByEmail(It.IsAny<string>()))
+            .ReturnsAsync(false);
+        mockRepository
+            .Setup(x => x.Save(It.IsAny<User>()))
+            .ReturnsAsync(new User { Id = "123" });
+        
+        var mockEventRepo = new Mock<IEventRepository>();
+        var viewModel = new CreateUserViewModel(
+            mockRepository.Object, 
+            mockEventRepo.Object
+        );
+        
+        // Act
+        var result = await viewModel.Execute(new CreateUserRequest 
+        { 
+            Name = "Test",
+            Email = "test@test.com"
+        });
+        
+        // Assert
+        result.Should().NotBeNull();
+        result.Id.Should().Be("123");
+        mockRepository.Verify(x => x.Save(It.IsAny<User>()), Times.Once);
+    }
+    
+    [Fact]
+    public async Task CreateUser_WithExistingEmail_ThrowsException()
+    {
+        // Arrange
+        var mockRepository = new Mock<IUserRepository>();
+        mockRepository
+            .Setup(x => x.ExistsByEmail(It.IsAny<string>()))
+            .ReturnsAsync(true);
+        
+        var viewModel = new CreateUserViewModel(
+            mockRepository.Object,
+            Mock.Of<IEventRepository>()
+        );
+        
+        // Act & Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await viewModel.Execute(new CreateUserRequest())
+        );
+    }
+}
+```
+```
+
+#### 5. Testes Unitários - Services
+```markdown
+## Testes de Services
+
+```csharp
+public class UserServiceTests
+{
+    [Fact]
+    public async Task CreateUser_WithValidData_ReturnsSuccessResponse()
+    {
+        // Arrange
+        var mockViewModel = new Mock<ICreateUserViewModel>();
+        mockViewModel
+            .Setup(x => x.Execute(It.IsAny<CreateUserRequest>()))
+            .ReturnsAsync(new User { Id = "123" });
+        
+        var service = new UserService(mockViewModel.Object);
+        
+        // Act
+        var response = await service.CreateUser(new CreateUserRequest());
+        
+        // Assert
+        response.Should().NotBeNull();
+        response.IsSuccess.Should().BeTrue();
+        response.Data.Should().NotBeNull();
+        response.Data.Id.Should().Be("123");
+    }
+    
+    [Fact]
+    public async Task CreateUser_WhenViewModelThrows_ReturnsErrorResponse()
+    {
+        // Arrange
+        var mockViewModel = new Mock<ICreateUserViewModel>();
+        mockViewModel
+            .Setup(x => x.Execute(It.IsAny<CreateUserRequest>()))
+            .ThrowsAsync(new InvalidOperationException("Email existe"));
+        
+        var service = new UserService(mockViewModel.Object);
+        
+        // Act
+        var response = await service.CreateUser(new CreateUserRequest());
+        
+        // Assert
+        response.Should().NotBeNull();
+        response.IsSuccess.Should().BeFalse();
+        response.Message.Should().Contain("Email existe");
+    }
+}
+```
+```
+
+#### 6. Testes de Integração
+```markdown
+## Testes de Integração
+
+### API Tests
+```csharp
+public class UserControllerIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+{
+    private readonly HttpClient _client;
+    
+    public UserControllerIntegrationTests(WebApplicationFactory<Program> factory)
+    {
+        _client = factory.CreateClient();
+    }
+    
+    [Fact]
+    public async Task CreateUser_WithValidData_Returns200()
+    {
+        // Arrange
+        var request = new CreateUserRequest { Name = "Test", Email = "test@test.com" };
+        
+        // Act
+        var response = await _client.PostAsJsonAsync("/Usuario/criar", request);
+        
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<AppResponse<User>>();
+        result.IsSuccess.Should().BeTrue();
+    }
+}
+```
+```
+
+#### 7. Casos de Teste de Regressão
+```markdown
+## Casos de Teste de Regressão
+
+Documentar cenários críticos do sistema legado:
+
+| ID | Cenário Legado | Teste Automatizado | Status |
+|----|----------------|-------------------|--------|
+| TC001 | Criar usuário válido | CreateUser_WithValidData_ReturnsSuccess | ✅ |
+| TC002 | Email duplicado | CreateUser_WithExistingEmail_ThrowsException | ✅ |
+| TC003 | Cálculo de prêmio | CalculatePremium_WithValidPolicy_ReturnsCorrectValue | ⏳ |
+```
+
+### Convenções de Teste
+
+- **Arrange-Act-Assert**: Sempre separar em 3 blocos
+- **Mocks**: Usar Moq para dependências
+- **Assertions**: FluentAssertions para legibilidade
+- **Nomenclatura**: `[Metodo]_[Cenario]_[Resultado]`
+- **Cobertura**: Mínimo 70%, ideal 85%+
+- **Isolamento**: Cada teste independente
+
+## Checklist
+
+### Database
+- [ ] DDL para todas as tabelas
+- [ ] Índices definidos
+- [ ] Constraints configurados
+- [ ] Stored procedures (se aplicável)
+- [ ] Migration strategy documentada
+- [ ] Connection strings por ambiente
+- [ ] Rollback plan
+
+### Testing
+- [ ] Framework de testes configurado
+- [ ] Testes unitários para ViewModels (70%+)
+- [ ] Testes unitários para Services (70%+)
+- [ ] Testes de integração para APIs
+- [ ] Mocks para todas dependências
+- [ ] Casos de regressão documentados
+- [ ] Coverage report configurado

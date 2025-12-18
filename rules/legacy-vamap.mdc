@@ -1,0 +1,336 @@
+---
+alwaysApply: false
+---
+# Regras e Comandos Customizados para Análise de Código Legado
+
+## Contexto do Projeto
+
+Este projeto contém sistemas legados mainframe escritos em VisualAge COBOL (arquivos .esf).
+A ferramenta `vamap.exe` está disponível na raiz do projeto para análise estática destes arquivos.
+
+## Comandos Disponíveis
+
+Os seguintes comandos customizados estão disponíveis em `.cursor/commands/`:
+
+### Análise de Arquitetura
+- `/vamap-stack` - Visualiza pilha de execução completa
+- `/vamap-types` - Lista funções por tipo (inquiry, execute, converse, etc.)
+
+### Análise de Código
+- `/vamap-function` - Exibe código de função específica
+- `/vamap-callers` - Identifica quem chama uma função (análise de impacto)
+- `/vamap-position` - Mostra posição da função no stack de execução
+- `/vamap-commands` - Rastreia comandos específicos (MOVE, IF, WHILE, etc.)
+
+### Análise de Dados
+- `/vamap-data` - Lista estruturas de dados (RECORD, tabelas SQL, WORKSTOR)
+- `/vamap-data-detail` - Análise detalhada de uma estrutura específica com todos os campos
+
+### Análise de Banco de Dados
+- `/vamap-inquiry` - Analisa funções INQUIRY (SQL SELECT único)
+- `/vamap-setinq` - Analisa funções SETINQ (preparação de cursores)
+- `/vamap-scan` - Analisa funções SCAN (iteração em cursores)
+- `/vamap-insert` - Analisa funções INSERT
+- `/vamap-update` - Analisa funções UPDATE
+- `/vamap-delete` - Analisa funções DELETE
+- `/vamap-execute` - Analisa funções EXECUTE (SQL dinâmico)
+
+### Análise de Interface
+- `/vamap-maps-list` - Lista todos os mapas de tela
+- `/vamap-map` - Renderiza mapa de tela específico com layout visual
+- `/vamap-converse` - Analisa interações com terminal 3270
+
+### Análise de Qualidade
+- `/vamap-errors` - Lista funções de tratamento de erros
+- `/vamap-validation` - Analisa validações e regras de negócio
+
+### Análise de Fluxo e Migração
+- `/vamap-flow` - Análise completa de fluxo de execução
+- `/vamap-migration-plan` - Plano de migração para arquitetura moderna
+
+## Diretrizes para o Agente
+
+1. **Sempre começar com /vamap-stack** ao analisar um programa novo
+2. **Usar /vamap-map** para entender interfaces antes de mexer em código de tela
+3. **Verificar /vamap-callers** antes de modificar qualquer função (análise de impacto)
+4. **Consultar /vamap-data** para entender estruturas antes de manipular dados
+5. **Mapear operações SQL** usando os comandos específicos (:inquiry, :update, :insert, :delete)
+6. **Analisar fluxo completo** com /vamap-flow para projetos de migração
+7. **Salvar resultados importantes** em arquivos para referência futura
+
+## Padrões de Nomenclatura Mainframe
+
+- `*P00X` - Funções principais (Process)
+- `*S00X` - Funções de validação (Screen/Validate)
+- `*M0XX` - Mapas de tela (Map)
+- `*H0XX` - Mapas de ajuda (Help)
+- `ZZ*` - Utilitários compartilhados
+
+## Localização dos Arquivos
+
+- Arquivos ESF legados: `_LEGADO/*.esf`
+- Ferramenta de análise: `.\vamap.exe`
+- Documentação dos comandos: `.cursor/commands/README.md`
+
+## Exemplos de Uso
+
+### Entender programa completo
+```bash
+.\vamap.exe _LEGADO\va2va.esf --code "|"
+```
+
+### Ver tela específica
+```bash
+.\vamap.exe _LEGADO\va2va.esf --map "VA2VM010"
+```
+
+### Analisar função
+```bash
+.\vamap.exe _LEGADO\va2va.esf --code "VA2VS002"
+```
+
+### Listar estruturas de dados
+```bash
+.\vamap.exe _LEGADO\vgfna.esf --code "\"
+```
+
+### Ver detalhes de uma estrutura
+```bash
+.\vamap.exe _LEGADO\vgfna.esf --code "V0SUBGRUPO\"
+```
+
+### Filtrar estruturas por tipo
+```bash
+.\vamap.exe _LEGADO\vgfna.esf --code "\FUNCTION"   # Tabelas SQL
+.\vamap.exe _LEGADO\vgfna.esf --code "\RECORD"     # Estruturas internas
+.\vamap.exe _LEGADO\vgfna.esf --code "\TABLE"      # Tabelas de mensagens
+```
+
+### Analisar operações SQL
+```bash
+.\vamap.exe _LEGADO\vgfna.esf :inquiry    # Consultas SELECT único
+.\vamap.exe _LEGADO\vgfna.esf :setinq     # SELECT múltiplo (preparação)
+.\vamap.exe _LEGADO\vgfna.esf :scan       # Iteração sobre cursor
+.\vamap.exe _LEGADO\vgfna.esf :insert     # INSERT
+.\vamap.exe _LEGADO\vgfna.esf :update     # UPDATE
+.\vamap.exe _LEGADO\vgfna.esf :delete     # DELETE
+.\vamap.exe _LEGADO\vgfna.esf :execute    # SQL dinâmico
+```
+
+### Analisar interface
+```bash
+.\vamap.exe _LEGADO\vgfna.esf :converse   # Interações com terminal
+```
+
+
+## Preferências de Análise
+
+- Sempre responder em **Português**
+- Gerar **diagramas de fluxo** quando explicar lógica complexa
+- Criar **documentação técnica** estruturada
+- Sugerir **refatorações** quando identificar code smells
+- Explicar **regras de negócio** encontradas no código
+
+## Diretrizes de Conversão para Python (FastAPI)
+
+### Arquitetura Alvo
+
+**Stack Padrão:** FastAPI + PostgreSQL + SQLAlchemy + Pydantic + Alembic
+
+**Estrutura do Projeto:**
+```
+{nome_programa}_api/
+├── app/
+│   ├── main.py              # FastAPI application
+│   ├── config.py            # Configurações (DB, environment)
+│   ├── models/              # SQLAlchemy ORM models
+│   ├── schemas/             # Pydantic schemas (DTOs)
+│   ├── repositories/        # Data access layer (SQL queries)
+│   ├── services/            # Business logic layer
+│   └── routes/              # API endpoints (controllers)
+├── alembic/                 # Database migrations
+├── tests/                   # Unit and integration tests
+├── requirements.txt
+└── README.md
+```
+
+### Mapeamento de Conceitos COBOL → Python
+
+#### 1. Estruturas de Dados
+- **RECORD/WORKSTOR** → Pydantic models (schemas)
+- **Tabelas SQL (SQLROW)** → SQLAlchemy models
+- **Arrays/OCCURS** → List[Type] em Python
+
+#### 2. Funções por Tipo
+- **:inquiry (SELECT único)** → `Repository.get_by_id()` ou `Repository.find_one()`
+- **:setinq + :scan (SELECT múltiplo)** → `Repository.get_all()` ou `Repository.find_many()`
+- **:insert** → `Repository.create()`
+- **:update** → `Repository.update()`
+- **:delete** → `Repository.delete()`
+- **:execute (COBOL)** → `Service method` com lógica de negócio
+- **:converse (interação tela)** → `POST endpoint` retornando JSON
+
+#### 3. Fluxo de Execução
+- **Processo Principal (P001)** → Main endpoint handler
+- **Validações (S00X)** → Service layer methods
+- **Conversação (P002/P003)** → Endpoints REST stateless
+
+#### 4. Mapas e Interface
+- **Maps (:map)** → JSON schemas em Pydantic
+- **Campos de entrada** → Request body (POST/PUT)
+- **Campos de saída** → Response models
+- **Mensagens (EZEMSG)** → Array de mensagens em response
+
+#### 5. Tratamento de Erros
+- **ERRRTN** → Exception handlers customizados
+- **ZZ99W01.CHAVE = '1'** → HTTPException com status apropriado
+- **Mensagens de erro** → `{"detail": "mensagem", "code": "ERR_CODE"}`
+
+#### 6. Banco de Dados
+- **DB2 mainframe** → PostgreSQL moderno
+- **EXEC SQL** → SQLAlchemy queries ou raw SQL quando necessário
+- **Transações** → Session management do SQLAlchemy
+- **COMMIT/ROLLBACK** → Context managers do SQLAlchemy
+
+### Padrões de Endpoint REST
+
+#### Nomenclatura
+- **GET /api/v1/{recurso}** - Listar todos
+- **GET /api/v1/{recurso}/{id}** - Buscar por ID
+- **POST /api/v1/{recurso}** - Criar novo
+- **PUT /api/v1/{recurso}/{id}** - Atualizar completo
+- **PATCH /api/v1/{recurso}/{id}** - Atualizar parcial
+- **DELETE /api/v1/{recurso}/{id}** - Remover
+
+#### Status HTTP
+- **200 OK** - Sucesso em GET/PUT/PATCH
+- **201 Created** - Sucesso em POST
+- **204 No Content** - Sucesso em DELETE
+- **400 Bad Request** - Dados inválidos no request
+- **404 Not Found** - Recurso não encontrado
+- **422 Unprocessable Entity** - Validação de negócio falhou
+- **500 Internal Server Error** - Erro no servidor/banco
+
+### Exemplo de Conversão
+
+**COBOL Original:**
+```cobol
+:func name = VGFNP006 option = INQUIRY
+  object = V0SUBGRUPO
+:sql clause = SELECT
+  NUM_APOLICE, COD_SUBGRUPO, NOME_SUBGRUPO
+:sql clause = WHERE
+  NUM_APOLICE = ?NUM_APOLICE
+  AND COD_SUBGRUPO = ?COD_SUBGRUPO
+:efunc
+```
+
+**Python Equivalente:**
+
+```python
+# models/subgrupo.py
+class Subgrupo(Base):
+    __tablename__ = "subgrupos"
+    num_apolice = Column(String(13), primary_key=True)
+    cod_subgrupo = Column(String(3), primary_key=True)
+    nome_subgrupo = Column(String(50))
+
+# schemas/subgrupo.py
+class SubgrupoResponse(BaseModel):
+    num_apolice: str
+    cod_subgrupo: str
+    nome_subgrupo: str
+
+# repositories/subgrupo_repo.py
+class SubgrupoRepository:
+    def get_by_pk(self, db: Session, num_apolice: str, cod_subgrupo: str):
+        return db.query(Subgrupo).filter(
+            Subgrupo.num_apolice == num_apolice,
+            Subgrupo.cod_subgrupo == cod_subgrupo
+        ).first()
+
+# routes/subgrupos.py
+@router.get("/apolices/{num_apolice}/subgrupos/{cod_subgrupo}")
+def get_subgrupo(
+    num_apolice: str, 
+    cod_subgrupo: str,
+    db: Session = Depends(get_db)
+) -> SubgrupoResponse:
+    repo = SubgrupoRepository()
+    subgrupo = repo.get_by_pk(db, num_apolice, cod_subgrupo)
+    if not subgrupo:
+        raise HTTPException(404, "Subgrupo não encontrado")
+    return subgrupo
+```
+
+### Migração de Validações
+
+**COBOL:**
+```cobol
+IF NUM_APOLICE EQ 0;
+  MOVE 'APÓLICE OBRIGATÓRIA' TO EZEMSG;
+  EZEFLO;
+END;
+```
+
+**Python:**
+```python
+# services/plano_service.py
+def validate_apolice(self, num_apolice: Optional[str]) -> None:
+    if not num_apolice or num_apolice == "0":
+        raise ValidationError("Apólice obrigatória")
+
+# routes/planos.py
+@router.post("/planos")
+def create_plano(data: PlanoCreate, db: Session = Depends(get_db)):
+    service = PlanoService()
+    try:
+        service.validate_apolice(data.num_apolice)
+        return service.create_plano(db, data)
+    except ValidationError as e:
+        raise HTTPException(422, str(e))
+```
+
+### Checklist de Conversão
+
+Para cada programa .esf, seguir:
+
+1. [ ] Executar `/vamap-stack` para ver arquitetura geral
+2. [ ] Executar `/vamap-data` para mapear estruturas
+3. [ ] Executar `/vamap-types` para listar funções por tipo
+4. [ ] Criar models SQLAlchemy para cada tabela SQL
+5. [ ] Criar schemas Pydantic para request/response
+6. [ ] Converter cada :inquiry/:setinq em repository method
+7. [ ] Converter validações (S00X) em service methods
+8. [ ] Criar endpoints REST para cada operação principal
+9. [ ] Implementar tratamento de erros
+10. [ ] Adicionar testes unitários
+11. [ ] Documentar API (Swagger automático do FastAPI)
+12. [ ] Criar script de migração de dados
+
+### Dependências Python Recomendadas
+
+```txt
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+sqlalchemy>=2.0.0
+alembic>=1.12.0
+psycopg2-binary>=2.9.9
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+python-dotenv>=1.0.0
+pytest>=7.4.0
+httpx>=0.25.0  # para testes
+```
+
+### Configurações de Ambiente
+
+```env
+# .env
+DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+API_TITLE=Nome da API
+API_VERSION=1.0.0
+DEBUG=False
+LOG_LEVEL=INFO
+```
+

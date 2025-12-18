@@ -1,0 +1,227 @@
+---
+description: Padrões para documentação da camada Infrastructure em migrações
+globs: ["docs/backend/03_INFRASTRUCTURE_LAYER.md", "**/Infra/**/*.cs"]
+alwaysApply: false
+---
+
+# Documentação da Camada Infrastructure
+
+## Objetivo
+
+Implementar acesso a dados (Repositories), integração com APIs externas (Proxy Clients) e configurações de infraestrutura.
+
+## Estrutura do Documento 03_INFRASTRUCTURE_LAYER.md
+
+### Seções Obrigatórias
+
+#### 1. Repositories
+```markdown
+## Repositories
+
+### [Entidade]Repository
+**Interface**: `I[Entidade]Repository`
+**Namespace**: `<Cliente>.Web.<Projeto>.Infra.Repositories`
+**Tabelas acessadas**: [lista de tabelas DB]
+
+**Dependências**:
+- `IDbConnection` - Conexão Dapper
+- `IEventRepository` - Logging de eventos
+
+**Métodos**:
+
+#### GetById
+```csharp
+public async Task<Entity?> GetById(string id)
+{
+    const string sql = "SELECT * FROM Table WHERE Id = @Id";
+    return await dbConnection.QueryFirstOrDefaultAsync<Entity>(sql, new { Id = id });
+}
+```
+
+**SQL Legado**: [Referência ao SELECT original em COBOL/DB2]
+**Linhas**: [range]
+```
+
+#### 2. Proxy Clients
+```markdown
+## Proxy Clients
+
+### [Servico]Client
+**Interface**: `I[Servico]Client`
+**Namespace**: `<Cliente>.Web.<Projeto>.Infra.Proxy.[Servico]`
+**API Externa**: [URL/descrição]
+
+**Configuração**:
+```csharp
+public class Configuration[Servico]
+{
+    public const string Section = "[Servico]";
+    public string UrlBase { get; set; } = string.Empty;
+    public string Endpoint { get; set; } = string.Empty;
+    public string ApiKey { get; set; } = string.Empty;
+}
+```
+
+**Métodos**:
+- `Task<ResponseDto> Operation(RequestDto dto)` - Descrição
+```
+
+#### 3. Mappers
+```markdown
+## Mappers
+
+### [Entity]Mapper
+**Propósito**: Converter DTOs ↔ Entities
+
+```csharp
+public static class EntityMapper
+{
+    public static Entity ToDomain(EntityDto dto) => new Entity { ... };
+    public static EntityDto ToDto(Entity entity) => new EntityDto { ... };
+}
+```
+```
+
+#### 4. Event Repository
+```markdown
+## Event Repository
+
+**Obrigatório** para auditoria/logging:
+
+```csharp
+public interface IEventRepository
+{
+    Task SaveEvent(Event evt);
+}
+
+public class Event
+{
+    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public EventType Type { get; set; }
+    public string Action { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+}
+
+public enum EventType
+{
+    SUCCESS,
+    ERROR,
+    WARNING,
+    INFO
+}
+```
+```
+
+#### 5. Dependency Injection
+```markdown
+## Dependency Injection
+
+**Arquivo**: `Infra/Configuration/DependencyInjection.cs`
+
+```csharp
+public static class DependencyInjection
+{
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        // Repositories
+        services.AddScoped<IUserRepository, UserRepository>();
+        
+        // Proxy Clients
+        services.AddScoped<IExternalClient, ExternalClient>();
+        
+        // Configurações
+        services.Configure<ConfigurationExternal>(
+            options => configuration.GetSection(ConfigurationExternal.Section).Bind(options));
+        services.AddSingleton(resolver => 
+            resolver.GetRequiredService<IOptions<ConfigurationExternal>>().Value);
+        
+        // Dapper
+        string? connectionString = configuration.GetConnectionString("DefaultConnection");
+        services.AddScoped<IDbConnection>(sp => new SqlConnection(connectionString));
+        
+        return services;
+    }
+}
+```
+```
+
+## Convenções
+
+### SQL com Dapper
+- **SEMPRE** usar parâmetros (prevenir SQL Injection)
+- **NUNCA** concatenar strings em queries
+- Usar `const string sql` para queries
+- Usar anonymous objects para parâmetros
+
+```csharp
+// ✅ CORRETO
+const string sql = "SELECT * FROM Users WHERE Email = @Email";
+var user = await dbConnection.QueryFirstOrDefaultAsync<User>(sql, new { Email = email });
+
+// ❌ ERRADO - SQL Injection
+var sql = $"SELECT * FROM Users WHERE Email = '{email}'";
+```
+
+### HttpClient em Proxy
+- Usar `IHttpClientFactory` quando possível
+- `using` statement para HttpClient criado manualmente
+- Timeout configurável
+- Tratamento de erros HTTP
+
+```csharp
+var response = await client.PostAsync(endpoint, content);
+if (!response.IsSuccessStatusCode)
+    throw new InvalidOperationException($"Erro: {await response.Content.ReadAsStringAsync()}");
+```
+
+### Primary Constructors
+**SEMPRE** usar primary constructors (.NET 8):
+
+```csharp
+public class UserRepository(
+    IDbConnection dbConnection,
+    IEventRepository eventRepository
+) : IUserRepository
+{
+    // Membros injetados disponíveis diretamente
+}
+```
+
+### Lifetimes
+- **Scoped**: Repositories, Clients, IDbConnection
+- **Singleton**: Configurations
+
+## Mapeamento de Legado
+
+### COBOL/DB2 → Dapper
+```
+EXEC SQL                    →    const string sql = "..."
+    SELECT *                →    QueryAsync<T>
+    INSERT                  →    ExecuteAsync
+    UPDATE                  →    ExecuteAsync
+    DELETE                  →    ExecuteAsync
+END-EXEC.                   →    await dbConnection...
+```
+
+### CICS LINK/XCTL → HTTP Client
+```
+EXEC CICS LINK              →    await client.PostAsync()
+    PROGRAM('PROG')         →    endpoint = "/api/prog"
+    COMMAREA(WS-AREA)       →    content = JsonContent.Create(dto)
+END-EXEC.                   →    var result = await response.Content.ReadFromJsonAsync<T>()
+```
+
+## Checklist
+
+- [ ] Repository para cada entidade com operações CRUD
+- [ ] Queries Dapper com parâmetros (sem SQL injection)
+- [ ] Proxy Client para cada serviço externo
+- [ ] Mappers para DTOs ↔ Entities
+- [ ] EventRepository implementado
+- [ ] Tratamento de exceções em todas operações
+- [ ] DependencyInjection configurado
+- [ ] Primary constructors utilizados
+- [ ] ConnectionString não hardcoded

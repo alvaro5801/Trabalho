@@ -1,0 +1,375 @@
+---
+description: Checklist de validação para documentação de migração - garantir completude e qualidade
+globs: ["docs/migration/**/*.md", "docs/backend/**/*.md"]
+alwaysApply: false
+---
+
+# Checklist de Validação de Documentação de Migração
+
+## Uso
+
+Use este checklist para validar cada documento de migração criado. Todos os itens marcados como **[OBRIGATÓRIO]** devem ser atendidos.
+
+## Validação Geral (Todos os Documentos)
+
+### Rastreabilidade (CRÍTICO) ⚠️
+- [ ] **[OBRIGATÓRIO]** Todo elemento tem ID da matriz referenciado
+- [ ] **[OBRIGATÓRIO]** Formato de ID correto (TIPO-NNNN)
+- [ ] **[OBRIGATÓRIO]** IDs referenciados existem na MATRIZ_RASTREABILIDADE.csv
+- [ ] **[OBRIGATÓRIO]** Seção "Rastreabilidade" com ID em cada especificação
+- [ ] **[OBRIGATÓRIO]** Comentários no código incluem IDs da matriz
+- [ ] **[OBRIGATÓRIO]** Tabelas de mapeamento têm coluna "ID Matriz"
+- [ ] **[OBRIGATÓRIO]** Status na matriz atualizados
+- [ ] Sem IDs duplicados
+- [ ] Dependências entre IDs documentadas
+
+### Estrutura
+- [ ] **[OBRIGATÓRIO]** Documento segue template padrão
+- [ ] **[OBRIGATÓRIO]** Seção "Objetivo" clara e específica
+- [ ] **[OBRIGATÓRIO]** Seção "Mapeamento de Legado" com origem e destino
+- [ ] **[OBRIGATÓRIO]** Seção "Especificação Técnica" com exemplos de código
+- [ ] **[OBRIGATÓRIO]** Seção "Checklist de Implementação"
+- [ ] **[OBRIGATÓRIO]** Tabela "Rastreabilidade Completa" ao final
+- [ ] Código formatado corretamente (syntax highlighting)
+- [ ] Sem ambiguidades ou informações vagas
+
+### Conteúdo
+- [ ] **[OBRIGATÓRIO]** Referências ao sistema legado específicas (arquivo + linhas)
+- [ ] **[OBRIGATÓRIO]** Namespaces corretos (`<Cliente>.Web.<Projeto>.<Camada>`)
+- [ ] **[OBRIGATÓRIO]** Nomenclatura seguindo convenções
+- [ ] Exemplos de código completos e funcionais
+- [ ] Comentários explicativos quando necessário
+
+### Rastreabilidade
+- [ ] **[OBRIGATÓRIO]** Cada elemento tem entrada na matriz
+- [ ] **[OBRIGATÓRIO]** IDs únicos e consistentes
+- [ ] Status documentação atualizado
+- [ ] Referências cruzadas entre documentos corretas
+
+## 01_DOMAIN_MODEL.md
+
+### Obrigatório
+- [ ] **[OBRIGATÓRIO]** Todas entities mapeadas de registros legados
+- [ ] **[OBRIGATÓRIO]** DTOs para todas operações (Request/Response)
+- [ ] **[OBRIGATÓRIO]** Interfaces de todos Repositories
+- [ ] **[OBRIGATÓRIO]** Interfaces de todos Services
+- [ ] **[OBRIGATÓRIO]** Interfaces de todos ViewModels
+- [ ] **[OBRIGATÓRIO]** AppResponse<T> definido
+- [ ] Enums documentados com valores legados
+- [ ] Validações de domínio identificadas
+- [ ] Sem dependências de Infrastructure/Application
+
+### Qualidade
+- [ ] Propriedades com tipos corretos (string?, int, DateTime, etc)
+- [ ] Nullable types tratados adequadamente
+- [ ] Mapeamento legado → moderno documentado em tabelas
+
+## 02_DATABASE_SCHEMA.md
+
+### Obrigatório
+- [ ] **[OBRIGATÓRIO]** DDL para todas as tabelas
+- [ ] **[OBRIGATÓRIO]** Primary Keys definidas
+- [ ] **[OBRIGATÓRIO]** Foreign Keys documentadas
+- [ ] **[OBRIGATÓRIO]** Índices necessários criados
+- [ ] **[OBRIGATÓRIO]** Constraints (CHECK, UNIQUE)
+- [ ] **[OBRIGATÓRIO]** Connection strings (Dev/Prod)
+- [ ] Stored procedures (se aplicável)
+- [ ] Estratégia de migration definida
+
+### Qualidade
+- [ ] Tabelas em PascalCase singular
+- [ ] Colunas em PascalCase
+- [ ] Campos de auditoria (CreatedAt, UpdatedAt)
+- [ ] Tipos SQL Server apropriados
+- [ ] Mapeamento de tipos legados documentado
+
+## 03_INFRASTRUCTURE_LAYER.md
+
+### Obrigatório
+- [ ] **[OBRIGATÓRIO]** Repository para cada entidade
+- [ ] **[OBRIGATÓRIO]** Queries Dapper com parâmetros
+- [ ] **[OBRIGATÓRIO]** EventRepository implementado
+- [ ] **[OBRIGATÓRIO]** DependencyInjection.cs configurado
+- [ ] Proxy Clients para serviços externos
+- [ ] Mappers (DTO ↔ Entity)
+- [ ] Tratamento de exceções
+
+### Qualidade
+- [ ] Primary constructors utilizados
+- [ ] SQL sem concatenação (prevenir SQL injection)
+- [ ] HttpClient em Proxy com using/IHttpClientFactory
+- [ ] Lifetimes corretos (Scoped)
+- [ ] Configurações via Options Pattern
+
+## 04_BUSINESS_LOGIC.md
+
+### Obrigatório
+- [ ] **[OBRIGATÓRIO]** ViewModel para cada operação de negócio
+- [ ] **[OBRIGATÓRIO]** Todas regras de negócio mapeadas
+- [ ] **[OBRIGATÓRIO]** Event logging em todas operações
+- [ ] Validações complexas documentadas
+- [ ] Cálculos com fórmulas explicadas
+- [ ] Exceções de negócio definidas
+
+### Qualidade
+- [ ] Primary constructors
+- [ ] ViewModels lançam exceções (não capturam)
+- [ ] Tabela de mapeamento regras legado → moderno
+- [ ] Lógica de negócio isolada (sem infraestrutura)
+
+## 05_APPLICATION_SERVICES.md
+
+### Obrigatório
+- [ ] **[OBRIGATÓRIO]** Service para cada entidade/contexto
+- [ ] **[OBRIGATÓRIO]** Try-catch em todos os métodos
+- [ ] **[OBRIGATÓRIO]** AppResponse<T> em todos retornos
+- [ ] **[OBRIGATÓRIO]** DependencyInjection.cs configurado
+- [ ] Mensagens de erro claras
+
+### Qualidade
+- [ ] Primary constructors
+- [ ] Services NÃO contêm lógica de negócio
+- [ ] Orquestração de ViewModels clara
+- [ ] Tratamento de diferentes tipos de exceção
+
+## 06_API_LAYER.md
+
+### Obrigatório
+- [ ] **[OBRIGATÓRIO]** Controller para cada entidade
+- [ ] **[OBRIGATÓRIO]** Rotas em português (PascalCase/camelCase)
+- [ ] **[OBRIGATÓRIO]** Request DTOs com validações
+- [ ] **[OBRIGATÓRIO]** AppResponse<T> em todos endpoints
+- [ ] **[OBRIGATÓRIO]** Status codes apropriados
+- [ ] **[OBRIGATÓRIO]** XML comments para Swagger
+- [ ] **[OBRIGATÓRIO]** Program.cs documentado
+- [ ] ProducesResponseType declarados
+- [ ] CORS configurado
+
+### Qualidade
+- [ ] Primary constructors
+- [ ] Mapeamento de telas legadas documentado
+- [ ] Validação de ModelState
+- [ ] Error handling middleware
+
+## 07_DEPENDENCY_INJECTION.md
+
+### Obrigatório
+- [ ] **[OBRIGATÓRIO]** IOC configurado (Application + Infrastructure)
+- [ ] **[OBRIGATÓRIO]** Application DI (Services + ViewModels)
+- [ ] **[OBRIGATÓRIO]** Infrastructure DI (Repositories + Clients + DbConnection)
+- [ ] **[OBRIGATÓRIO]** Lifetimes corretos documentados
+- [ ] Tabela de dependências completa
+
+### Qualidade
+- [ ] IDbConnection como Scoped
+- [ ] Configurações como Singleton
+- [ ] Options Pattern para todas configs
+- [ ] Ordem de registro (Infra antes de Application)
+
+## 08_CONFIGURATION.md
+
+### Obrigatório
+- [ ] **[OBRIGATÓRIO]** Classes de Configuration criadas
+- [ ] **[OBRIGATÓRIO]** Options Pattern implementado
+- [ ] **[OBRIGATÓRIO]** appsettings.json (Development)
+- [ ] **[OBRIGATÓRIO]** appsettings.Production.json
+- [ ] **[OBRIGATÓRIO]** Secrets management definido
+- [ ] ConnectionStrings por ambiente
+
+### Qualidade
+- [ ] Const string Section em cada Configuration
+- [ ] Secrets não hardcoded em Production
+- [ ] Feature flags (se aplicável)
+- [ ] Validação de configurações críticas
+
+## 09_USE_CASES_FLOWS.md
+
+### Obrigatório
+- [ ] **[OBRIGATÓRIO]** Mapeamento transações legado → endpoints
+- [ ] **[OBRIGATÓRIO]** Diagramas de sequência para fluxos críticos
+- [ ] **[OBRIGATÓRIO]** Casos de uso (pré/pós-condições)
+- [ ] **[OBRIGATÓRIO]** Matriz de funcionalidades
+- [ ] Integrações externas documentadas
+- [ ] Fluxos alternativos identificados
+
+### Qualidade
+- [ ] Diagramas Mermaid renderizáveis
+- [ ] Passos detalhados de cada fluxo
+- [ ] Mapeamento de PF keys
+- [ ] Status de implementação atualizado
+
+## 10_TESTING_STRATEGY.md
+
+### Obrigatório
+- [ ] **[OBRIGATÓRIO]** Framework de testes definido
+- [ ] **[OBRIGATÓRIO]** Estrutura de pastas documentada
+- [ ] **[OBRIGATÓRIO]** Nomenclatura `[Metodo]_[Cenario]_[Resultado]`
+- [ ] **[OBRIGATÓRIO]** Exemplos de testes ViewModels
+- [ ] **[OBRIGATÓRIO]** Exemplos de testes Services
+- [ ] **[OBRIGATÓRIO]** Cobertura mínima definida (70%)
+- [ ] Casos de teste de regressão
+
+### Qualidade
+- [ ] Pattern Arrange-Act-Assert
+- [ ] Uso de Moq para mocks
+- [ ] FluentAssertions para assertions
+- [ ] Testes de integração para APIs críticas
+
+## 11_SECURITY_AUTH.md
+
+### Obrigatório
+- [ ] **[OBRIGATÓRIO]** Estratégia de autenticação definida
+- [ ] **[OBRIGATÓRIO]** Mapeamento perfis legado → roles
+- [ ] **[OBRIGATÓRIO]** Autorização implementada
+- [ ] **[OBRIGATÓRIO]** Validação de entrada
+- [ ] **[OBRIGATÓRIO]** SQL Injection prevention
+- [ ] **[OBRIGATÓRIO]** Secrets management
+
+### Qualidade
+- [ ] HTTPS obrigatório em Production
+- [ ] Anti-CSRF configurado
+- [ ] Rate limiting (se aplicável)
+- [ ] Auditoria de acessos
+
+## 12_OBSERVABILITY.md
+
+### Obrigatório
+- [ ] **[OBRIGATÓRIO]** Logging estruturado configurado
+- [ ] **[OBRIGATÓRIO]** Health checks implementados
+- [ ] **[OBRIGATÓRIO]** APM definido
+- [ ] Níveis de log apropriados
+- [ ] Métricas importantes identificadas
+
+### Qualidade
+- [ ] Sinks configurados (Console, File, Cloud)
+- [ ] Enrichers aplicados
+- [ ] Distributed tracing (se aplicável)
+- [ ] Alertas definidos
+
+## 13_DATA_MIGRATION.md
+
+### Obrigatório
+- [ ] **[OBRIGATÓRIO]** Estratégia de migração definida
+- [ ] **[OBRIGATÓRIO]** Scripts de extração documentados
+- [ ] **[OBRIGATÓRIO]** Regras de transformação
+- [ ] **[OBRIGATÓRIO]** Validações de integridade
+- [ ] **[OBRIGATÓRIO]** Rollback plan
+
+### Qualidade
+- [ ] Tabela de mapeamento campo a campo
+- [ ] Volumetria estimada
+- [ ] Tempo de migração estimado
+- [ ] Testes de migração documentados
+
+## 14_PERFORMANCE.md
+
+### Obrigatório
+- [ ] **[OBRIGATÓRIO]** Índices otimizados
+- [ ] **[OBRIGATÓRIO]** Cache strategy definida
+- [ ] **[OBRIGATÓRIO]** Async/await utilizado
+- [ ] **[OBRIGATÓRIO]** SLAs definidos
+- [ ] Batch processing para operações em lote
+- [ ] Query optimization
+
+### Qualidade
+- [ ] Benchmarks vs sistema legado
+- [ ] Paginação implementada
+- [ ] Evitar N+1 queries
+- [ ] SELECT apenas campos necessários
+
+## Validação de Implementação
+
+### Código Gerado
+- [ ] Compila sem erros
+- [ ] Segue convenções C# (.NET 8)
+- [ ] Primary constructors utilizados
+- [ ] Async/await sem .Result/.Wait()
+- [ ] Nullable types tratados
+
+### Testes
+- [ ] Todos testes passam
+- [ ] Cobertura >= 70%
+- [ ] Casos de regressão validados
+
+### Qualidade
+- [ ] Linter sem erros críticos
+- [ ] Code review aprovado
+- [ ] Security scan sem vulnerabilidades
+- [ ] Performance dentro dos SLAs
+
+## Validação de Rastreabilidade ⚠️ **CRÍTICO**
+
+### Verificação de IDs na Documentação
+- [ ] **[OBRIGATÓRIO]** Cada especificação técnica tem seção "Rastreabilidade"
+- [ ] **[OBRIGATÓRIO]** Formato `**ID Matriz**: \`TIPO-NNNN\`` em todas seções
+- [ ] **[OBRIGATÓRIO]** Comentários `// ID Matriz: TIPO-NNNN` no código
+- [ ] **[OBRIGATÓRIO]** Tabelas com coluna "ID Matriz"
+- [ ] **[OBRIGATÓRIO]** Todos IDs referenciados existem na matriz
+
+### Verificação da Matriz
+- [ ] **[OBRIGATÓRIO]** Todo elemento legado tem entrada na matriz
+- [ ] **[OBRIGATÓRIO]** IDs únicos sem duplicação
+- [ ] **[OBRIGATÓRIO]** Campos obrigatórios preenchidos
+- [ ] **[OBRIGATÓRIO]** Ref_Doc_Abordagem aponta para documento correto
+- [ ] **[OBRIGATÓRIO]** Status sincronizados (Doc/Impl/Teste)
+- [ ] Desc_Abordagem clara e específica
+
+### Validação Automatizada
+```bash
+# Validar IDs referenciados existem na matriz
+grep -oE '(METOD|ENT|TELA|OBJ|QUERY|REGRA|FTELA)-[0-9]{4}' docs/**/*.md | sort -u > ids_docs.txt
+awk -F',' 'NR>1 {print $1}' MATRIZ_RASTREABILIDADE.csv | sort > ids_matriz.txt
+comm -23 ids_docs.txt ids_matriz.txt  # Deve retornar vazio
+
+# Validar nenhum documento sem IDs
+for doc in docs/backend/*.md; do
+  if ! grep -qE '(METOD|ENT|TELA|OBJ|QUERY|REGRA|FTELA)-[0-9]{4}' "$doc"; then
+    echo "ERRO: $doc sem IDs da matriz"
+  fi
+done
+```
+
+## Validação Final do Projeto
+
+### Documentação Completa
+- [ ] Todos 14 documentos criados
+- [ ] Todos checklists validados
+- [ ] **CRÍTICO**: Rastreabilidade 100% validada
+- [ ] **CRÍTICO**: Matriz de rastreabilidade 100% completa
+- [ ] Todos IDs da documentação existem na matriz
+- [ ] Todos IDs da matriz têm Status_Documentacao = COMPLETED
+- [ ] Diagramas atualizados
+
+### Implementação Completa
+- [ ] Todas funcionalidades implementadas
+- [ ] Todos testes passando
+- [ ] CI/CD configurado
+- [ ] Ambientes (Dev/Staging/Prod) prontos
+
+### Validação de Negócio
+- [ ] Casos de uso validados com stakeholders
+- [ ] Testes de aceitação aprovados
+- [ ] Performance equivalente ou superior ao legado
+- [ ] Migração de dados validada
+
+### Prontidão para Produção
+- [ ] Documentação técnica completa
+- [ ] Runbooks operacionais criados
+- [ ] Monitoramento configurado
+- [ ] Plano de rollback testado
+- [ ] Equipe treinada
+
+## Critérios de Aceitação
+
+**Documentação aprovada se:**
+- Todos itens **[OBRIGATÓRIO]** atendidos
+- >= 90% dos itens opcionais atendidos
+- Zero ambiguidades críticas
+- Revisão técnica aprovada
+
+**Implementação aprovada se:**
+- Código compila e executa
+- Cobertura de testes >= 70%
+- Performance dentro dos SLAs
+- Security scan aprovado
+- Validação de negócio concluída

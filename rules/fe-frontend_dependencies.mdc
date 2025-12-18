@@ -1,0 +1,63 @@
+---
+globs: ['frontend/**/package.json', 'frontend/**/pnpm-lock.yaml', 'frontend/**/package-lock.json']
+alwaysApply: false
+---
+# Dependency Management Rules
+
+## VERSION CHECKING
+
+- **Always check latest stable version**: Before suggesting, installing, or updating any dependency, MUST search the web for the latest stable version.
+- Use npm registry (npmjs.com), GitHub releases, or official documentation to verify current stable version.
+- Never suggest outdated versions; always use the most recent stable release.
+- For packages with breaking changes, check changelog and migration guides before updating.
+- Verify compatibility between related packages (e.g., React and React DOM versions).
+
+## PACKAGE SELECTION
+
+- Prefer well-maintained packages with active community and recent updates.
+- Check bundle size impact before adding dependencies using bundle analyzers.
+- Use exact versions for critical dependencies in production to prevent breaking changes.
+- Review and update dependencies regularly for security patches and bug fixes.
+- Document reasons for specific dependency versions in package.json comments or README.
+
+## VERSION MANAGEMENT
+
+- Use `pnpm` lockfile to ensure consistent installs across environments.
+- Pin critical dependency versions to prevent unexpected breaking changes.
+- Use semantic versioning ranges for non-critical dependencies: `^` for minor updates, `~` for patch updates.
+- Monitor dependency updates using `pnpm outdated` or similar tools.
+- Test thoroughly after dependency updates, especially major version bumps.
+
+## INSTALLATION COMMANDS
+
+- Always use `pnpm add <package>@<latest-stable-version>` with explicit version from web search.
+- For dev dependencies: `pnpm add -D <package>@<latest-stable-version>`
+- Verify installation with `pnpm list <package>` to confirm correct version.
+- Never install packages without specifying version; always check latest stable first.
+
+## MANDATORY LIBRARIES
+
+**IMPORTANT**: Always verify latest stable versions on npmjs.com or official documentation before installing.
+
+- **State/server data**: [@tanstack/query](https://tanstack.com/query/latest) - Check latest version at npmjs.com/package/@tanstack/react-query
+- **Client state**: [zustand](https://github.com/pmndrs/zustand) - Check latest version at npmjs.com/package/zustand - Never use React Context for state management
+- **Routing**: [@tanstack/router](https://tanstack.com/router/latest) - Check latest version at npmjs.com/package/@tanstack/react-router - Query params only, shareable URLs
+- **Forms**: [react-hook-form](https://react-hook-form.com/) + [zod](https://zod.dev/) - Check latest versions at npmjs.com
+- **UI**: [tailwindcss](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/). Fallback: [aceternity/ui](https://ui.aceternity.com/) or [magicui](https://magicui.design/) - Check latest versions
+- **Table**: [tanstack-table](https://tanstack.com/table/latest) only - Check latest version at npmjs.com/package/@tanstack/react-table
+- **Animations**: [framer-motion](https://www.framer.com/motion/) - Check latest version at npmjs.com/package/framer-motion
+- **Charts**: [recharts](https://recharts.org/) - Check latest version at npmjs.com/package/recharts
+- **Date**: [dayjs](https://day.js.org/) - Check latest version at npmjs.com/package/dayjs
+- **File upload**: [react-dropzone](https://react-dropzone.js.org/) - Check latest version at npmjs.com/package/react-dropzone
+- **Email**: [react-email](https://react.email/) - Check latest version at npmjs.com/package/@react-email/components
+- **Drag-and-drop**: [@hello-pangea/dnd](https://github.com/hello-pangea/dnd) - Check latest version at npmjs.com/package/@hello-pangea/dnd
+- **3D**: [@react-three/fiber](https://docs.pmnd.rs/react-three-fiber/) - Check latest version at npmjs.com/package/@react-three/fiber
+- **Rich text**: [tiptap](https://tiptap.dev/) - Check latest version at npmjs.com/package/@tiptap/react
+- **i18n**: [FormatJS](https://formatjs.io/) - Check latest version at npmjs.com/package/react-intl
+
+## BUNDLE OPTIMIZATION
+
+- Use dynamic imports for heavy dependencies (charts, editors, 3D libraries).
+- Regularly analyze bundle size using `vite-bundle-visualizer` or similar.
+- Remove unused dependencies and dead code.
+- Monitor bundle size with each dependency addition.
