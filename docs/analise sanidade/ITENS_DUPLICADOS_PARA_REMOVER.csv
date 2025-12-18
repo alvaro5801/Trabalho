@@ -1,0 +1,11 @@
+Id,Tipo,Nome_Funcao,Motivo,ID_Original,Acao_Recomendada
+METOD-0072,METODO,CB2QP019,Duplicacao da funcao CB2QP019,METOD-0004,REMOVER - Funcao ja mapeada em METOD-0004
+METOD-0073,METODO,CB2QS014,Duplicacao da funcao CB2QS014,METOD-0051,REMOVER - Funcao ja mapeada em METOD-0051
+METOD-0074,METODO,CB2QS021,Duplicacao da funcao CB2QS021,METOD-0055,REMOVER - Funcao ja mapeada em METOD-0055
+METOD-0075,METODO,CB2QP022,Duplicacao da funcao CB2QP022,METOD-0056,REMOVER - Funcao ja mapeada em METOD-0056
+METOD-0076,METODO,CB2QS022,Duplicacao da funcao CB2QS022,METOD-0057,REMOVER - Funcao ja mapeada em METOD-0057
+METOD-0077,METODO,CB2QP029,Duplicacao da funcao CB2QP029,METOD-0006,REMOVER - Funcao ja mapeada em METOD-0006
+METOD-0078,METODO,CB2QS031,Duplicacao da funcao CB2QS031,METOD-0058,REMOVER - Funcao ja mapeada em METOD-0058
+METOD-0079,METODO,CB2QS032,Duplicacao da funcao CB2QS032,METOD-0059,REMOVER - Funcao ja mapeada em METOD-0059
+METOD-0080,METODO,CB2QS033,Duplicacao da funcao CB2QS033,METOD-0060,REMOVER - Funcao ja mapeada em METOD-0060
+

@@ -1,0 +1,7 @@
+Id,Tipo,Objeto_Pai,Tipo_Objeto_Pai,Descricao_Breve,Ref_Legado_Arquivo,Ref_Legado_Linhas,Desc_Abordagem,Ref_Doc_Abordagem,Ref_Doc_Linhas,Status_Documentacao,Status_Implementacao,Status_Teste_Unitario
+METOD-0067,METODO,,,ZZRCIN1 - Error handler INQUIRY/SCAN,_LEGADO/external,N/A,Migrar para exception handler customizado FastAPI,,,NOK,NOK,NOK
+METOD-0068,METODO,,,ZZRCIN2 - Error handler SETINQ,_LEGADO/external,N/A,Migrar para exception handler customizado FastAPI,,,NOK,NOK,NOK
+METOD-0069,METODO,,,ZZ01SGPS3 - Funcao global tecla F3 sair,_LEGADO/external,N/A,Migrar para endpoint logout/close session,,,NOK,NOK,NOK
+METOD-0070,METODO,,,ZZ01SGPS12 - Funcao global tecla F12 cancelar,_LEGADO/external,N/A,Migrar para logica cancelamento frontend React,,,NOK,NOK,NOK
+METOD-0071,METODO,,,ZZ20S01 - Funcao formatacao/conversao dados,_LEGADO/external,N/A,Migrar para utility functions Python/TypeScript,,,NOK,NOK,NOK
+

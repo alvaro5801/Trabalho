@@ -1,0 +1,1722 @@
+﻿{
+    "estatisticas":  {
+                         "por_tipo":  {
+                                          "ENTIDADE":  15,
+                                          "OBJETO":  9,
+                                          "METODO":  13,
+                                          "QUERY":  8,
+                                          "REGRA":  14,
+                                          "TELA":  6,
+                                          "FUNCAO_TELA":  3
+                                      }
+                     },
+    "elementos":  [
+                      {
+                          "tipo":  "TELA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migração de tela 3270 COBOL para API RESTful .NET Core - Endpoint POST /api/alteracao-dados-basicos/consultar-apolice - Controller AlteracaoDadosBasicosController - Validação de entrada com Data Annotations - Retorno padronizado AppResponse\u003cT\u003e - Documentação Swagger/OpenAPI",
+                                                     "documentacao":  "backend_vgfna/06_API_LAYER.md",
+                                                     "linhas":  "48-70"
+                                                 },
+                          "id":  "TELA-0101",
+                          "referencias_legado":  {
+                                                     "linhas":  "121",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "39-163",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNM010 - Tela alteração dados básicos (liberados)",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "TELA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migração de tela 3270 COBOL para API RESTful .NET Core - Endpoint PUT /api/alteracao-dados-basicos/alterar-subgrupo - Controller AlteracaoDadosBasicosController - Validação de entrada com Data Annotations - Retorno padronizado AppResponse\u003cT\u003e - Documentação Swagger/OpenAPI",
+                                                     "documentacao":  "backend_vgfna/06_API_LAYER.md",
+                                                     "linhas":  "72-96"
+                                                 },
+                          "id":  "TELA-0102",
+                          "referencias_legado":  {
+                                                     "linhas":  "288",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "166-262",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNM020 - Tela alteração dados básicos (subgrupo)",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "TELA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migração de tela 3270 COBOL para API RESTful .NET Core - Endpoint PUT /api/alteracao-dados-basicos/alterar-termo-adesao - Controller AlteracaoDadosBasicosController - Validação de entrada com Data Annotations - Retorno padronizado AppResponse\u003cT\u003e - Documentação Swagger/OpenAPI",
+                                                     "documentacao":  "backend_vgfna/06_API_LAYER.md",
+                                                     "linhas":  "98-122"
+                                                 },
+                          "id":  "TELA-0103",
+                          "referencias_legado":  {
+                                                     "linhas":  "739",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "265-295",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNM030 - Tela alteração dados básicos (termo adesão)",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "TELA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migração de tela de ajuda 3270 para componente modal React - Componente HelpModal reutilizável - Integração com sistema de roteamento - Acesso via botão de ajuda na interface - Conteúdo dinâmico baseado em contexto",
+                                                     "documentacao":  "frontend_vgfna/docs/COMPONENTES.md",
+                                                     "linhas":  "45-60"
+                                                 },
+                          "id":  "TELA-0104",
+                          "referencias_legado":  {
+                                                     "linhas":  "1192",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "32",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNH010 - Tela ajuda VGFNM010",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "TELA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migração de tela de ajuda 3270 para componente modal React - Componente HelpModal reutilizável - Integração com sistema de roteamento - Acesso via botão de ajuda na interface - Conteúdo dinâmico baseado em contexto",
+                                                     "documentacao":  "frontend_vgfna/docs/COMPONENTES.md",
+                                                     "linhas":  "45-60"
+                                                 },
+                          "id":  "TELA-0105",
+                          "referencias_legado":  {
+                                                     "linhas":  "1270",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "33",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNH020 - Tela ajuda VGFNM020",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "TELA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migração de tela de ajuda 3270 para componente modal React - Componente HelpModal reutilizável - Integração com sistema de roteamento - Acesso via botão de ajuda na interface - Conteúdo dinâmico baseado em contexto",
+                                                     "documentacao":  "frontend_vgfna/docs/COMPONENTES.md",
+                                                     "linhas":  "45-60"
+                                                 },
+                          "id":  "TELA-0106",
+                          "referencias_legado":  {
+                                                     "linhas":  "1326",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "34",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNH030 - Tela ajuda VGFNM030",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "OBJETO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de campo de tela 3270 para componente Header React TypeScript - Exibição de menu/empresa no cabeçalho da aplicação - Integração com sistema de autenticação - Responsivo e acessível - Estilização com CSS Modules",
+                                                     "documentacao":  "frontend_vgfna/docs/COMPONENTES.md",
+                                                     "linhas":  "120-135"
+                                                 },
+                          "id":  "OBJ-0101",
+                          "referencias_legado":  {
+                                                     "linhas":  "132",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "TELA-0101",
+                          "referencias_asis":  {
+                                                   "linhas":  "111",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "TELA",
+                          "descricao_breve":  "MNUEMP - Menu/Empresa",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "OBJETO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de campo de tela 3270 para componente DisplayField React TypeScript - Exibição somente leitura de data formatada - Formatação usando dateUtils - Integração com dados do sistema - Estilização consistente com design system",
+                                                     "documentacao":  "frontend_vgfna/docs/COMPONENTES.md",
+                                                     "linhas":  "80-95"
+                                                 },
+                          "id":  "OBJ-0102",
+                          "referencias_legado":  {
+                                                     "linhas":  "149",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "TELA-0101",
+                          "referencias_asis":  {
+                                                   "linhas":  "112",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "TELA",
+                          "descricao_breve":  "DATA - Data do processamento",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "OBJETO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de campo de tela 3270 para componente DisplayField React TypeScript - Exibição somente leitura da versão do sistema - Obtida via API do backend - Atualização automática - Estilização consistente com design system",
+                                                     "documentacao":  "frontend_vgfna/docs/COMPONENTES.md",
+                                                     "linhas":  "80-95"
+                                                 },
+                          "id":  "OBJ-0103",
+                          "referencias_legado":  {
+                                                     "linhas":  "150",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "TELA-0101",
+                          "referencias_asis":  {
+                                                   "linhas":  "113",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "TELA",
+                          "descricao_breve":  "VERSAO - Versao do sistema",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "OBJETO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de campo de tela 3270 para componente DisplayField React TypeScript - Exibição somente leitura do nome do sistema - Obtida via API do backend - Estilização consistente com design system - Acessibilidade WCAG",
+                                                     "documentacao":  "frontend_vgfna/docs/COMPONENTES.md",
+                                                     "linhas":  "80-95"
+                                                 },
+                          "id":  "OBJ-0104",
+                          "referencias_legado":  {
+                                                     "linhas":  "171",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "TELA-0101",
+                          "referencias_asis":  {
+                                                   "linhas":  "114",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "TELA",
+                          "descricao_breve":  "NOMSIS - Nome do sistema",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "OBJETO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de campo de tela 3270 para componente DisplayField React TypeScript - Exibição somente leitura de hora formatada - Atualização em tempo real via JavaScript - Formatação usando dateUtils - Estilização consistente com design system",
+                                                     "documentacao":  "frontend_vgfna/docs/COMPONENTES.md",
+                                                     "linhas":  "80-95"
+                                                 },
+                          "id":  "OBJ-0105",
+                          "referencias_legado":  {
+                                                     "linhas":  "189",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "TELA-0101",
+                          "referencias_asis":  {
+                                                   "linhas":  "115",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "TELA",
+                          "descricao_breve":  "HORA - Hora do sistema",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "OBJETO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de campo de tela 3270 para componente DisplayField React TypeScript - Exibição somente leitura do grupo de funções - Obtida via API do backend - Estilização consistente com design system - Acessibilidade WCAG",
+                                                     "documentacao":  "frontend_vgfna/docs/COMPONENTES.md",
+                                                     "linhas":  "80-95"
+                                                 },
+                          "id":  "OBJ-0106",
+                          "referencias_legado":  {
+                                                     "linhas":  "207",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "TELA-0101",
+                          "referencias_asis":  {
+                                                   "linhas":  "116",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "TELA",
+                          "descricao_breve":  "GRUFUC - Grupo de funcoes",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "OBJETO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de campo de entrada 3270 para componente NumberInput React TypeScript - Validação client-side com regex - Máscara de entrada - Feedback visual de validação - Integração com formulário controlado - Acessibilidade ARIA",
+                                                     "documentacao":  "frontend_vgfna/docs/COMPONENTES.md",
+                                                     "linhas":  "150-165"
+                                                 },
+                          "id":  "OBJ-0107",
+                          "referencias_legado":  {
+                                                     "linhas":  "228",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "TELA-0101",
+                          "referencias_asis":  {
+                                                   "linhas":  "117",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "TELA",
+                          "descricao_breve":  "NUM_APOLICE - Numero apolice (foco inicial)",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "OBJETO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de campo de entrada 3270 para componente NumberInput React TypeScript - Validação client-side numérica - Máscara de entrada - Feedback visual de validação - Integração com formulário controlado - Acessibilidade ARIA",
+                                                     "documentacao":  "frontend_vgfna/docs/COMPONENTES.md",
+                                                     "linhas":  "150-165"
+                                                 },
+                          "id":  "OBJ-0108",
+                          "referencias_legado":  {
+                                                     "linhas":  "249",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "TELA-0101",
+                          "referencias_asis":  {
+                                                   "linhas":  "118",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "TELA",
+                          "descricao_breve":  "COD_SUBGRUPO - Codigo subgrupo",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "OBJETO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de área de mensagem 3270 para componente MessageDisplay React TypeScript - Exibição de mensagens de sucesso/erro/aviso - Tipos visuais distintos (success/error/warning/info) - Auto-dismiss configurável - Acessibilidade com role=\"alert\" - Estilização com CSS Modules",
+                                                     "documentacao":  "frontend_vgfna/docs/COMPONENTES.md",
+                                                     "linhas":  "200-215"
+                                                 },
+                          "id":  "OBJ-0109",
+                          "referencias_legado":  {
+                                                     "linhas":  "269",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "TELA-0101",
+                          "referencias_asis":  {
+                                                   "linhas":  "119",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "TELA",
+                          "descricao_breve":  "EZEMSG - Mensagem sistema",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "FUNCAO_TELA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de função CONVERSE COBOL para página React TypeScript ConsultaApolicePage - Roteamento via React Router - Integração com hook useConsultaApolice - Gerenciamento de estado com useState/useEffect - Tratamento de erros e loading states - Validação de formulário - Integração com API REST",
+                                                     "documentacao":  "frontend_vgfna/docs/MAPEAMENTO_TELAS.md",
+                                                     "linhas":  "25-40"
+                                                 },
+                          "id":  "FTELA-0101",
+                          "referencias_legado":  {
+                                                     "linhas":  "121",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "TELA-0101",
+                          "referencias_asis":  {
+                                                   "linhas":  "28, 419",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "TELA",
+                          "descricao_breve":  "VGFNP005 - Apresenta tela M010",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "FUNCAO_TELA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de função CONVERSE COBOL para página React TypeScript AlteracaoSubgrupoPage - Roteamento via React Router - Integração com hook useAlteracaoSubgrupo - Gerenciamento de estado com useState/useEffect - Tratamento de erros e loading states - Validação de formulário - Integração com API REST",
+                                                     "documentacao":  "frontend_vgfna/docs/MAPEAMENTO_TELAS.md",
+                                                     "linhas":  "45-60"
+                                                 },
+                          "id":  "FTELA-0102",
+                          "referencias_legado":  {
+                                                     "linhas":  "288",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "TELA-0102",
+                          "referencias_asis":  {
+                                                   "linhas":  "29, 420",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "TELA",
+                          "descricao_breve":  "VGFNP025 - Apresenta tela M020",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "FUNCAO_TELA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de função CONVERSE COBOL para página React TypeScript AlteracaoTermoAdesaoPage - Roteamento via React Router - Integração com hook useAlteracaoTermoAdesao - Gerenciamento de estado com useState/useEffect - Tratamento de erros e loading states - Validação de formulário - Integração com API REST",
+                                                     "documentacao":  "frontend_vgfna/docs/MAPEAMENTO_TELAS.md",
+                                                     "linhas":  "65-80"
+                                                 },
+                          "id":  "FTELA-0103",
+                          "referencias_legado":  {
+                                                     "linhas":  "739",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "TELA-0103",
+                          "referencias_asis":  {
+                                                   "linhas":  "30, 421",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "TELA",
+                          "descricao_breve":  "VGFNP035 - Apresenta tela M030",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "METODO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de função COBOL para inicialização no Program.cs do backend .NET Core 8 - Configuração de serviços via Dependency Injection - Configuração de logging (ILogger) - Configuração de CORS - Configuração de Swagger/OpenAPI - Configuração de connection strings - Middleware pipeline - Tratamento global de exceções",
+                                                     "documentacao":  "backend_vgfna/05_APPLICATION_SERVICES.md",
+                                                     "linhas":  "25-45"
+                                                 },
+                          "id":  "METOD-0101",
+                          "referencias_legado":  {
+                                                     "linhas":  "2861-2881",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "97-160",
+                                                   "documento":  "03_FLUXO_EXECUCAO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNP000 - Processo inicial - inicializacao",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "METODO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de loop principal COBOL para AlteracaoDadosBasicosService no backend .NET Core - Padrão Service Layer - Orquestração de operações - Tratamento de exceções padronizado - Retorno AppResponse\u003cT\u003e - Logging estruturado - Validação de entrada - Integração com ViewModels e Repositories",
+                                                     "documentacao":  "backend_vgfna/05_APPLICATION_SERVICES.md",
+                                                     "linhas":  "50-120"
+                                                 },
+                          "id":  "METOD-0102",
+                          "referencias_legado":  {
+                                                     "linhas":  "2918-2951",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "163-239",
+                                                   "documento":  "03_FLUXO_EXECUCAO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNP002 - Processo principal - loop controle telas",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "METODO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de INQUIRY DB2 COBOL para SistemaRepository com Dapper no backend .NET Core - Padrão Repository Pattern - Mapeamento DB2 para SQL Server - Query parametrizada para segurança - Tratamento de exceções - Retorno assíncrono (async/await) - Logging de operações - Connection management via DI",
+                                                     "documentacao":  "backend_vgfna/03_INFRASTRUCTURE_LAYER.md",
+                                                     "linhas":  "27-58"
+                                                 },
+                          "id":  "METOD-0103",
+                          "referencias_legado":  {
+                                                     "linhas":  "2883-2916",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "97-160",
+                                                   "documento":  "03_FLUXO_EXECUCAO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNP001 - Inquiry consulta V0SISTEMA",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "METODO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de função de validação COBOL para ProcessarConsultaM010ViewModel no backend .NET Core - Padrão ViewModel Pattern - Validação de regras de negócio - Integração com Repositories (Apolice, Cliente, Subgrupo) - Tratamento de exceções de negócio - Logging de auditoria via EventRepository - Retorno de DTOs tipados - Validações condicionais",
+                                                     "documentacao":  "backend_vgfna/04_BUSINESS_LOGIC.md",
+                                                     "linhas":  "26-100"
+                                                 },
+                          "id":  "METOD-0104",
+                          "referencias_legado":  {
+                                                     "linhas":  "3100-3300",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "242-310",
+                                                   "documento":  "03_FLUXO_EXECUCAO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNS002 - Valida e processa tela M010",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "METODO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de INQUIRY DB2 COBOL para ApoliceRepository com Dapper no backend .NET Core - Padrão Repository Pattern - Mapeamento DB2 para SQL Server - Query SELECT parametrizada - Retorno assíncrono (async/await) - Tratamento de exceções - Logging de operações - Connection management via DI - Mapeamento para entidade Apolice",
+                                                     "documentacao":  "backend_vgfna/03_INFRASTRUCTURE_LAYER.md",
+                                                     "linhas":  "60-110"
+                                                 },
+                          "id":  "METOD-0105",
+                          "referencias_legado":  {
+                                                     "linhas":  "2994-3020",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "435-440",
+                                                   "documento":  "03_FLUXO_EXECUCAO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNP011 - Inquiry V0APOLICE por numero",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "METODO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de INQUIRY DB2 COBOL para ClienteRepository com Dapper no backend .NET Core - Padrão Repository Pattern - Mapeamento DB2 para SQL Server - Query SELECT parametrizada - Retorno assíncrono (async/await) - Tratamento de exceções - Logging de operações - Connection management via DI - Mapeamento para entidade Cliente",
+                                                     "documentacao":  "backend_vgfna/03_INFRASTRUCTURE_LAYER.md",
+                                                     "linhas":  "200-250"
+                                                 },
+                          "id":  "METOD-0106",
+                          "referencias_legado":  {
+                                                     "linhas":  "3022-3046",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "440-443",
+                                                   "documento":  "03_FLUXO_EXECUCAO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNP012 - Inquiry V0CLIENTE por código",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "METODO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de função de validação COBOL para ProcessarAlteracaoM020ViewModel no backend .NET Core - Padrão ViewModel Pattern - Validação de regras de negócio complexas - Integração com Repositories (Subgrupo, Apolice) - Validações condicionais (TIPO_COBRANCA, TIPO_APOLICE) - Tratamento de exceções de negócio - Logging de auditoria via EventRepository - Retorno de DTOs tipados - Proteção de campos",
+                                                     "documentacao":  "backend_vgfna/04_BUSINESS_LOGIC.md",
+                                                     "linhas":  "102-200"
+                                                 },
+                          "id":  "METOD-0107",
+                          "referencias_legado":  {
+                                                     "linhas":  "3400-3600",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "313-335",
+                                                   "documento":  "03_FLUXO_EXECUCAO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNS003 - Valida e processa tela M020",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "METODO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de INQUIRY DB2 COBOL para SubgrupoRepository com Dapper no backend .NET Core - Padrão Repository Pattern - Mapeamento DB2 para SQL Server - Query SELECT com chave composta (NUM_APOLICE, COD_SUBGRUPO) - Retorno assíncrono (async/await) - Tratamento de exceções - Logging de operações - Connection management via DI - Mapeamento para entidade Subgrupo",
+                                                     "documentacao":  "backend_vgfna/03_INFRASTRUCTURE_LAYER.md",
+                                                     "linhas":  "112-160"
+                                                 },
+                          "id":  "METOD-0108",
+                          "referencias_legado":  {
+                                                     "linhas":  "3048-3073",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "440-443",
+                                                   "documento":  "03_FLUXO_EXECUCAO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNP014 - Inquiry V0SUBGRUPO por chave",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "METODO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de função de validação COBOL para ProcessarAlteracaoM030ViewModel no backend .NET Core - Padrão ViewModel Pattern - Validação de regras de negócio - Integração com Repositories (TermoAdesao) - Tratamento de exceções de negócio - Logging de auditoria via EventRepository - Retorno de DTOs tipados - Validações de agências bancárias",
+                                                     "documentacao":  "backend_vgfna/04_BUSINESS_LOGIC.md",
+                                                     "linhas":  "250-350"
+                                                 },
+                          "id":  "METOD-0109",
+                          "referencias_legado":  {
+                                                     "linhas":  "3700-3900",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "338-355",
+                                                   "documento":  "03_FLUXO_EXECUCAO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNS004 - Valida e processa tela M030",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "METODO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de UPDATE DB2 COBOL para SubgrupoRepository.Update() com Dapper no backend .NET Core - Padrão Repository Pattern - Mapeamento DB2 para SQL Server - Query UPDATE parametrizada - Transação implícita - Campos de auditoria (DataAlteracao, UsuarioAlteracao) - Retorno assíncrono (async/await) - Tratamento de exceções - Logging de operações",
+                                                     "documentacao":  "backend_vgfna/03_INFRASTRUCTURE_LAYER.md",
+                                                     "linhas":  "161-200"
+                                                 },
+                          "id":  "METOD-0110",
+                          "referencias_legado":  {
+                                                     "linhas":  "3210-3232",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "71, 461",
+                                                   "documento":  "03_FLUXO_EXECUCAO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNP040 - Update V0SUBGRUPO (período faturamento)",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "METODO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de INQUIRY DB2 COBOL para TermoAdesaoRepository com Dapper no backend .NET Core - Padrão Repository Pattern - Mapeamento DB2 para SQL Server - Query SELECT com chave composta (COD_SUBGRUPO, NUM_APOLICE) - Retorno assíncrono (async/await) - Tratamento de exceções - Logging de operações - Connection management via DI - Mapeamento para entidade TermoAdesao",
+                                                     "documentacao":  "backend_vgfna/03_INFRASTRUCTURE_LAYER.md",
+                                                     "linhas":  "300-350"
+                                                 },
+                          "id":  "METOD-0111",
+                          "referencias_legado":  {
+                                                     "linhas":  "3132-3170",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "440-443",
+                                                   "documento":  "03_FLUXO_EXECUCAO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNP019 - Inquiry V0TERMOADESAO por chave composta",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "METODO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de UPDATE DB2 COBOL para TermoAdesaoRepository.Update() com Dapper no backend .NET Core - Padrão Repository Pattern - Mapeamento DB2 para SQL Server - Query UPDATE parametrizada para agências (COD_AGENCIA_OP, COD_AGENCIA_VEN) - Transação implícita - Campos de auditoria - Retorno assíncrono (async/await) - Tratamento de exceções - Logging de operações",
+                                                     "documentacao":  "backend_vgfna/03_INFRASTRUCTURE_LAYER.md",
+                                                     "linhas":  "351-400"
+                                                 },
+                          "id":  "METOD-0112",
+                          "referencias_legado":  {
+                                                     "linhas":  "3337-3359",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "76, 465",
+                                                   "documento":  "03_FLUXO_EXECUCAO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNP048 - Update V0TERMOADESAO (agências)",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "METODO",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrado de INQUIRY DB2 COBOL para FonteRepository com Dapper no backend .NET Core - Padrão Repository Pattern - Mapeamento DB2 para SQL Server - Query SELECT parametrizada por código FONTE - Retorno assíncrono (async/await) - Tratamento de exceções - Logging de operações - Connection management via DI - Mapeamento para entidade FonteProdutora",
+                                                     "documentacao":  "backend_vgfna/03_INFRASTRUCTURE_LAYER.md",
+                                                     "linhas":  "450-500"
+                                                 },
+                          "id":  "METOD-0113",
+                          "referencias_legado":  {
+                                                     "linhas":  "2966-2992",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "440-443",
+                                                   "documento":  "03_FLUXO_EXECUCAO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNP010 - Inquiry V1FONTE por código",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "REGRA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de condicional COBOL para validação de navegação no frontend React - Tratamento de evento de teclado - Navegação programática via React Router useNavigate - Limpeza de estado do formulário - Feedback visual ao usuário - Acessibilidade com handlers de teclado",
+                                                     "documentacao":  "backend_vgfna/04_BUSINESS_LOGIC.md",
+                                                     "linhas":  "53-59"
+                                                 },
+                          "id":  "REGRA-0101",
+                          "referencias_legado":  {
+                                                     "linhas":  "3100",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0104",
+                          "referencias_asis":  {
+                                                   "linhas":  "173-201",
+                                                   "documento":  "04_FUNCOES_REGRAS_NEGOCIO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "IF EZEAID=PF3 - Testa tecla F3 sair",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "REGRA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de chamada de função COBOL para navegação programática no frontend React - Hook useNavigate do React Router - Limpeza de estado e contexto - Redirecionamento para tela inicial ou logout - Tratamento de estado não salvo - Confirmação opcional antes de sair",
+                                                     "documentacao":  "frontend_vgfna/docs/ESPECIFICACAO_NAVEGACAO_ROTEAMENTO.md",
+                                                     "linhas":  "80-95"
+                                                 },
+                          "id":  "REGRA-0102",
+                          "referencias_legado":  {
+                                                     "linhas":  "3101",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0104",
+                          "referencias_asis":  {
+                                                   "linhas":  "173-201",
+                                                   "documento":  "04_FUNCOES_REGRAS_NEGOCIO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "CALL ZZ01SGPS3 - Funcao sair",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "REGRA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de condicional COBOL para ação de botão Consultar no frontend React - Handler onClick no componente Button - Validação de formulário antes de submeter - Chamada assíncrona à API via hook useConsultaApolice - Tratamento de loading e erro - Atualização de estado com resultado - Feedback visual ao usuário",
+                                                     "documentacao":  "backend_vgfna/04_BUSINESS_LOGIC.md",
+                                                     "linhas":  "51-98"
+                                                 },
+                          "id":  "REGRA-0103",
+                          "referencias_legado":  {
+                                                     "linhas":  "3105",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0104",
+                          "referencias_asis":  {
+                                                   "linhas":  "127",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "IF EZEAID=PF4 - Testa tecla F4 consulta",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "REGRA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de condicional COBOL para ação de botão Incluir no frontend React - Handler onClick no componente Button - Validação de formulário - Chamada assíncrona à API - Tratamento de loading e erro - Navegação para próxima tela após sucesso - Feedback visual ao usuário",
+                                                     "documentacao":  "frontend_vgfna/docs/ESPECIFICACAO_FORMULARIOS_VALIDACOES.md",
+                                                     "linhas":  "120-135"
+                                                 },
+                          "id":  "REGRA-0104",
+                          "referencias_legado":  {
+                                                     "linhas":  "3110",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0104",
+                          "referencias_asis":  {
+                                                   "linhas":  "128",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "IF EZEAID=PF10 - Testa tecla F10 inclusão",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "REGRA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de condicional COBOL para ação de botão Cancelar no frontend React - Handler onClick no componente Button - Limpeza de estado do formulário - Reset de campos - Navegação de volta ou fechamento de modal - Tratamento de estado não salvo - Feedback visual ao usuário",
+                                                     "documentacao":  "frontend_vgfna/docs/ESPECIFICACAO_FORMULARIOS_VALIDACOES.md",
+                                                     "linhas":  "140-155"
+                                                 },
+                          "id":  "REGRA-0105",
+                          "referencias_legado":  {
+                                                     "linhas":  "3115",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0104",
+                          "referencias_asis":  {
+                                                   "linhas":  "129",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "IF EZEAID=PF12 - Testa tecla F12 cancelar",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "REGRA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de chamada de função COBOL para função de cancelamento no frontend React - Função utilitária de reset de formulário - Limpeza de estado via useState setter - Reset de erros de validação - Navegação programática via useNavigate - Tratamento de confirmação se necessário",
+                                                     "documentacao":  "frontend_vgfna/docs/ESPECIFICACAO_FORMULARIOS_VALIDACOES.md",
+                                                     "linhas":  "140-155"
+                                                 },
+                          "id":  "REGRA-0106",
+                          "referencias_legado":  {
+                                                     "linhas":  "3116",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0104",
+                          "referencias_asis":  {
+                                                   "linhas":  "129",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "CALL ZZ01SGPS12 - Funcao cancelar",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "REGRA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de validação COBOL para validação de eventos de teclado no frontend React - Handler onKeyDown nos campos de formulário - Validação de teclas permitidas - Bloqueio de teclas inválidas - Mensagem de erro contextual - Acessibilidade com ARIA - Feedback visual imediato",
+                                                     "documentacao":  "frontend_vgfna/docs/ESPECIFICACAO_FORMULARIOS_VALIDACOES.md",
+                                                     "linhas":  "80-100"
+                                                 },
+                          "id":  "REGRA-0107",
+                          "referencias_legado":  {
+                                                     "linhas":  "3120",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0104",
+                          "referencias_asis":  {
+                                                   "linhas":  "142",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "IF EZEAID NOT ENTER - Valida tecla invalida",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "REGRA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de validação COBOL para validação obrigatória no ProcessarConsultaM010ViewModel backend .NET Core - Validação de campo obrigatório - Verificação de valor não nulo e não vazio - Verificação de valor diferente de zero - Exceção de negócio InvalidOperationException com mensagem clara - Logging da validação - Retorno de erro padronizado",
+                                                     "documentacao":  "backend_vgfna/04_BUSINESS_LOGIC.md",
+                                                     "linhas":  "53-59"
+                                                 },
+                          "id":  "REGRA-0108",
+                          "referencias_legado":  {
+                                                     "linhas":  "3125",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0104",
+                          "referencias_asis":  {
+                                                   "linhas":  "229-293",
+                                                   "documento":  "04_FUNCOES_REGRAS_NEGOCIO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "IF NUM_APOLICE\u003c\u003e0 - Verifica apolice informada",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "REGRA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de chamada COBOL para chamada ao ApoliceRepository no ProcessarConsultaM010ViewModel backend .NET Core - Injeção de dependência do repository - Chamada assíncrona GetByNumero - Tratamento de apólice não encontrada - Exceção de negócio com mensagem clara - Logging da operação - Retorno de entidade tipada",
+                                                     "documentacao":  "backend_vgfna/04_BUSINESS_LOGIC.md",
+                                                     "linhas":  "61-69"
+                                                 },
+                          "id":  "REGRA-0109",
+                          "referencias_legado":  {
+                                                     "linhas":  "3130",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0104",
+                          "referencias_asis":  {
+                                                   "linhas":  "152",
+                                                   "documento":  "01_TELAS_INTERFACE_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "CALL VGFNP011 - Busca apolice no banco",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "REGRA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de validação condicional COBOL para validação condicional no ProcessarAlteracaoM020ViewModel backend .NET Core - Validação if (request.TipoCobranca == 2) - Lógica de negócio condicional - Validações aninhadas quando necessário - Exceções de negócio específicas - Logging de validações - Documentação inline da regra",
+                                                     "documentacao":  "backend_vgfna/04_BUSINESS_LOGIC.md",
+                                                     "linhas":  "143-148"
+                                                 },
+                          "id":  "REGRA-0110",
+                          "referencias_legado":  {
+                                                     "linhas":  "3200",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0107",
+                          "referencias_asis":  {
+                                                   "linhas":  "311-368",
+                                                   "documento":  "04_FUNCOES_REGRAS_NEGOCIO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "IF TIPO_COBRANCA=2 - Valida tipo cobranca fatura",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "REGRA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de validação condicional COBOL para validação obrigatória condicional no ProcessarAlteracaoM020ViewModel backend .NET Core - Validação condicional if (request.TipoCobranca == 2 \u0026\u0026 !request.PeriodoFaturamento.HasValue) - Exceção InvalidOperationException com mensagem específica - Logging da validação - Documentação inline da regra de negócio - Retorno de erro padronizado",
+                                                     "documentacao":  "backend_vgfna/04_BUSINESS_LOGIC.md",
+                                                     "linhas":  "149-155"
+                                                 },
+                          "id":  "REGRA-0111",
+                          "referencias_legado":  {
+                                                     "linhas":  "3205",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0107",
+                          "referencias_asis":  {
+                                                   "linhas":  "311-368",
+                                                   "documento":  "04_FUNCOES_REGRAS_NEGOCIO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "IF TIPO_COBRANCA=2 - PERI_FATURAMENTO obrigatorio",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "REGRA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de validação condicional COBOL para validação obrigatória condicional no ProcessarAlteracaoM020ViewModel backend .NET Core - Validação condicional if (request.TipoCobranca == 2 \u0026\u0026 !request.FormaFaturamento.HasValue) - Exceção InvalidOperationException com mensagem específica - Logging da validação - Documentação inline da regra de negócio - Retorno de erro padronizado",
+                                                     "documentacao":  "backend_vgfna/04_BUSINESS_LOGIC.md",
+                                                     "linhas":  "156-162"
+                                                 },
+                          "id":  "REGRA-0112",
+                          "referencias_legado":  {
+                                                     "linhas":  "3210",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0107",
+                          "referencias_asis":  {
+                                                   "linhas":  "311-368",
+                                                   "documento":  "04_FUNCOES_REGRAS_NEGOCIO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "IF TIPO_COBRANCA=2 - FORMA_FATURAMENTO obrigatorio",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "REGRA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de validação COBOL para validação de valores permitidos no ProcessarAlteracaoM020ViewModel backend .NET Core - Validação condicional if (request.TipoApolice == 2 \u0026\u0026 request.ValidarMatricula != \u0027S\u0027) - Exceção InvalidOperationException com mensagem específica - Validação de valores permitidos - Logging da validação - Documentação inline da regra - Retorno de erro padronizado",
+                                                     "documentacao":  "backend_vgfna/04_BUSINESS_LOGIC.md",
+                                                     "linhas":  "163-170"
+                                                 },
+                          "id":  "REGRA-0113",
+                          "referencias_legado":  {
+                                                     "linhas":  "3220",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0107",
+                          "referencias_asis":  {
+                                                   "linhas":  "371-408",
+                                                   "documento":  "04_FUNCOES_REGRAS_NEGOCIO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "IF TIPO_APOLICE=2 - VALIDAR_MATRICULA apenas \u0027S\u0027",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "REGRA",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de lógica de proteção COBOL para lógica de proteção de campos no ProcessarAlteracaoM020ViewModel backend .NET Core - Validação condicional complexa if ((request.TipoFaturamento == 1 || request.TipoFaturamento == 3) \u0026\u0026 request.TipoApolice == 2) - Lógica de proteção/desabilitação de campos - Exceção InvalidOperationException quando violada - Logging da validação - Documentação inline da regra - Retorno de erro padronizado",
+                                                     "documentacao":  "backend_vgfna/04_BUSINESS_LOGIC.md",
+                                                     "linhas":  "171-180"
+                                                 },
+                          "id":  "REGRA-0114",
+                          "referencias_legado":  {
+                                                     "linhas":  "3225",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0107",
+                          "referencias_asis":  {
+                                                   "linhas":  "411-443",
+                                                   "documento":  "04_FUNCOES_REGRAS_NEGOCIO_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "IF TIPO_FATUR=1 OR 3 AND TIPO_APOLICE=2 - Protege campos",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "QUERY",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de SELECT DB2 COBOL para SubgrupoRepository.GetByApoliceAndSubgrupo() com Dapper no backend .NET Core - Query SQL parametrizada com chave composta - Mapeamento DB2 para SQL Server - Retorno assíncrono (async/await) - Tratamento de exceções - Logging de operações - Connection management via DI - Mapeamento para entidade Subgrupo",
+                                                     "documentacao":  "backend_vgfna/03_INFRASTRUCTURE_LAYER.md",
+                                                     "linhas":  "129-159"
+                                                 },
+                          "id":  "QUERY-0101",
+                          "referencias_legado":  {
+                                                     "linhas":  "3060-3072",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0108",
+                          "referencias_asis":  {
+                                                   "linhas":  "87-90, 247",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "SELECT: V0SUBGRUPO WHERE NUM_APOLICE, COD_SUBGRUPO - Busca dados subgrupo",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "QUERY",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de UPDATE DB2 COBOL para SubgrupoRepository.Update() com Dapper no backend .NET Core - Query SQL UPDATE parametrizada - Mapeamento DB2 para SQL Server - Transação implícita - Campos de auditoria (DataAlteracao, UsuarioAlteracao) - Retorno assíncrono (async/await) - Tratamento de exceções - Logging de operações",
+                                                     "documentacao":  "backend_vgfna/03_INFRASTRUCTURE_LAYER.md",
+                                                     "linhas":  "161-200"
+                                                 },
+                          "id":  "QUERY-0102",
+                          "referencias_legado":  {
+                                                     "linhas":  "3224-3231",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0110",
+                          "referencias_asis":  {
+                                                   "linhas":  "88-90, 258",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "UPDATE: V0SUBGRUPO SET PERI_FATURAMENTO WHERE chave - Atualiza período faturamento subgrupo",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "QUERY",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de SELECT DB2 COBOL para TermoAdesaoRepository.GetByChave() com Dapper no backend .NET Core - Query SQL parametrizada com chave composta - Mapeamento DB2 para SQL Server - Retorno assíncrono (async/await) - Tratamento de exceções - Logging de operações - Connection management via DI - Mapeamento para entidade TermoAdesao",
+                                                     "documentacao":  "backend_vgfna/03_INFRASTRUCTURE_LAYER.md",
+                                                     "linhas":  "300-330"
+                                                 },
+                          "id":  "QUERY-0103",
+                          "referencias_legado":  {
+                                                     "linhas":  "3153-3169",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0111",
+                          "referencias_asis":  {
+                                                   "linhas":  "106-109, 248",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "SELECT: V0TERMOADESAO WHERE COD_SUBGRUPO, NUM_APOLICE - Busca dados termo adesão",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "QUERY",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de UPDATE DB2 COBOL para TermoAdesaoRepository.Update() com Dapper no backend .NET Core - Query SQL UPDATE parametrizada para agências - Mapeamento DB2 para SQL Server - Transação implícita - Campos de auditoria - Retorno assíncrono (async/await) - Tratamento de exceções - Logging de operações",
+                                                     "documentacao":  "backend_vgfna/03_INFRASTRUCTURE_LAYER.md",
+                                                     "linhas":  "351-400"
+                                                 },
+                          "id":  "QUERY-0104",
+                          "referencias_legado":  {
+                                                     "linhas":  "3351-3358",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0112",
+                          "referencias_asis":  {
+                                                   "linhas":  "108-109, 259",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "UPDATE: V0TERMOADESAO SET COD_AGENCIA_OP, COD_AGENCIA_VEN WHERE COD_SUBGRUPO - Atualiza agências termo adesão",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "QUERY",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de SELECT DB2 COBOL para ApoliceRepository.GetByNumero() com Dapper no backend .NET Core - Query SQL SELECT parametrizada - Mapeamento DB2 para SQL Server - Retorno assíncrono (async/await) - Tratamento de exceções - Logging de operações - Connection management via DI - Mapeamento para entidade Apolice",
+                                                     "documentacao":  "backend_vgfna/03_INFRASTRUCTURE_LAYER.md",
+                                                     "linhas":  "77-94"
+                                                 },
+                          "id":  "QUERY-0105",
+                          "referencias_legado":  {
+                                                     "linhas":  "2994-3020",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0105",
+                          "referencias_asis":  {
+                                                   "linhas":  "125-127, 246",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "SELECT: V0APOLICE WHERE NUM_APOLICE - Busca dados apólice",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "QUERY",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de SELECT DB2 COBOL para ClienteRepository.GetByCodigo() com Dapper no backend .NET Core - Query SQL SELECT parametrizada - Mapeamento DB2 para SQL Server - Retorno assíncrono (async/await) - Tratamento de exceções - Logging de operações - Connection management via DI - Mapeamento para entidade Cliente",
+                                                     "documentacao":  "backend_vgfna/03_INFRASTRUCTURE_LAYER.md",
+                                                     "linhas":  "200-240"
+                                                 },
+                          "id":  "QUERY-0106",
+                          "referencias_legado":  {
+                                                     "linhas":  "3034-3045",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0106",
+                          "referencias_asis":  {
+                                                   "linhas":  "141-143, 249",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "SELECT: V0CLIENTE WHERE COD_CLIENTE - Busca nome cliente",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "QUERY",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de SELECT DB2 COBOL para FonteRepository.GetByCodigo() com Dapper no backend .NET Core - Query SQL SELECT parametrizada - Mapeamento DB2 para SQL Server - Retorno assíncrono (async/await) - Tratamento de exceções - Logging de operações - Connection management via DI - Mapeamento para entidade FonteProdutora",
+                                                     "documentacao":  "backend_vgfna/03_INFRASTRUCTURE_LAYER.md",
+                                                     "linhas":  "450-480"
+                                                 },
+                          "id":  "QUERY-0107",
+                          "referencias_legado":  {
+                                                     "linhas":  "2980-2991",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0113",
+                          "referencias_asis":  {
+                                                   "linhas":  "189-191, 252",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "SELECT: V1FONTE WHERE FONTE - Busca nome fonte/sucursal",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "QUERY",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de SELECT DB2 COBOL para SistemaRepository.GetDataAbertura() com Dapper no backend .NET Core - Query SQL SELECT com filtro fixo IDSISTEM=\u0027VG\u0027 - Mapeamento DB2 para SQL Server - Retorno assíncrono (async/await) - Tratamento de exceções - Logging de operações - Connection management via DI - Mapeamento para entidade Sistema",
+                                                     "documentacao":  "backend_vgfna/03_INFRASTRUCTURE_LAYER.md",
+                                                     "linhas":  "46-56"
+                                                 },
+                          "id":  "QUERY-0110",
+                          "referencias_legado":  {
+                                                     "linhas":  "2883-2916",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "METOD-0103",
+                          "referencias_asis":  {
+                                                   "linhas":  "205-207, 245",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "METODO",
+                          "descricao_breve":  "SELECT: V0SISTEMA WHERE IDSISTEM=\u0027VG\u0027 - Busca data abertura sistema",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NOK"
+                                     }
+                      },
+                      {
+                          "tipo":  "ENTIDADE",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de tabela DB2 para entidade Apolice no Domain Model .NET Core - Classe C# com propriedades tipadas - Mapeamento de campos DB2 para propriedades C# - Data Annotations para validação - Suporte a nullable types - Propriedades de auditoria - Interface IEntity para rastreabilidade",
+                                                     "documentacao":  "backend_vgfna/01_DOMAIN_MODEL.md",
+                                                     "linhas":  "31-55"
+                                                 },
+                          "id":  "ENT-0101",
+                          "referencias_legado":  {
+                                                     "linhas":  "3800",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "112-127",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "V0APOLICE - Tabela apólice",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "ENTIDADE",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de tabela DB2 para entidade Subgrupo no Domain Model .NET Core - Classe C# com propriedades tipadas - Mapeamento de campos DB2 para propriedades C# - Data Annotations para validação - Chave composta (NUM_APOLICE, COD_SUBGRUPO) - Propriedades de auditoria - Interface IEntity para rastreabilidade",
+                                                     "documentacao":  "backend_vgfna/01_DOMAIN_MODEL.md",
+                                                     "linhas":  "57-120"
+                                                 },
+                          "id":  "ENT-0102",
+                          "referencias_legado":  {
+                                                     "linhas":  "4000",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "45-90",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "V0SUBGRUPO - Tabela subgrupo",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "ENTIDADE",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de tabela DB2 para entidade TermoAdesao no Domain Model .NET Core - Classe C# com propriedades tipadas - Mapeamento de campos DB2 para propriedades C# - Data Annotations para validação - Chave composta (COD_SUBGRUPO, NUM_APOLICE) - Propriedades de auditoria - Interface IEntity para rastreabilidade",
+                                                     "documentacao":  "backend_vgfna/01_DOMAIN_MODEL.md",
+                                                     "linhas":  "122-180"
+                                                 },
+                          "id":  "ENT-0103",
+                          "referencias_legado":  {
+                                                     "linhas":  "4200",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "93-109",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "V0TERMOADESAO - Tabela termo adesão",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "ENTIDADE",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de tabela DB2 para entidade Cliente no Domain Model .NET Core - Classe C# com propriedades tipadas - Mapeamento de campos DB2 para propriedades C# - Data Annotations para validação - Suporte a nullable types - Propriedades de auditoria - Interface IEntity para rastreabilidade",
+                                                     "documentacao":  "backend_vgfna/01_DOMAIN_MODEL.md",
+                                                     "linhas":  "182-220"
+                                                 },
+                          "id":  "ENT-0104",
+                          "referencias_legado":  {
+                                                     "linhas":  "",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "130-143",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "V1CLIENTE - Tabela cliente",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "ENTIDADE",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de tabela DB2 para entidade Endereco no Domain Model .NET Core - Classe C# com propriedades tipadas - Mapeamento de campos DB2 para propriedades C# - Data Annotations para validação - Suporte a nullable types - Propriedades de auditoria - Interface IEntity para rastreabilidade",
+                                                     "documentacao":  "backend_vgfna/01_DOMAIN_MODEL.md",
+                                                     "linhas":  "222-260"
+                                                 },
+                          "id":  "ENT-0105",
+                          "referencias_legado":  {
+                                                     "linhas":  "",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "146-159",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "V1ENDERECOS - Tabela endereços",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "ENTIDADE",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de tabela DB2 para entidade AgenciaBancaria no Domain Model .NET Core - Classe C# com propriedades tipadas - Mapeamento de campos DB2 para propriedades C# - Data Annotations para validação - Suporte a nullable types - Propriedades de auditoria - Interface IEntity para rastreabilidade",
+                                                     "documentacao":  "backend_vgfna/01_DOMAIN_MODEL.md",
+                                                     "linhas":  "262-300"
+                                                 },
+                          "id":  "ENT-0106",
+                          "referencias_legado":  {
+                                                     "linhas":  "",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "162-175",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "V1AGENCIAS - Tabela agências bancárias",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "ENTIDADE",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de tabela DB2 para entidade FonteProdutora no Domain Model .NET Core - Classe C# com propriedades tipadas - Mapeamento de campos DB2 para propriedades C# - Data Annotations para validação - Suporte a nullable types - Propriedades de auditoria - Interface IEntity para rastreabilidade",
+                                                     "documentacao":  "backend_vgfna/01_DOMAIN_MODEL.md",
+                                                     "linhas":  "302-340"
+                                                 },
+                          "id":  "ENT-0107",
+                          "referencias_legado":  {
+                                                     "linhas":  "",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "178-191",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "V1FONTE - Tabela fontes produtoras",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "ENTIDADE",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de tabela DB2 para entidade Sistema no Domain Model .NET Core - Classe C# com propriedades tipadas - Mapeamento de campos DB2 para propriedades C# - Data Annotations para validação - Suporte a nullable types - Propriedades de auditoria - Interface IEntity para rastreabilidade",
+                                                     "documentacao":  "backend_vgfna/01_DOMAIN_MODEL.md",
+                                                     "linhas":  "342-380"
+                                                 },
+                          "id":  "ENT-0108",
+                          "referencias_legado":  {
+                                                     "linhas":  "",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "194-207",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "V0SISTEMA - Tabela sistema",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "ENTIDADE",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de tabela DB2 para tabela de domínio no Database Schema SQL Server - Tabela de referência estática - Mapeamento para enum ou tabela de domínio - Uso em SelectInput no frontend - Validação de valores permitidos - Documentação de valores válidos",
+                                                     "documentacao":  "backend_vgfna/02_DATABASE_SCHEMA.md",
+                                                     "linhas":  "200-220"
+                                                 },
+                          "id":  "ENT-0109",
+                          "referencias_legado":  {
+                                                     "linhas":  "",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "212-214",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "ZZ01T14 - Tabela domínio período faturamento",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "ENTIDADE",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de tabela DB2 para tabela de domínio no Database Schema SQL Server - Tabela de referência estática - Mapeamento para enum ou tabela de domínio - Uso em SelectInput no frontend - Validação de valores permitidos - Documentação de valores válidos",
+                                                     "documentacao":  "backend_vgfna/02_DATABASE_SCHEMA.md",
+                                                     "linhas":  "222-242"
+                                                 },
+                          "id":  "ENT-0110",
+                          "referencias_legado":  {
+                                                     "linhas":  "",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "216-218",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "ZZ01T17 - Tabela domínio forma faturamento",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "ENTIDADE",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de tabela DB2 para tabela de domínio no Database Schema SQL Server - Tabela de referência estática - Mapeamento para enum ou tabela de domínio - Uso em SelectInput no frontend - Validação de valores permitidos - Documentação de valores válidos",
+                                                     "documentacao":  "backend_vgfna/02_DATABASE_SCHEMA.md",
+                                                     "linhas":  "244-264"
+                                                 },
+                          "id":  "ENT-0111",
+                          "referencias_legado":  {
+                                                     "linhas":  "",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "220-222",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "ZZ01T18 - Tabela domínio forma averbação",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "ENTIDADE",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de tabela DB2 para tabela de domínio no Database Schema SQL Server - Tabela de referência estática - Mapeamento para enum ou tabela de domínio - Uso em SelectInput no frontend - Validação de valores permitidos - Documentação de valores válidos",
+                                                     "documentacao":  "backend_vgfna/02_DATABASE_SCHEMA.md",
+                                                     "linhas":  "266-286"
+                                                 },
+                          "id":  "ENT-0112",
+                          "referencias_legado":  {
+                                                     "linhas":  "",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "224-226",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "ZZ01T19 - Tabela domínio tipo plano",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "ENTIDADE",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de tabela DB2 para tabela de domínio no Database Schema SQL Server - Tabela de referência estática - Mapeamento para enum ou tabela de domínio - Uso em SelectInput no frontend - Validação de valores permitidos - Documentação de valores válidos",
+                                                     "documentacao":  "backend_vgfna/02_DATABASE_SCHEMA.md",
+                                                     "linhas":  "288-308"
+                                                 },
+                          "id":  "ENT-0113",
+                          "referencias_legado":  {
+                                                     "linhas":  "",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "228-230",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "ZZ01T21 - Tabela domínio tipo cobrança",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "ENTIDADE",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de workstorage COBOL para DTOs e ViewModels no Domain Model .NET Core - DTOs para transferência de dados entre camadas - ViewModels para lógica de apresentação - Não é entidade de domínio (área temporária) - Mapeamento de campos workstorage para propriedades C# - Validação de dados temporários",
+                                                     "documentacao":  "backend_vgfna/01_DOMAIN_MODEL.md",
+                                                     "linhas":  "400-450"
+                                                 },
+                          "id":  "ENT-0114",
+                          "referencias_legado":  {
+                                                     "linhas":  "25",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "386-417",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "VGFNW001 - Workstorage area principal",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      },
+                      {
+                          "tipo":  "ENTIDADE",
+                          "abordagem_migracao":  {
+                                                     "descricao":  "Migrada de workstorage COBOL para DTOs de parâmetros no Domain Model .NET Core - DTOs para transferência de dados entre camadas - Não é entidade de domínio (área temporária) - Mapeamento de campos workstorage para propriedades C# - Validação de parâmetros - Uso em requisições HTTP",
+                                                     "documentacao":  "backend_vgfna/01_DOMAIN_MODEL.md",
+                                                     "linhas":  "452-500"
+                                                 },
+                          "id":  "ENT-0115",
+                          "referencias_legado":  {
+                                                     "linhas":  "",
+                                                     "arquivo":  "_LEGADO/vgfna.esf"
+                                                 },
+                          "objeto_pai":  "RAIZ",
+                          "referencias_asis":  {
+                                                   "linhas":  "420-438",
+                                                   "documento":  "02_MODELO_DADOS_VGFNA.md"
+                                               },
+                          "tipo_objeto_pai":  "SISTEMA",
+                          "descricao_breve":  "ZZ99W01 - Workstorage área parâmetros",
+                          "status":  {
+                                         "documentacao":  "OK",
+                                         "implementacao":  "NOK",
+                                         "teste_unitario":  "NA"
+                                     }
+                      }
+                  ],
+    "metadata":  {
+                     "descricao":  "Matriz de Rastreabilidade VGFNA - MigraÃ§Ã£o de Sistema Legado COBOL para .NET Core + React",
+                     "total_elementos":  68,
+                     "sistema":  "VGFNA",
+                     "data_atualizacao":  "2025-12-17",
+                     "versao":  "v5"
+                 }
+}
