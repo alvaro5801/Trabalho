@@ -1,0 +1,53 @@
+Id,Tipo,Objeto_Pai,Tipo_Objeto_Pai,Descricao_Breve,Ref_Legado_Arquivo,Ref_Legado_Linhas,Desc_Abordagem,Ref_Doc_Abordagem,Ref_Doc_Linhas,Status_Documentacao,Status_Implementacao,Status_Teste_Unitario
+METOD-0067,METODO,,,ZZRCIN1 - Error handler INQUIRY/SCAN,_LEGADO/external,N/A,Migrar para exception handler customizado FastAPI,,,NOK,NOK,NOK
+METOD-0068,METODO,,,ZZRCIN2 - Error handler SETINQ,_LEGADO/external,N/A,Migrar para exception handler customizado FastAPI,,,NOK,NOK,NOK
+METOD-0069,METODO,,,ZZ01SGPS3 - Funcao global tecla F3 sair,_LEGADO/external,N/A,Migrar para endpoint logout/close session,,,NOK,NOK,NOK
+METOD-0070,METODO,,,ZZ01SGPS12 - Funcao global tecla F12 cancelar,_LEGADO/external,N/A,Migrar para logica cancelamento frontend React,,,NOK,NOK,NOK
+METOD-0071,METODO,,,ZZ20S01 - Funcao formatacao/conversao dados,_LEGADO/external,N/A,Migrar para utility functions Python/TypeScript,,,NOK,NOK,NOK
+QUERY-0001,QUERY,CB2QP003,METODO,"SELECT: V1SISTEMA WHERE IDSISTEM='CB' - Busca data abertura",_LEGADO/cb2qa.esf,6274-6289,Migrar para SistemaRepository.GetDataAbertura(),,,NOK,NOK,NOK
+QUERY-0002,QUERY,CB2QP052,METODO,"SELECT: CB2QR001 JOIN V1ENDOSSO WHERE NUM_APOLICE - Busca RD apolice filtro ramos",_LEGADO/cb2qa.esf,6291-6323,Migrar para RegistroDebAutoRepository.GetByApolice(),,,NOK,NOK,NOK
+QUERY-0003,QUERY,CB2QP012,METODO,"SELECT: GE_MOVTO_CONTA WHERE NUM_APOLICE,ENDOSSO,CONVENIO,PARCELA,NSAS - Busca movimento conta",_LEGADO/cb2qa.esf,6325-6350,Migrar para MovimentoContaRepository.GetByChaveComposta(),,,NOK,NOK,NOK
+QUERY-0004,QUERY,CB2QP042,METODO,SELECT: V0APOLCOB WHERE NUM_APOLICE - Busca dados conta/cartao apolice,_LEGADO/cb2qa.esf,6352-6380,Migrar para ApoliceCobrancaRepository.GetByApolice(),,,NOK,NOK,NOK
+QUERY-0005,QUERY,CB2QP036,METODO,"SELECT: V1MOVDEBCC_CEF WHERE COD_CONVENIO,NUM_APOLICE,NRENDOS,AGENCIA,CONTA,CARTAO - Busca requisicao",_LEGADO/cb2qa.esf,6382-6411,Migrar para MovDebCCRepository.GetNumRequisicao(),,,NOK,NOK,NOK
+QUERY-0006,QUERY,CB2QP021,METODO,SELECT: GE_LEGADO_PESSOA WHERE NUM_OCORR_MOVTO - Busca pessoa por movimento,_LEGADO/cb2qa.esf,6413-6440,Migrar para PessoaLegadoRepository.GetByMovimento(),,,NOK,NOK,NOK
+QUERY-0007,QUERY,CB2QP026,METODO,SELECT: OD_PESSOA_FISICA WHERE NUM_PESSOA - Busca dados CPF nome PF,_LEGADO/cb2qa.esf,6442-6477,Migrar para PessoaFisicaRepository.GetById(),,,NOK,NOK,NOK
+QUERY-0008,QUERY,CB2QP027,METODO,SELECT: OD_PESSOA_JURIDICA WHERE NUM_PESSOA - Busca dados CNPJ razao PJ,_LEGADO/cb2qa.esf,6479-6510,Migrar para PessoaJuridicaRepository.GetById(),,,NOK,NOK,NOK
+QUERY-0009,QUERY,CB2QP011,METODO,SELECT: V0BILHETE WHERE NUMBIL - Busca bilhete por numero,_LEGADO/cb2qa.esf,6512-6538,Migrar para BilheteRepository.GetByNumero(),,,NOK,NOK,NOK
+QUERY-0010,QUERY,CB2QP041,METODO,SELECT: V0BILHETE WHERE NUM_APOLICE - Busca bilhete por apolice,_LEGADO/cb2qa.esf,6540-6569,Migrar para BilheteRepository.GetByApolice(),,,NOK,NOK,NOK
+QUERY-0011,QUERY,CB2QP013,METODO,"SELECT: V1ENDOSSO WHERE NUM_APOLICE,NRENDOS - Busca dados endosso",_LEGADO/cb2qa.esf,6571-6611,Migrar para EndossoRepository.GetById(),,,NOK,NOK,NOK
+QUERY-0012,QUERY,CB2QP12A,METODO,SELECT: V0HISTCOBVA WHERE NRTIT - Busca numero certificado por titulo,_LEGADO/cb2qa.esf,8595-8622,Migrar para HistCobrancaVARepository.GetCertificado(),,,NOK,NOK,NOK
+QUERY-0013,QUERY,CB2QP12B,METODO,SELECT: V0PROPOSTAVA WHERE NRCERTIF - Busca cliente por certificado,_LEGADO/cb2qa.esf,8624-8651,Migrar para PropostaVARepository.GetCliente(),,,NOK,NOK,NOK
+QUERY-0014,QUERY,CB2QP060,METODO,"SELECT: V0PROPOSTA WHERE NRPROPOS,FONTE - Busca cliente por proposta fonte",_LEGADO/cb2qa.esf,6965-6996,Migrar para PropostaRepository.GetCliente(),,,NOK,NOK,NOK
+QUERY-0015,QUERY,CB2QP13A,METODO,SELECT: V0MESTSINI WHERE NUM_APOL_SINISTRO - Busca sinistro mes,_LEGADO/cb2qa.esf,8653-8680,Migrar para MesSinistroRepository.GetByApolice(),,,NOK,NOK,NOK
+QUERY-0016,QUERY,CB2QP13B,METODO,"SELECT: V0HISTSINI WHERE NUM_APOL_SINISTRO,OCORHIST - Busca nome favorecido historico",_LEGADO/cb2qa.esf,8682-8709,Migrar para HistSinistroRepository.GetFavorecido(),,,NOK,NOK,NOK
+QUERY-0017,QUERY,CB2QP13C,METODO,SELECT: V0CHEQUES WHERE CHQINT - Busca nome favorecido cheque,_LEGADO/cb2qa.esf,8711-8738,Migrar para ChequesRepository.GetFavorecido(),,,NOK,NOK,NOK
+QUERY-0018,QUERY,CB2QP14A,METODO,SELECT: V0CLIENTE WHERE COD_CLIENTE - Busca nome razao CPF/CNPJ,_LEGADO/cb2qa.esf,8740-8764,Migrar para ClienteRepository.GetById(),,,NOK,NOK,NOK
+QUERY-0019,QUERY,CB2QP025,METODO,"SELECT: V0PARCELA WHERE NUM_APOLICE,NRENDOS,NRPARCEL - Busca situacao parcela",_LEGADO/cb2qa.esf,7142-7174,Migrar para ParcelaRepository.GetSituacao(),,,NOK,NOK,NOK
+QUERY-0020,QUERY,CB2QP007,METODO,SELECT: GE_MOVIMENTO WHERE NUM_OCORR_MOVTO - Busca dados movimento GE,_LEGADO/cb2qa.esf,7176-7213,Migrar para MovimentoGERepository.GetByOcorrencia(),,,NOK,NOK,NOK
+QUERY-0021,QUERY,CB2QP004,METODO,"SELECT: SI_AR_DETALHE_VC WHERE NUM_APOL_SINISTRO,OCORR_HISTORICO - Busca detalhe sinistro",_LEGADO/cb2qa.esf,7215-7246,Migrar para SinistroARDetalheRepository.GetById(),,,NOK,NOK,NOK
+QUERY-0022,QUERY,CB2QP009,METODO,SELECT: BANCOS WHERE COD_BANCO - Busca nome banco,_LEGADO/cb2qa.esf,7248-7278,Migrar para BancosRepository.GetNome(),,,NOK,NOK,NOK
+QUERY-0023,QUERY,CB2QP033,METODO,"SELECT: CALENDARIO WHERE DATA_CALENDARIO,DIA_SEMANA IN (S,D) - Busca fim semana com calculos",_LEGADO/cb2qa.esf,7280-7306,Migrar para CalendarioRepository.GetFimSemana(),,,NOK,NOK,NOK
+QUERY-0024,QUERY,CB2QP031,METODO,SELECT: V0FERIADOS WHERE DATA_FERIADO - Busca feriado com calculo proximo dia,_LEGADO/cb2qa.esf,7308-7334,Migrar para FeriadosRepository.GetByData(),,,NOK,NOK,NOK
+QUERY-0025,QUERY,CB2QP006,METODO,"SELECT: CHEQUES_EMITIDOS WHERE COD_EMPRESA=0,TIPO_MOVIMENTO=3,NUM_DOCUMENTO,DATA_MOVIMENTO",_LEGADO/cb2qa.esf,7336-7369,Migrar para ChequesEmitidosRepository.GetByDocumento(),,,NOK,NOK,NOK
+QUERY-0026,QUERY,CB2QP008,METODO,SELECT: CHEQUES_EMITIDOS WHERE NUM_CHEQUE_INTERNO - Busca cheque por interno,_LEGADO/cb2qa.esf,7371-7403,Migrar para ChequesEmitidosRepository.GetByInterno(),,,NOK,NOK,NOK
+QUERY-0027,QUERY,CB2QP028,METODO,"SELECT: LOTE_CHEQUES WHERE NUM_CHEQUE_INTERNO,DIG_CHEQUE_INTERNO - Busca dados lote",_LEGADO/cb2qa.esf,7405-7437,Migrar para LoteChequesRepository.GetByInterno(),,,NOK,NOK,NOK
+QUERY-0028,QUERY,CB2QP035,METODO,SELECT: V1USUARIOS WHERE CODUSU - Busca nome usuario,_LEGADO/cb2qa.esf,7489-7516,Migrar para UsuariosRepository.GetNome(),,,NOK,NOK,NOK
+QUERY-0029,QUERY,CB2QP050,METODO,SELECT: SINISTRO_HISTORICO WHERE chave EXISTS subquery movimento posterior - Valida pagamento,_LEGADO/cb2qa.esf,7518-7582,Migrar para SinistroHistoricoRepository.ValidaPagamentoPosterior(),,,NOK,NOK,NOK
+QUERY-0030,QUERY,CB2QP051,METODO,"SELECT: SINISTRO_HISTORICO MAX(DATA,HORA) WHERE NUM_APOL,COD_OPERACAO IN (1050,2050,3050)",_LEGADO/cb2qa.esf,7584-7652,Migrar para SinistroHistoricoRepository.GetUltimoMovimento(),,,NOK,NOK,NOK
+QUERY-0031,QUERY,CB2QP056,METODO,SELECT: V0MOVDEBCC_CEF WHERE NUM_APOLICE GROUP BY - Cursor movimentos apolice RD,_LEGADO/cb2qa.esf,6797-6832,Migrar para MovDebCCRepository.GetCursorByApolice(),,,NOK,NOK,NOK
+QUERY-0032,QUERY,CB2QP053,METODO,"SELECT: CB2QR001 JOIN V1ENDOSSO WHERE NUM_APOLICE,NRENDOS - Cursor RD apolice/endosso",_LEGADO/cb2qa.esf,6613-6666,Migrar para RegistroDebAutoRepository.GetCursorByApoliceEndosso(),,,NOK,NOK,NOK
+QUERY-0033,QUERY,CB2QP057,METODO,"SELECT: V0MOVDEBCC_CEF WHERE NUM_APOLICE,NRENDOS GROUP BY - Cursor movimentos apolice/endosso RD",_LEGADO/cb2qa.esf,6834-6893,Migrar para MovDebCCRepository.GetCursorByApoliceEndosso(),,,NOK,NOK,NOK
+QUERY-0034,QUERY,CB2QP054,METODO,"SELECT: CB2QR001 JOIN V1ENDOSSO WHERE COD_AGENCIA,OPER_CONTA,NUM_CONTA - Cursor RD conta",_LEGADO/cb2qa.esf,6668-6726,Migrar para RegistroDebAutoRepository.GetCursorByConta(),,,NOK,NOK,NOK
+QUERY-0035,QUERY,CB2QP058,METODO,"SELECT: V0MOVDEBCC_CEF WHERE COD_AGENCIA,OPER_CONTA,NUM_CONTA GROUP BY - Cursor movimentos conta RD",_LEGADO/cb2qa.esf,6895-6960,Migrar para MovDebCCRepository.GetCursorByConta(),,,NOK,NOK,NOK
+QUERY-0036,QUERY,CB2QP055,METODO,SELECT: CB2QR001 JOIN V1ENDOSSO WHERE NUM_CARTAO - Cursor RD cartao,_LEGADO/cb2qa.esf,6728-6779,Migrar para RegistroDebAutoRepository.GetCursorByCartao(),,,NOK,NOK,NOK
+QUERY-0037,QUERY,CB2QP059,METODO,SELECT: V0MOVDEBCC_CEF WHERE NUM_CARTAO GROUP BY - Cursor movimentos cartao RD,_LEGADO/cb2qa.esf,6962-7017,Migrar para MovDebCCRepository.GetCursorByCartao(),,,NOK,NOK,NOK
+QUERY-0038,QUERY,CB2QP014,METODO,SELECT: V0MOVDEBCC_CEF WHERE NUM_APOLICE GROUP BY - Cursor movimentos apolice,_LEGADO/cb2qa.esf,7019-7050,Migrar para MovDebCCRepository.GetCursorByApolice(),,,NOK,NOK,NOK
+QUERY-0039,QUERY,CB2QP015,METODO,"SELECT: V0MOVDEBCC_CEF WHERE NUM_APOLICE,NRENDOS GROUP BY - Cursor movimentos apolice/endosso",_LEGADO/cb2qa.esf,7052-7084,Migrar para MovDebCCRepository.GetCursorByApoliceEndosso(),,,NOK,NOK,NOK
+QUERY-0040,QUERY,CB2QP016,METODO,"SELECT: V0MOVDEBCC_CEF WHERE COD_AGENCIA,OPER_CONTA,NUM_CONTA GROUP BY - Cursor movimentos conta",_LEGADO/cb2qa.esf,7086-7120,Migrar para MovDebCCRepository.GetCursorByConta(),,,NOK,NOK,NOK
+QUERY-0041,QUERY,CB2QP017,METODO,SELECT: V0MOVDEBCC_CEF WHERE NUM_CARTAO GROUP BY - Cursor movimentos cartao,_LEGADO/cb2qa.esf,7122-7140,Migrar para MovDebCCRepository.GetCursorByCartao(),,,NOK,NOK,NOK
+QUERY-0042,QUERY,CB2QP023,METODO,"SELECT: V0MOVDEBCC_CEF WHERE NUM_APOLICE,NRENDOS,COD_CONVENIO - Cursor parcelas detalhado",_LEGADO/cb2qa.esf,7439-7468,Migrar para MovDebCCRepository.GetCursorParcelas(),,,NOK,NOK,NOK
+QUERY-0043,QUERY,CB2QP038,METODO,"SELECT: V1MOVDEBCC_CEF WHERE NUM_APOLICE,NRENDOS,NRPARCEL,COD_CONVENIO,SIT_COBRANCA",_LEGADO/cb2qa.esf,7470-7487,Migrar para MovDebCCV1Repository.GetCursorBySituacao(),,,NOK,NOK,NOK
+QUERY-0044,QUERY,CB2QP018,METODO,FETCH: V0MOVDEBCC_CEF - Itera cursor movimentos,_LEGADO/cb2qa.esf,6781-6795,Migrar para loop foreach ou LINQ,,,NOK,NOK,NOK
+QUERY-0045,QUERY,CB2QP024,METODO,FETCH: CALENDARIO - Itera cursor calendario,_LEGADO/cb2qa.esf,7654-7672,Migrar para loop foreach ou LINQ,,,NOK,NOK,NOK
+QUERY-0046,QUERY,CB2QP039,METODO,FETCH: GE_MOVTO_CONTA - Itera cursor movimento conta,_LEGADO/cb2qa.esf,7674-7688,Migrar para loop foreach ou LINQ,,,NOK,NOK,NOK
+
